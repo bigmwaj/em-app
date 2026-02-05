@@ -1,0 +1,51 @@
+.users-container {
+  h1 {
+    margin-bottom: 24px;
+  }
+
+  .error-message {
+    margin-bottom: 20px;
+
+    mat-card {
+      background-color: #ffebee;
+    }
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  .users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+
+    .user-card {
+      mat-card-subtitle {
+        color: #666;
+      }
+
+      mat-card-content {
+        margin-top: 12px;
+
+        p {
+          margin: 8px 0;
+        }
+      }
+    }
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 40px;
+
+    p {
+      font-size: 18px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+  }
+}
