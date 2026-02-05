@@ -1,0 +1,25 @@
+pipeline{
+	agent any
+	options {
+        ansiColor('xterm')
+    }
+	stages{
+		 stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/bigmwaj/smart-cm-project.git',
+                    credentialsId: 'github-credentials-id'
+            }
+        }
+		stage("Build"){
+			steps{
+				sh "mvn -B -DskipTests clean package"
+			}
+		}
+		stage("Test"){
+			steps{
+				sh "mvn test"
+			}
+		}
+	}
+}

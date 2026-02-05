@@ -1,0 +1,36 @@
+package ca.bigmwaj.emapp.as.entity.platform;
+
+import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
+@Entity
+@Table(name = "PLATFORM_USER")
+@Data
+public class UserEntity extends AbstractBaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", updatable = false)
+    @EqualsAndHashCode.Include()
+    private Long id;
+
+    @Column(name = "USER_NAME", nullable = false)
+    private String username;
+
+    // TODO: SECURITY - Passwords should be hashed using BCryptPasswordEncoder before storage
+    // This field currently stores plaintext passwords which is a security risk
+    @Column(name = "PASSWORD", nullable = false)
+    private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "CONTACT_ID", nullable = false)
+    private ContactEntity contact;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false)
+    private UserStatusLvo status;
+}

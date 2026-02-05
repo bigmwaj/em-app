@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  mysql-db:
+    image: mysql:8.1
+    container_name: mysql-container
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: bigmwaj@123          # Mot de passe root
+      MYSQL_DATABASE: media_db              # Nom de la base créée automatiquement
+      MYSQL_USER: media_db_user             # Nom d'un utilisateur supplémentaire
+      MYSQL_PASSWORD: media_db_pswd         # Mot de passe de l'utilisateur
+      ports: 3306:3306
+      volumes: mysql_data:/var/lib/mysql
+
+  workbench:
+    image: linuxserver/mysql-workbench:8.0.45  # Image MySQL Workbench avec VNC
+    container_name: mysql_workbench
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: bigmwaj
+    ports:
+      - "5901:5901"   # VNC
+      - "6080:6080"   # Web VNC
+    depends_on:
+      - mysql-db
+
+volumes:
+  mysql_data:
