@@ -32,3 +32,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Angular
+em-app-ui/node_modules/
+em-app-ui/dist/
+em-app-ui/.angular/
