@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-oauth-callback',
@@ -17,8 +19,8 @@ export class OauthCallbackComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Get token from query params
-    this.route.queryParams.subscribe(params => {
+    // Use take(1) to automatically unsubscribe after first emission
+    this.route.queryParams.pipe(take(1)).subscribe(params => {
       const token = params['token'];
       const error = params['error'];
 

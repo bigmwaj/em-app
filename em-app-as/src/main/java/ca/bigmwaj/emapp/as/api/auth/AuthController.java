@@ -1,5 +1,7 @@
 package ca.bigmwaj.emapp.as.api.auth;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,15 +15,15 @@ import java.util.Map;
 public class AuthController {
 
     @GetMapping("/user")
-    public UserInfo getCurrentUser(@AuthenticationPrincipal Authentication authentication) {
+    public ResponseEntity<UserInfo> getCurrentUser(@AuthenticationPrincipal Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         UserInfo userInfo = new UserInfo();
         userInfo.setEmail(authentication.getName());
         
-        return userInfo;
+        return ResponseEntity.ok(userInfo);
     }
 
     @GetMapping("/status")

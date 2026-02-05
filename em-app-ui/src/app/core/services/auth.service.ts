@@ -57,10 +57,14 @@ export class AuthService {
   }
 
   getToken(): string | null {
+    // NOTE: Storing JWT in localStorage is vulnerable to XSS attacks.
+    // For production, consider using httpOnly cookies for better security.
     return localStorage.getItem('auth_token');
   }
 
   private setToken(token: string): void {
+    // NOTE: Storing JWT in localStorage is vulnerable to XSS attacks.
+    // For production, consider using httpOnly cookies for better security.
     localStorage.setItem('auth_token', token);
   }
 
