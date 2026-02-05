@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(rollbackFor = Exception.class)
+import java.util.NoSuchElementException;
+
+@Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
 public class UserService extends AbstractService {
 
@@ -56,12 +58,14 @@ public class UserService extends AbstractService {
 
     }
 
-    public UserDto findById(Long eventId) {
-        return dao.findById(eventId).map(GlobalMapper.INSTANCE::toDto).orElseThrow();
+    public UserDto findById(Long userId) {
+        return dao.findById(userId)
+                .map(GlobalMapper.INSTANCE::toDto)
+                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
     }
 
-    public void deleteById(Long eventId) {
-        dao.deleteById(eventId);
+    public void deleteById(Long userId) {
+        dao.deleteById(userId);
     }
 
     private ContactEntity getContact(UserDto dto){

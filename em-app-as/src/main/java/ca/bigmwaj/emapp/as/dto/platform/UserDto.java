@@ -13,8 +13,10 @@ public class UserDto extends BaseHistDto {
 
     private String username;
 
-    // TODO: SECURITY - Passwords should be hashed and never exposed in DTOs
-    // Consider using separate DTOs for password changes
+    // SECURITY WARNING: Passwords should never be exposed in DTOs
+    // TODO: Create separate DTOs for password changes (e.g., ChangePasswordDto)
+    //       Remove this field from read operations
+    //       Use @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) at minimum
     private String password;
 
     private ContactDto contact;
