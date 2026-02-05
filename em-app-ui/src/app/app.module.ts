@@ -27,6 +27,9 @@ import { LayoutComponent } from './shared/components/layout/layout.component';
 // Interceptors
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { UsersComponent } from './features/users/users.component';
+import { AccountsComponent } from './features/accounts/accounts.component';
+import { ContactsComponent } from './features/contacts/contacts.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { ErrorInterceptor } from './core/interceptors/error.interceptor';
     LoginComponent,
     OauthCallbackComponent,
     DashboardComponent,
-    LayoutComponent
+    LayoutComponent,
+    UsersComponent,
+    AccountsComponent,
+    ContactsComponent
   ],
   imports: [
     BrowserModule,
