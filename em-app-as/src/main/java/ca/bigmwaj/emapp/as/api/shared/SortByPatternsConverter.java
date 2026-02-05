@@ -49,7 +49,7 @@ public class SortByPatternsConverter {
         var supportedRootEntityNameMap = fetchSupportedRootEntityName(targetType);
 
         return Arrays.stream(patterns.split(";"))
-                .filter(s -> s != null && !s.isBlank())
+                .filter(s -> !s.isBlank())
                 .map(String::trim)
                 .map(e -> mapToSortByItemInput(supportedEntityFieldNameMap, supportedRootEntityNameMap, e))
                 .map(this::prevalidateSortByItemInput)

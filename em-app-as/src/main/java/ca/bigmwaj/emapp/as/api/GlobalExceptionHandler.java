@@ -20,8 +20,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {
-        // Note: Be cautious when logging exceptions as they may contain sensitive data
-        // Consider using a sanitized message or excluding request parameters
         logger.error("Une erreur est survenue lors du traitement de votre requette.", ex);
         return ResponseEntity
                 .internalServerError()
