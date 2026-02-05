@@ -1,0 +1,76 @@
+<app-layout>
+  <div class="dashboard">
+    <h1>Welcome to EM App Dashboard</h1>
+    
+    <div class="welcome-card" *ngIf="currentUser">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Welcome, {{ currentUser.name || currentUser.email }}!</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>You have successfully authenticated using OAuth2.</p>
+          <p><strong>Email:</strong> {{ currentUser.email }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="dashboard-grid">
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>people</mat-icon>
+            Users
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="stats">Manage platform users</p>
+          <button mat-raised-button color="primary" routerLink="/users">View Users</button>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>account_balance</mat-icon>
+            Accounts
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="stats">Manage accounts</p>
+          <button mat-raised-button color="primary" routerLink="/accounts">View Accounts</button>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>contacts</mat-icon>
+            Contacts
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="stats">Manage contacts</p>
+          <button mat-raised-button color="primary" routerLink="/contacts">View Contacts</button>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="dashboard-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>security</mat-icon>
+            Security
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="stats">OAuth2 Authentication Active</p>
+          <mat-chip-set>
+            <mat-chip>Google</mat-chip>
+            <mat-chip>GitHub</mat-chip>
+            <mat-chip>Facebook</mat-chip>
+            <mat-chip>TikTok</mat-chip>
+          </mat-chip-set>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</app-layout>

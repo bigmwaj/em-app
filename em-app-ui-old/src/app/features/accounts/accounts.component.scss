@@ -1,0 +1,28 @@
+.accounts-container {
+  h1 {
+    margin-bottom: 24px;
+  }
+
+  .accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+
+    .account-card {
+      mat-card-content {
+        margin-top: 12px;
+
+        p {
+          margin: 8px 0;
+        }
+
+        mat-chip {
+          &.active {
+            background-color: #4caf50;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,79 +1,59 @@
-# EM App - Angular Material Web Client
+# EmAppUi
 
-This is an Angular 16+ web client with OAuth2 authentication for the EM App REST backend.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.19.
 
-## Features
+## Development server
 
-- **Angular 16+** with TypeScript
-- **Angular Material** for modern UI components
-- **OAuth2 Authentication** with multiple providers:
-  - Google
-  - GitHub
-  - Facebook
-  - TikTok
-- **JWT Token Management** with HTTP Interceptors
-- **Route Guards** for protected pages
-- **RxJS** for reactive state management
-- **Clean Architecture** with modular structure
+To start a local development server, run:
 
-## Architecture
-
-```
-src/app/
-├── core/                    # Core functionality (singleton services)
-│   ├── guards/             # Route guards (AuthGuard)
-│   ├── interceptors/       # HTTP interceptors (JWT, Error)
-│   ├── models/             # Data models and interfaces
-│   └── services/           # Core services (AuthService)
-├── features/               # Feature modules
-│   ├── login/             # Login page with OAuth buttons
-│   ├── oauth-callback/    # OAuth callback handler
-│   └── dashboard/         # Main dashboard
-├── shared/                # Shared components and utilities
-│   └── components/
-│       └── layout/        # Main layout with toolbar and sidenav
-└── environments/          # Environment configurations
-```
-
-## Prerequisites
-
-- Node.js 16+ and npm
-- Angular CLI 16+
-- Backend server running on `http://localhost:8080`
-
-## Installation
-
-1. Install dependencies:
-```bash
-npm install
-```
-
-2. Configure environment variables (optional):
-Edit `src/environments/environment.ts` to change the API URL.
-
-## Development Server
-
-Run the development server:
 ```bash
 ng serve
 ```
 
-Navigate to `http://localhost:4200/`.
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Authentication Flow
+## Code scaffolding
 
-1. User visits the app → Redirected to login page (if not authenticated)
-2. User clicks OAuth provider button → Redirected to backend OAuth2 endpoint
-3. Backend handles OAuth flow → Redirects to provider's login page
-4. User authenticates with provider → Provider redirects back to backend
-5. Backend generates JWT token → Redirects to frontend callback with token
-6. Frontend stores token → User can access protected routes
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-## Building for Production
-
-Build the project:
 ```bash
-ng build --configuration production
+ng generate component component-name
 ```
 
-The build artifacts will be stored in the `dist/` directory.
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
