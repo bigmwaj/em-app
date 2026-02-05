@@ -13,9 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-@Transactional(rollbackFor = Exception.class)
+@Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
 public class AddressService extends AbstractService {
 
@@ -44,17 +45,22 @@ public class AddressService extends AbstractService {
     }
 
     public ContactAddressDto findById(Long contactId, Long addressId) {
-        return findEntityById(contactId, addressId).map(GlobalMapper.INSTANCE::toDto).orElseThrow();
+        return findEntityById(contactId, addressId)
+                .map(GlobalMapper.INSTANCE::toDto)
+                .orElseThrow(() -> new NoSuchElementException("Contact address not found with contactId: " + contactId + " and addressId: " + addressId));
     }
 
     public void deleteById(Long contactId, Long addressId) {
-        findEntityById(contactId, addressId).ifPresentOrElse(dao::delete, Exception::new);
+        findEntityById(contactId, addressId).ifPresentOrElse(dao::delete, () -> {
+            throw new NoSuchElementException("Contact address not found with contactId: " + contactId + " and addressId: " + addressId);
+        });
     }
 
     public ContactAddressDto create(Long contactId, ContactAddressDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeCreateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId).orElseThrow();
+        var contactEntity = contactDao.findById(contactId)
+                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
         entity.setContact(contactEntity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
@@ -62,7 +68,8 @@ public class AddressService extends AbstractService {
     public ContactAddressDto update(Long contactId, ContactAddressDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId).orElseThrow();
+        var contactEntity = contactDao.findById(contactId)
+                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
         entity.setContact(contactEntity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }

@@ -45,7 +45,7 @@ public class FilterPatternsConverter {
     }
 
     List<FilterItem> convert() {
-        if (patterns == null) {
+        if (patterns == null || patterns.isBlank()) {
             return Collections.emptyList();
         }
 
@@ -54,6 +54,7 @@ public class FilterPatternsConverter {
         var supportedRootEntityNameMap = fetchSupportedRootEntityName(targetType);
 
         return Arrays.stream(patterns.split(";"))
+                .filter(s -> s != null && !s.isBlank())
                 .map(String::trim)
                 .map(e -> mapToFilterItemInput(supportedEntityFieldNameMap, supportedRootEntityNameMap, e))
                 .map(this::prevalidateFilterItemInput)
@@ -133,8 +134,13 @@ public class FilterPatternsConverter {
         return filterItem;
     }
 
+    // Type safety: The cast is safe because we verify Enum.class.isAssignableFrom(type) before calling
     @SuppressWarnings("unchecked")
     private static <E extends Enum<E>> E toEnum(Class<?> enumType, String value) {
+        // Runtime check to ensure type safety before casting
+        if (!Enum.class.isAssignableFrom(enumType)) {
+            throw new IllegalArgumentException("Type must be an Enum type: " + enumType.getName());
+        }
         return Enum.valueOf((Class<E>) enumType, value);
     }
 }

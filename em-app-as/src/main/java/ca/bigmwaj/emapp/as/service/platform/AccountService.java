@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(rollbackFor = Exception.class)
+import java.util.NoSuchElementException;
+
+@Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
 public class AccountService extends AbstractService {
 
@@ -56,15 +58,15 @@ public class AccountService extends AbstractService {
         return new SearchResultDto<>(searchStats, r);
     }
 
-    public AccountDto findById(Long eventId) {
-        return dao.findById(eventId)
+    public AccountDto findById(Long accountId) {
+        return dao.findById(accountId)
                 .map(GlobalMapper.INSTANCE::toDto)
                 .map(this::addChildren)
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException("Account not found with id: " + accountId));
     }
 
-    public void deleteById(Long eventId) {
-        dao.deleteById(eventId);
+    public void deleteById(Long accountId) {
+        dao.deleteById(accountId);
     }
 
     public AccountDto create(AccountDto dto) {

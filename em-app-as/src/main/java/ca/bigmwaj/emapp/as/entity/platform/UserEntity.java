@@ -21,8 +21,10 @@ public class UserEntity extends AbstractBaseEntity {
     @Column(name = "USER_NAME", nullable = false)
     private String username;
 
-    // TODO: SECURITY - Passwords should be hashed using BCryptPasswordEncoder before storage
-    // This field currently stores plaintext passwords which is a security risk
+    // SECURITY WARNING: Passwords must be hashed using BCryptPasswordEncoder before storage
+    // TODO: Implement password hashing in the service layer before persisting
+    //       Example: passwordEncoder.encode(password)
+    //       Never store plain text passwords
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 

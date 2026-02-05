@@ -41,7 +41,7 @@ public class SortByPatternsConverter {
     }
 
     List<SortByItem> convert() {
-        if (patterns == null || targetType == null) {
+        if (patterns == null || patterns.isBlank() || targetType == null) {
             return Collections.emptyList();
         }
 
@@ -49,6 +49,7 @@ public class SortByPatternsConverter {
         var supportedRootEntityNameMap = fetchSupportedRootEntityName(targetType);
 
         return Arrays.stream(patterns.split(";"))
+                .filter(s -> s != null && !s.isBlank())
                 .map(String::trim)
                 .map(e -> mapToSortByItemInput(supportedEntityFieldNameMap, supportedRootEntityNameMap, e))
                 .map(this::prevalidateSortByItemInput)
