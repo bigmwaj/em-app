@@ -1,0 +1,62 @@
+<div class="users-container">
+  <div class="header">
+    <h1>Users Management</h1>
+    <button mat-raised-button color="primary">
+      <mat-icon>add</mat-icon>
+      Add User
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Loading users...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-section">
+    <mat-card>
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <p>{{ error }}</p>
+      <button mat-button color="primary" (click)="loadUsers()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && !error" class="users-grid">
+    <mat-card *ngFor="let user of users" class="user-card">
+      <mat-card-header>
+        <div mat-card-avatar class="user-avatar">
+          <mat-icon *ngIf="!user.picture">account_circle</mat-icon>
+          <img *ngIf="user.picture" [src]="user.picture" alt="User avatar">
+        </div>
+        <mat-card-title>{{ user.name }}</mat-card-title>
+        <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="provider-info">
+          <mat-icon>security</mat-icon>
+          Provider: <strong>{{ user.provider || 'Local' }}</strong>
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="editUser(user)">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-button color="warn" (click)="deleteUser(user)">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && !error && users.length === 0" class="empty-section">
+    <mat-card>
+      <mat-icon class="empty-icon">people_outline</mat-icon>
+      <h3>No Users Found</h3>
+      <p>There are no users to display.</p>
+    </mat-card>
+  </div>
+</div>
