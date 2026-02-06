@@ -1,0 +1,56 @@
+<div class="accounts-container">
+  <div class="header">
+    <h1>Accounts Management</h1>
+    <button mat-raised-button color="primary">
+      <mat-icon>add</mat-icon>
+      Add Account
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Loading accounts...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="info-message">
+    <mat-card>
+      <mat-icon>info</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading" class="accounts-grid">
+    <mat-card *ngFor="let account of accounts" class="account-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>business</mat-icon>
+        <mat-card-title>{{ account.name }}</mat-card-title>
+        <mat-card-subtitle>{{ account.type }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="account-info">
+          <p>
+            <mat-icon>label</mat-icon>
+            Status: <mat-chip [class.active]="account.status === 'Active'" 
+                              [class.pending]="account.status === 'Pending'">
+              {{ account.status }}
+            </mat-chip>
+          </p>
+          <p *ngIf="account.createdAt">
+            <mat-icon>calendar_today</mat-icon>
+            Created: {{ account.createdAt | date: 'short' }}
+          </p>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary" (click)="editAccount(account)">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-button color="warn" (click)="deleteAccount(account)">
+          <mat-icon>delete</mat-icon>
+          Delete
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

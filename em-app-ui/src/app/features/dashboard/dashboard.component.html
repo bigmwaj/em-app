@@ -1,0 +1,82 @@
+<div class="dashboard-container">
+  <div class="welcome-section">
+    <mat-card>
+      <mat-card-header>
+        <div mat-card-avatar class="user-avatar">
+          <mat-icon *ngIf="!user?.picture">account_circle</mat-icon>
+          <img *ngIf="user?.picture" [src]="user?.picture" alt="User avatar">
+        </div>
+        <mat-card-title>Welcome back, {{ user?.name || 'User' }}!</mat-card-title>
+        <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>You're successfully logged in. Use the navigation menu to explore the application.</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="cards-grid">
+    <mat-card class="action-card" routerLink="/users">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>people</mat-icon>
+        <mat-card-title>Users</mat-card-title>
+        <mat-card-subtitle>Manage platform users</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>View, create, and manage user accounts in the system.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to Users
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="action-card" routerLink="/accounts">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>business</mat-icon>
+        <mat-card-title>Accounts</mat-card-title>
+        <mat-card-subtitle>Manage accounts</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>View and manage business accounts and their information.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to Accounts
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="action-card" routerLink="/contacts">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>contacts</mat-icon>
+        <mat-card-title>Contacts</mat-card-title>
+        <mat-card-subtitle>Manage contacts</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>View and manage contact information and relationships.</p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button color="primary">
+          <mat-icon>arrow_forward</mat-icon>
+          Go to Contacts
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="action-card security-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>security</mat-icon>
+        <mat-card-title>Security</mat-card-title>
+        <mat-card-subtitle>Authentication status</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Provider: <strong>{{ user?.provider || 'OAuth 2.0' }}</strong></p>
+        <p>Status: <mat-chip class="status-chip">Active</mat-chip></p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

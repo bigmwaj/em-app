@@ -1,0 +1,156 @@
+.accounts-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 400;
+  }
+
+  button mat-icon {
+    margin-right: 8px;
+  }
+}
+
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+
+  mat-spinner {
+    margin-bottom: 16px;
+  }
+}
+
+.info-message {
+  margin-bottom: 24px;
+
+  mat-card {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: #fff3cd;
+    border-left: 4px solid #ff9800;
+
+    mat-icon {
+      color: #ff9800;
+    }
+
+    p {
+      margin: 0;
+      color: #666;
+    }
+  }
+}
+
+.accounts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.account-card {
+  mat-card-header {
+    mat-icon[mat-card-avatar] {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+      color: #3f51b5;
+      background: none;
+    }
+  }
+
+  mat-card-content {
+    margin-top: 16px;
+
+    .account-info {
+      p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 8px 0;
+        color: #666;
+
+        mat-icon {
+          font-size: 18px;
+          width: 18px;
+          height: 18px;
+          color: #999;
+        }
+
+        mat-chip {
+          font-size: 12px;
+          padding: 4px 12px;
+          height: auto;
+
+          &.active {
+            background-color: #4caf50;
+            color: white;
+          }
+
+          &.pending {
+            background-color: #ff9800;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  mat-card-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px 16px;
+
+    button mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  .accounts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .accounts-container {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .accounts-grid {
+    grid-template-columns: 1fr;
+  }
+}
