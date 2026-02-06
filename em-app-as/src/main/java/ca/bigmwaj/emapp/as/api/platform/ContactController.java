@@ -2,10 +2,12 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
+import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactFilterDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
 import ca.bigmwaj.emapp.as.service.platform.ContactService;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,15 +54,15 @@ public class ContactController extends AbstractBaseAPI {
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
 
-            @ValidFilterPatterns(
+            @ValidFilterByPatterns(
                     supportedFields = {
-                            @FilterSupportedField(name = "id", type = Long.class),
-                            @FilterSupportedField(name = "firstName", type = String.class),
-                            @FilterSupportedField(name = "lastName", type = String.class),
-                            @FilterSupportedField(name = "birthDate", type = LocalDate.class),
-                            @FilterSupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
-                            @FilterSupportedField(name = "email", type = String.class, rootEntityName = "ce"),
-                            @FilterSupportedField(name = "address", type = String.class, rootEntityName = "ca"),
+                            @FilterBySupportedField(name = "id", type = Long.class),
+                            @FilterBySupportedField(name = "firstName", type = String.class),
+                            @FilterBySupportedField(name = "lastName", type = String.class),
+                            @FilterBySupportedField(name = "birthDate", type = LocalDate.class),
+                            @FilterBySupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
+                            @FilterBySupportedField(name = "email", type = String.class, rootEntityName = "ce"),
+                            @FilterBySupportedField(name = "address", type = String.class, rootEntityName = "ca"),
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
@@ -74,13 +76,13 @@ public class ContactController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<FilterItem> filterItems) {
+            List<FilterBy> filterBIES) {
 
         var builder = ContactFilterDto.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterItems(filterItems);
+                .withFilterBIES(filterBIES);
         return ResponseEntity.ok(service.search(builder.build()));
     }
 

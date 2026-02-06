@@ -16,12 +16,12 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
     Class<E> getEntityClass();
 
     default QueryConfig prepareQueryConfig(QueryConfig.QueryConfigBuilder builder, AbstractFilterDto filter) {
-        if( filter.getFilterItems() != null && !filter.getFilterItems().isEmpty() ){
-            filter.getFilterItems().forEach(e -> QueryConfig.appendFilter(builder, e));
+        if( filter.getFilterBIES() != null && !filter.getFilterBIES().isEmpty() ){
+            filter.getFilterBIES().forEach(e -> QueryConfig.appendFilter(builder, e));
         }
 
-        if( filter.getSortByItems() != null && !filter.getSortByItems().isEmpty() ){
-            filter.getSortByItems().forEach(e -> QueryConfig.appendSortBy(builder, e));
+        if( filter.getSortBIES() != null && !filter.getSortBIES().isEmpty() ){
+            filter.getSortBIES().forEach(e -> QueryConfig.appendSortBy(builder, e));
         }
         return builder.build();
     }

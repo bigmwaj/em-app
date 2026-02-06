@@ -1,4 +1,4 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
 import jakarta.validation.Constraint;
 
@@ -7,13 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = FilterPatternsValidator.class) // Link to the validator class
+@Constraint(validatedBy = SortByPatternsValidator.class)
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FilterSupportedField {
+public @interface SortBySupportedField {
     String name();
-
-    Class<?> type();
 
     String rootEntityName() default "";
 

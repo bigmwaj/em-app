@@ -1,10 +1,11 @@
-package ca.bigmwaj.emapp.as.security;
+package ca.bigmwaj.emapp.as.api.auth.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private AuthenticationFilter authenticationFilter;
 
     @Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
@@ -32,11 +33,11 @@ public class SecurityConfig {
                 // JWT tokens in Authorization headers are not vulnerable to CSRF attacks
                 // since they are not automatically sent by the browser like cookies.
                 // If using cookie-based auth in production, re-enable CSRF protection.
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> 
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/", "/error", "/favicon.ico", "/auth/**", "/oauth2/**").permitAll()
+                    .requestMatchers("/", "/error", "/favicon.ico", "/auth/**", "/oauth2/**", "/login", "/logout").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                     .requestMatchers("/actuator/health").permitAll()
                     .anyRequest().authenticated()
@@ -44,7 +45,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                     .successHandler(oAuth2AuthenticationSuccessHandler)
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

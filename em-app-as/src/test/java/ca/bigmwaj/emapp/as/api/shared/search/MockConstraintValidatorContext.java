@@ -1,4 +1,4 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
 import jakarta.validation.ClockProvider;
 import jakarta.validation.ConstraintValidatorContext;

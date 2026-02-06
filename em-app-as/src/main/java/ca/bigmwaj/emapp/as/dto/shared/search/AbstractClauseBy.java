@@ -1,25 +1,17 @@
 package ca.bigmwaj.emapp.as.dto.shared.search;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
+@NoArgsConstructor
 @Data
-public class FilterItem {
+public abstract class AbstractClauseBy {
 
-    public enum oper {
-        eq,
-        ne,
-        in,
-        ni,
-        btw,
-        lt,
-        lte,
-        gt,
-        gte,
-        like
+    public AbstractClauseBy(String name){
+        this.name = name;
     }
 
     private final List<String> validationErrorMessages = new ArrayList<>();
@@ -29,10 +21,6 @@ public class FilterItem {
     private String entityFieldName;
 
     private String rootEntityName;
-
-    private oper oper;
-
-    private List<?> values;
 
     public void addMessage(String message) {
         validationErrorMessages.add(message);
@@ -48,16 +36,5 @@ public class FilterItem {
 
     public void addMessages(List<String> messages) {
         validationErrorMessages.addAll(messages);
-    }
-
-    public void transformValues(Function<String, ?> operator) {
-        if (values != null) {
-            values = values
-                    .stream()
-                    .map(String.class::cast)
-                    .map(String::trim)
-                    .map(operator)
-                    .toList();
-        }
     }
 }

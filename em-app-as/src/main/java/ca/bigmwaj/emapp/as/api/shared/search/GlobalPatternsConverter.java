@@ -1,7 +1,5 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.stereotype.Component;
@@ -15,7 +13,6 @@ import java.util.function.Predicate;
 
 @Component
 public class GlobalPatternsConverter implements GenericConverter {
-    Logger logger = LoggerFactory.getLogger(GlobalPatternsConverter.class);
 
     @Override
     public Set<ConvertiblePair> getConvertibleTypes() {
@@ -33,8 +30,8 @@ public class GlobalPatternsConverter implements GenericConverter {
                 .map(Annotation::annotationType)
                 .anyMatch(p);
 
-        if (isValid.apply(ValidFilterPatterns.class::equals)) {
-            return new FilterPatternsConverter(targetType, (String) source).convert();
+        if (isValid.apply(ValidFilterByPatterns.class::equals)) {
+            return new FilterByPatternsConverter(targetType, (String) source).convert();
         } else if (isValid.apply(ValidSortByPatterns.class::equals)) {
             return new SortByPatternsConverter(targetType, (String) source).convert();
         }

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: media
+    name: em-app-as
   jpa:
     show-sql: true
     hibernate.ddl-auto: update
@@ -26,9 +26,9 @@ spring:
               - email
               - profile
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-          github:
-            client-id: ${GITHUB_CLIENT_ID}
-            client-secret: ${GITHUB_CLIENT_SECRET}
+          github: #https://github.com/settings/developers
+            client-id: ${GITHUB_CLIENT_ID:Ov23liBNoJCrAK4844Xz}
+            client-secret: ${GITHUB_CLIENT_SECRET:10ea9bcb13aa4d490278b8fe10f20c0c4ceb4e31}
             scope:
               - user:email
               - read:user
@@ -58,11 +58,12 @@ server:
   port: 8080
 
 app:
+  front.url: http://localhost:4200
   jwt:
-    secret: ${JWT_SECRET}
+    secret: ${JWT_SECRET:ABCD1234!@#$abcd?^kkkkkkkkkkuuuuuuuuuujghgfsssrfgtyhb}
     expiration: ${JWT_EXPIRATION:86400000}
-  oauth2:
-    redirect-uri: ${OAUTH2_REDIRECT_URI:http://localhost:4200/oauth/callback}
+  auth-success:
+    redirect-uri: ${AUTH_SUCCESS_REDIRECT_URI:http://localhost:4200/auth/callback}
 
 #https://springdoc.org/
 springdoc:

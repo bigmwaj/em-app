@@ -1,8 +1,6 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.api.search.FilterItemInput;
-import ca.bigmwaj.emapp.as.api.search.ItemMapper;
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -16,35 +14,35 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class FilterPatternsConverter {
-    private static final Logger logger = LoggerFactory.getLogger(FilterPatternsConverter.class);
+public class FilterByPatternsConverter {
+    private static final Logger logger = LoggerFactory.getLogger(FilterByPatternsConverter.class);
 
     private TypeDescriptor targetType;
     private String patterns;
 
     private static <T> Map<String, T> fetchSupportedMetadata(TypeDescriptor targetType,
-                                                        Function<FilterSupportedField, T> extractor) {
+                                                        Function<FilterBySupportedField, T> extractor) {
         return Arrays.stream(targetType.getAnnotations())
-                .filter(e -> e.annotationType().equals(ValidFilterPatterns.class))
-                .map(ValidFilterPatterns.class::cast)
-                .map(ValidFilterPatterns::supportedFields)
+                .filter(e -> e.annotationType().equals(ValidFilterByPatterns.class))
+                .map(ValidFilterByPatterns.class::cast)
+                .map(ValidFilterByPatterns::supportedFields)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toMap(FilterSupportedField::name, extractor));
+                .collect(Collectors.toMap(FilterBySupportedField::name, extractor));
     }
 
     private Map<String, Class<?>> fetchSupportedFieldType(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, FilterSupportedField::type);
+        return fetchSupportedMetadata(targetType, FilterBySupportedField::type);
     }
 
     private Map<String, String> fetchSupportedRootEntityName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, FilterSupportedField::rootEntityName);
+        return fetchSupportedMetadata(targetType, FilterBySupportedField::rootEntityName);
     }
 
     private Map<String, String> fetchSupportedEntityFieldName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, FilterSupportedField::entityFieldName);
+        return fetchSupportedMetadata(targetType, FilterBySupportedField::entityFieldName);
     }
 
-    List<FilterItem> convert() {
+    List<FilterBy> convert() {
         if (patterns == null || patterns.isBlank()) {
             return Collections.emptyList();
         }
@@ -54,7 +52,7 @@ public class FilterPatternsConverter {
         var supportedRootEntityNameMap = fetchSupportedRootEntityName(targetType);
 
         return Arrays.stream(patterns.split(";"))
-                .filter(s -> s != null && !s.isBlank())
+                .filter(s -> !s.isBlank())
                 .map(String::trim)
                 .map(e -> mapToFilterItemInput(supportedEntityFieldNameMap, supportedRootEntityNameMap, e))
                 .map(this::prevalidateFilterItemInput)
@@ -63,11 +61,11 @@ public class FilterPatternsConverter {
                 .toList();
     }
 
-    private FilterItem mapToFilterItem(FilterItemInput input) {
+    private FilterBy mapToFilterItem(FilterByInput input) {
         try {
-            return ItemMapper.INSTANCE.inputToItem(input);
+            return QueryInputMapper.INSTANCE.toItem(input);
         } catch (MethodArgumentConversionNotSupportedException e) {
-            var fi = new FilterItem();
+            var fi = new FilterBy();
             fi.addMessages(input.getValidationErrorMessages());
             fi.addMessage(e.getMessage());
             logger.error(e.getMessage(), e);
@@ -75,13 +73,13 @@ public class FilterPatternsConverter {
         }
     }
 
-    private FilterItemInput mapToFilterItemInput(Map<String, String> supportedEntityFieldNameMap,
-                                                 Map<String, String> supportedRootEntityNameMap,
-                                                 String filterPattern) {
+    private FilterByInput mapToFilterItemInput(Map<String, String> supportedEntityFieldNameMap,
+                                               Map<String, String> supportedRootEntityNameMap,
+                                               String filterPattern) {
 
         var args = new ArrayDeque<>(Arrays.asList(filterPattern.split(":")));
 
-        var builder = FilterItemInput.builder();
+        var builder = FilterByInput.builder();
         if (!args.isEmpty()) {
             var filterName = args.pollFirst();
             builder.withName(filterName);
@@ -108,7 +106,7 @@ public class FilterPatternsConverter {
         return builder.build();
     }
 
-    private FilterItemInput prevalidateFilterItemInput(FilterItemInput input) {
+    private FilterByInput prevalidateFilterItemInput(FilterByInput input) {
         if (input.getName() == null) {
             input.addMessage(MessageConstants.MSG0001);
         }
@@ -121,17 +119,17 @@ public class FilterPatternsConverter {
         return input;
     }
 
-    private FilterItem castValues(Map<String, Class<?>> supportedFieldMap, FilterItem filterItem) {
-        var fieldName = filterItem.getName();
+    private FilterBy castValues(Map<String, Class<?>> supportedFieldMap, FilterBy filterBy) {
+        var fieldName = filterBy.getName();
         if (fieldName != null && supportedFieldMap.containsKey(fieldName)) {
             var type = supportedFieldMap.get(fieldName);
             if (LocalDate.class.isAssignableFrom(type)) {
-                filterItem.transformValues(LocalDate::parse);
+                filterBy.transformValues(LocalDate::parse);
             } else if (Enum.class.isAssignableFrom(type)) {
-                filterItem.transformValues(e -> toEnum(type, e));
+                filterBy.transformValues(e -> toEnum(type, e));
             }
         }
-        return filterItem;
+        return filterBy;
     }
 
     // Type safety: The cast is safe because we verify Enum.class.isAssignableFrom(type) before calling

@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.common;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterItem;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -14,9 +14,9 @@ public abstract class AbstractFilterDto {
 
     public static final Short DEFAULT_QUERY_LIMIT = 1_000;
 
-    private List<FilterItem> filterItems;
+    private List<FilterBy> filterBIES;
 
-    private List<SortByItem> sortByItems;
+    private List<SortBy> sortBIES;
 
     private Short pageSize;
 

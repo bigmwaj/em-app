@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dao.shared;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterItem;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -26,20 +26,20 @@ public class QueryConfig {
     @Singular
     private List<String> sortByClauses;
 
-    public static void appendFilter(QueryConfig.QueryConfigBuilder qb, FilterItem filterItem) {
-        var dbFieldName = filterItem.getName();
-        var v = filterItem.getValues();
+    public static void appendFilter(QueryConfig.QueryConfigBuilder qb, FilterBy filterBy) {
+        var dbFieldName = filterBy.getName();
+        var v = filterBy.getValues();
         var rootEntity = Q_ROOT;
 
-        if (filterItem.getEntityFieldName() != null && !filterItem.getEntityFieldName().isEmpty()) {
-            dbFieldName = filterItem.getEntityFieldName();
+        if (filterBy.getEntityFieldName() != null && !filterBy.getEntityFieldName().isEmpty()) {
+            dbFieldName = filterBy.getEntityFieldName();
         }
 
-        if (filterItem.getRootEntityName() != null && !filterItem.getRootEntityName().isEmpty()) {
-            rootEntity = filterItem.getRootEntityName();
+        if (filterBy.getRootEntityName() != null && !filterBy.getRootEntityName().isEmpty()) {
+            rootEntity = filterBy.getRootEntityName();
         }
 
-        var q = switch (filterItem.getOper()) {
+        var q = switch (filterBy.getOper()) {
             case like -> {
                 var param = v.getFirst().toString().toLowerCase();
                 qb.withParam(dbFieldName, "%" + param + "%");
@@ -78,20 +78,20 @@ public class QueryConfig {
         qb.withWhereClause(q);
     }
 
-    public static void appendSortBy(QueryConfig.QueryConfigBuilder qb, SortByItem sortByItem) {
-        var dbFieldName = sortByItem.getName();
+    public static void appendSortBy(QueryConfig.QueryConfigBuilder qb, SortBy sortBy) {
+        var dbFieldName = sortBy.getName();
         var rootEntity = Q_ROOT;
 
-        if (sortByItem.getEntityFieldName() != null && !sortByItem.getEntityFieldName().isEmpty()) {
-            dbFieldName = sortByItem.getEntityFieldName();
+        if (sortBy.getEntityFieldName() != null && !sortBy.getEntityFieldName().isEmpty()) {
+            dbFieldName = sortBy.getEntityFieldName();
         }
-        if (sortByItem.getRootEntityName() != null && !sortByItem.getRootEntityName().isEmpty()) {
-            rootEntity = sortByItem.getRootEntityName();
+        if (sortBy.getRootEntityName() != null && !sortBy.getRootEntityName().isEmpty()) {
+            rootEntity = sortBy.getRootEntityName();
         }
 
-        SortByItem.sortType sortType = sortByItem.getSortType();
+        SortBy.sortType sortType = sortBy.getType();
         if( sortType == null ){
-            sortType = SortByItem.sortType.asc;
+            sortType = SortBy.sortType.asc;
         }
 
         qb.withSortByClause(String.format("%s.%s %s", rootEntity, dbFieldName, sortType));

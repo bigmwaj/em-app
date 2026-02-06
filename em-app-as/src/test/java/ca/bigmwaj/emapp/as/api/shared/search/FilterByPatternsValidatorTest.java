@@ -1,6 +1,6 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,18 +13,22 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
-public class SortByPatternsValidatorTest {
+public class FilterByPatternsValidatorTest {
     @Test
     void givenWellMappedPatterns_whenIsValid_thenReturnsTrue() {
         // Given
         var supportedFieldNames = List.of("field1", "field2");
-        var validator = new SortByPatternsValidator();
-        var items = List.of(new SortByItem("field1"), new SortByItem("field2", SortByItem.sortType.asc));
+        var validator = new FilterByPatternsValidator();
+        var items = List.of(
+                new FilterBy("field1", FilterBy.oper.eq, List.of("V1")),
+                new FilterBy("field2", FilterBy.oper.ne, List.of("V2")));
+
         var spyValidator = spy(validator);
+        var context = new MockConstraintValidatorContext();
         doReturn(supportedFieldNames).when(spyValidator).getSupportedFieldNames();
 
         // When
-        var isValid = spyValidator.isValid(items, null);
+        var isValid = spyValidator.isValid(items, context);
 
         // Then
         assertTrue(isValid);
@@ -34,10 +38,12 @@ public class SortByPatternsValidatorTest {
     void givenNotWellMappedPatterns_whenIsValid_thenReturnsTrue() {
         // Given
         var supportedFieldNames = List.of("field1", "field3");
-        var validator = new SortByPatternsValidator();
-        var items = List.of(new SortByItem("field1"), new SortByItem("field2", SortByItem.sortType.asc));
+        var validator = new FilterByPatternsValidator();
+        var items = List.of(
+                new FilterBy("field1"),
+                new FilterBy("field2", FilterBy.oper.eq)
+        );
         var spyValidator = spy(validator);
-        var context = new MockConstraintValidatorContext();
         doReturn(supportedFieldNames).when(spyValidator).getSupportedFieldNames();
 
         // When

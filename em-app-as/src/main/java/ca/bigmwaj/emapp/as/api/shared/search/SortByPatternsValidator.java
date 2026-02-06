@@ -1,6 +1,6 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SortByPatternsValidator implements ConstraintValidator<ValidSortByPatterns, List<SortByItem>> {
+public class SortByPatternsValidator implements ConstraintValidator<ValidSortByPatterns, List<SortBy>> {
 
     private ValidSortByPatterns validSortByPatterns;
 
@@ -20,17 +20,17 @@ public class SortByPatternsValidator implements ConstraintValidator<ValidSortByP
     }
 
     @Override
-    public boolean isValid(List<SortByItem> sortByItems, ConstraintValidatorContext context) {
+    public boolean isValid(List<SortBy> sortByItems, ConstraintValidatorContext context) {
         if (sortByItems == null || sortByItems.isEmpty()) {
             return true;
         }
 
         sortByItems.stream()
-                .filter(SortByItem::isValid)
+                .filter(SortBy::isValid)
                 .forEach(this::validate);
 
         var errorMessages = sortByItems.stream()
-                .map(SortByItem::getValidationErrorMessages)
+                .map(SortBy::getValidationErrorMessages)
                 .flatMap(List::stream)
                 .collect(Collectors.joining(","));
 
@@ -43,19 +43,19 @@ public class SortByPatternsValidator implements ConstraintValidator<ValidSortByP
         return true;
     }
 
-    private void validate(SortByItem sortByItem) {
-        if (sortByItem.isNotValid()) {
+    private void validate(SortBy sortBy) {
+        if (sortBy.isNotValid()) {
             return;
         }
 
-        validateFieldName(sortByItem);
+        validateFieldName(sortBy);
     }
 
-    private void validateFieldName(SortByItem sortByItem) {
-        String fieldName = sortByItem.getName();
+    private void validateFieldName(SortBy sortBy) {
+        String fieldName = sortBy.getName();
 
         if (fieldName == null) {
-            sortByItem.addMessage(MessageConstants.MSG0001);
+            sortBy.addMessage(MessageConstants.MSG0001);
             return;
         }
 
@@ -63,7 +63,7 @@ public class SortByPatternsValidator implements ConstraintValidator<ValidSortByP
                 .anyMatch(fieldName::equals);
 
         if (!isValid) {
-            sortByItem.addMessage(String.format(MessageConstants.MSG0006, fieldName));
+            sortBy.addMessage(String.format(MessageConstants.MSG0006, fieldName));
         }
     }
 

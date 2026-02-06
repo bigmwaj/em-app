@@ -2,11 +2,15 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
+import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserFilterDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterItem;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByItem;
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import ca.bigmwaj.emapp.as.service.platform.UserService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
@@ -60,15 +64,15 @@ public class UserController extends AbstractBaseAPI {
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
 
-            @ValidFilterPatterns(
+            @ValidFilterByPatterns(
                     supportedFields = {
-                            @FilterSupportedField(name = "status", type = UserStatusLvo.class),
-                            @FilterSupportedField(name = "username", type = String.class),
-                            @FilterSupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
-                            @FilterSupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
-                            @FilterSupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
-                            @FilterSupportedField(name = "email", type = String.class, rootEntityName = "ce"),
-                            @FilterSupportedField(name = "address", type = String.class, rootEntityName = "ca"),
+                            @FilterBySupportedField(name = "status", type = UserStatusLvo.class),
+                            @FilterBySupportedField(name = "username", type = String.class),
+                            @FilterBySupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
+                            @FilterBySupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
+                            @FilterBySupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
+                            @FilterBySupportedField(name = "email", type = String.class, rootEntityName = "ce"),
+                            @FilterBySupportedField(name = "address", type = String.class, rootEntityName = "ca"),
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
@@ -82,7 +86,7 @@ public class UserController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<FilterItem> filterItems,
+            List<FilterBy> filterBIES,
 
             @ValidSortByPatterns(
                     supportedFields = {
@@ -95,15 +99,15 @@ public class UserController extends AbstractBaseAPI {
                             @SortBySupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
-            List<SortByItem> sortByItems
+            List<SortBy> sortBIES
     ) {
 
         var builder = UserFilterDto.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterItems(filterItems)
-                .withSortByItems(sortByItems);
+                .withFilterBIES(filterBIES)
+                .withSortBIES(sortBIES);
 
         return ResponseEntity.ok(service.search(builder.build()));
     }

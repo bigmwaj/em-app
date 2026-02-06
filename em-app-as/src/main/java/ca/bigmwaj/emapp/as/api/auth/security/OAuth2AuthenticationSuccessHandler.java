@@ -1,8 +1,10 @@
-package ca.bigmwaj.emapp.as.security;
+package ca.bigmwaj.emapp.as.api.auth.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -15,19 +17,23 @@ import java.io.IOException;
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(OAuth2AuthenticationSuccessHandler.class);
+
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    @Value("${app.oauth2.redirect-uri:http://localhost:4200/oauth/callback}")
+    @Value("${app.auth-success.redirect-uri}")
     private String redirectUri;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        String targetUrl = determineTargetUrl(request, response, authentication);
+        logger.debug("Successful authentication for user: {}", authentication.getName());
+
+        var targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
+            logger.debug("Response has already been committed. Unable to redirect to {}", targetUrl);
             return;
         }
 
@@ -35,9 +41,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 
+    @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
                                        Authentication authentication) {
-        String token = tokenProvider.generateToken(authentication);
+        var token = tokenProvider.generateToken(authentication);
 
         return UriComponentsBuilder.fromUriString(redirectUri)
                 .queryParam("token", token)

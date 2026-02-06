@@ -1,8 +1,10 @@
-package ca.bigmwaj.emapp.as.security;
+package ca.bigmwaj.emapp.as.api.auth.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -15,6 +17,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+
     @Value("${app.jwt.secret}")
     private String jwtSecret;
 
@@ -26,12 +30,15 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
-        OAuth2User userPrincipal = (OAuth2User) authentication.getPrincipal();
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationMs);
+        var userPrincipal = (OAuth2User) authentication.getPrincipal();
+        var now = new Date();
+        var expiryDate = new Date(now.getTime() + jwtExpirationMs);
 
+        assert userPrincipal != null;
         String email = userPrincipal.getAttribute("email");
         String name = userPrincipal.getAttribute("name");
+
+        logger.debug("On génère un token JWT pour l'utilisateur : {}", email != null ? email : userPrincipal.getName());
 
         return Jwts.builder()
                 .subject(email != null ? email : userPrincipal.getName())
@@ -43,7 +50,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getUserEmailFromJWT(String token) {
+    public String getUsernameFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()

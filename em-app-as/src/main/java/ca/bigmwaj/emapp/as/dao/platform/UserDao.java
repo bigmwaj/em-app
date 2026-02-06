@@ -6,6 +6,7 @@ import ca.bigmwaj.emapp.as.entity.platform.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Repository
 public interface UserDao extends AbstractDao<UserEntity, Long> {
@@ -31,4 +32,6 @@ public interface UserDao extends AbstractDao<UserEntity, Long> {
 
         return String.join(" ", query);
     }
+
+    Optional<UserEntity> findByUsername(String username);
 }

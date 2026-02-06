@@ -1,4 +1,4 @@
-package ca.bigmwaj.emapp.as.api.shared;
+package ca.bigmwaj.emapp.as.api.shared.search;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,16 +8,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = SortByPatternsValidator.class) // Link to the validator class
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Constraint(validatedBy = FilterByPatternsValidator.class)
+@Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidSortByPatterns {
-    String message() default "Invalid request!"; // Default error message
+public @interface ValidFilterByPatterns {
+    String message() default "Invalid request filter!";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    SortBySupportedField[] supportedFields() default {};
+    FilterBySupportedField[] supportedFields() default {};
 }
 
