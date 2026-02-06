@@ -59,7 +59,7 @@ export class AuthService {
       catchError(error => {
         console.error('Failed to load user info:', error);
         this.logout();
-        return of();
+        throw error; // Re-throw error for caller to handle
       })
     );
   }

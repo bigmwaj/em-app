@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-oauth-callback',
@@ -8,9 +9,10 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrls: ['./oauth-callback.component.scss'],
   standalone: false
 })
-export class OauthCallbackComponent implements OnInit {
+export class OauthCallbackComponent implements OnInit, OnDestroy {
   error: string | null = null;
   loading = true;
+  private queryParamsSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -20,7 +22,7 @@ export class OauthCallbackComponent implements OnInit {
 
   ngOnInit(): void {
     // Extract token from query parameters
-    this.route.queryParams.subscribe(params => {
+    this.queryParamsSubscription = this.route.queryParams.subscribe(params => {
       const token = params['token'];
       const error = params['error'];
 
@@ -48,6 +50,13 @@ export class OauthCallbackComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscription to prevent memory leaks
+    if (this.queryParamsSubscription) {
+      this.queryParamsSubscription.unsubscribe();
+    }
   }
 
   /**

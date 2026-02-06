@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models/user.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-layout',
@@ -9,9 +10,10 @@ import { User } from '../../../core/models/user.model';
   styleUrls: ['./layout.component.scss'],
   standalone: false
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   user: User | null = null;
   sidenavOpened = true;
+  private userSubscription?: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -20,9 +22,16 @@ export class LayoutComponent implements OnInit {
 
   ngOnInit(): void {
     // Subscribe to current user
-    this.authService.currentUser.subscribe(user => {
+    this.userSubscription = this.authService.currentUser.subscribe(user => {
       this.user = user;
     });
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscription to prevent memory leaks
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   /**
