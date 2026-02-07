@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '../../../service/platform/user.service';
 import { User } from '../../../models/api.platform.model';
 import { SearchResult } from '../../../models/api.shared.model';
+import { UserDialogComponent } from './user-dialog/user-dialog.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-users',
@@ -14,7 +18,11 @@ export class UsersComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -41,18 +49,82 @@ export class UsersComponent implements OnInit {
   }
 
   /**
-   * Placeholder for edit functionality
+   * Opens dialog to create a new user
    */
-  editUser(user: User): void {
-    console.log('Edit user:', user);
-    // TODO: Implement edit dialog
+  createUser(): void {
+    const dialogRef = this.dialog.open(UserDialogComponent, {
+      width: '600px',
+      data: { mode: 'create' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.createUser(result).subscribe({
+          next: () => {
+            this.snackBar.open('User created successfully', 'Close', { duration: 3000 });
+            this.loadUsers();
+          },
+          error: (err) => {
+            console.error('Failed to create user:', err);
+            this.snackBar.open('Failed to create user', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   /**
-   * Placeholder for delete functionality
+   * Opens dialog to edit a user
+   */
+  editUser(user: User): void {
+    const dialogRef = this.dialog.open(UserDialogComponent, {
+      width: '600px',
+      data: { user, mode: 'edit' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.id) {
+        this.userService.updateUser(result.id, result).subscribe({
+          next: () => {
+            this.snackBar.open('User updated successfully', 'Close', { duration: 3000 });
+            this.loadUsers();
+          },
+          error: (err) => {
+            console.error('Failed to update user:', err);
+            this.snackBar.open('Failed to update user', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Opens confirmation dialog and deletes user if confirmed
    */
   deleteUser(user: User): void {
-    console.log('Delete user:', user);
-    // TODO: Implement delete confirmation
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete User',
+        message: `Are you sure you want to delete user "${user.name}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed && user.id) {
+        this.userService.deleteUser(user.id).subscribe({
+          next: () => {
+            this.snackBar.open('User deleted successfully', 'Close', { duration: 3000 });
+            this.loadUsers();
+          },
+          error: (err) => {
+            console.error('Failed to delete user:', err);
+            this.snackBar.open('Failed to delete user', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 }

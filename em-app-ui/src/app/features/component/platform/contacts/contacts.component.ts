@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContactService } from '../../../service/platform/contact.service';
 import { Contact } from '../../../models/api.platform.model';
 import { SearchResult } from '../../../models/api.shared.model';
+import { ContactDialogComponent } from './contact-dialog/contact-dialog.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-contacts',
@@ -14,7 +18,11 @@ export class ContactsComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  constructor(private contactService: ContactService) {}
+  constructor(
+    private contactService: ContactService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.loadContacts();
@@ -37,11 +45,74 @@ export class ContactsComponent implements OnInit {
     });
   }
   
+  createContact(): void {
+    const dialogRef = this.dialog.open(ContactDialogComponent, {
+      width: '600px',
+      data: { mode: 'create' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.contactService.createContact(result).subscribe({
+          next: () => {
+            this.snackBar.open('Contact created successfully', 'Close', { duration: 3000 });
+            this.loadContacts();
+          },
+          error: (err) => {
+            console.error('Failed to create contact:', err);
+            this.snackBar.open('Failed to create contact', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
+  }
+  
   editContact(contact: Contact): void {
-    console.log('Edit contact:', contact);
+    const dialogRef = this.dialog.open(ContactDialogComponent, {
+      width: '600px',
+      data: { contact, mode: 'edit' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.id) {
+        this.contactService.updateContact(result.id, result).subscribe({
+          next: () => {
+            this.snackBar.open('Contact updated successfully', 'Close', { duration: 3000 });
+            this.loadContacts();
+          },
+          error: (err) => {
+            console.error('Failed to update contact:', err);
+            this.snackBar.open('Failed to update contact', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   deleteContact(contact: Contact): void {
-    console.log('Delete contact:', contact);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Contact',
+        message: `Are you sure you want to delete contact "${contact.firstName} ${contact.lastName}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed && contact.id) {
+        this.contactService.deleteContact(contact.id).subscribe({
+          next: () => {
+            this.snackBar.open('Contact deleted successfully', 'Close', { duration: 3000 });
+            this.loadContacts();
+          },
+          error: (err) => {
+            console.error('Failed to delete contact:', err);
+            this.snackBar.open('Failed to delete contact', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 }

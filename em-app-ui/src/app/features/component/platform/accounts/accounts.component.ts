@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AccountService } from '../../../service/platform/account.service';
 import { Account } from '../../../models/api.platform.model';
 import { SearchResult } from '../../../models/api.shared.model';
+import { AccountDialogComponent } from './account-dialog/account-dialog.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-accounts',
@@ -15,7 +19,11 @@ export class AccountsComponent implements OnInit {
   message = "";
   error: string | null = null;
 
-  constructor(private accountService: AccountService) {}
+  constructor(
+    private accountService: AccountService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.loadAccounts();
@@ -42,12 +50,75 @@ export class AccountsComponent implements OnInit {
     });
   }
 
+  createAccount(): void {
+    const dialogRef = this.dialog.open(AccountDialogComponent, {
+      width: '600px',
+      data: { mode: 'create' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.accountService.createAccount(result).subscribe({
+          next: () => {
+            this.snackBar.open('Account created successfully', 'Close', { duration: 3000 });
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error('Failed to create account:', err);
+            this.snackBar.open('Failed to create account', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
+  }
+
   editAccount(account: Account): void {
-    console.log('Edit account:', account);
+    const dialogRef = this.dialog.open(AccountDialogComponent, {
+      width: '600px',
+      data: { account, mode: 'edit' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && result.id) {
+        this.accountService.updateAccount(result.id, result).subscribe({
+          next: () => {
+            this.snackBar.open('Account updated successfully', 'Close', { duration: 3000 });
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error('Failed to update account:', err);
+            this.snackBar.open('Failed to update account', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
 
   deleteAccount(account: Account): void {
-    console.log('Delete account:', account);
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete Account',
+        message: `Are you sure you want to delete account "${account.name}"? This action cannot be undone.`,
+        confirmText: 'Delete',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed && account.id) {
+        this.accountService.deleteAccount(account.id).subscribe({
+          next: () => {
+            this.snackBar.open('Account deleted successfully', 'Close', { duration: 3000 });
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error('Failed to delete account:', err);
+            this.snackBar.open('Failed to delete account', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
   }
   
 }

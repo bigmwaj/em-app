@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="accountForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Account Name</mat-label>
+      <input matInput formControlName="name" required>
+      <mat-error *ngIf="accountForm.get('name')?.hasError('required')">
+        Account name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Account Type</mat-label>
+      <mat-select formControlName="type" required>
+        <mat-option value="BUSINESS">Business</mat-option>
+        <mat-option value="PERSONAL">Personal</mat-option>
+        <mat-option value="GOVERNMENT">Government</mat-option>
+        <mat-option value="NON_PROFIT">Non-Profit</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status" required>
+        <mat-option value="ACTIVE">Active</mat-option>
+        <mat-option value="INACTIVE">Inactive</mat-option>
+        <mat-option value="PENDING">Pending</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="!accountForm.valid">
+    {{ mode === 'create' ? 'Create' : 'Save' }}
+  </button>
+</mat-dialog-actions>

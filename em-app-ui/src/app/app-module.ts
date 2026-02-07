@@ -7,14 +7,20 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -30,6 +36,12 @@ import { AccountsComponent } from './features/component/platform/accounts/accoun
 import { ContactsComponent } from './features/component/platform/contacts/contacts.component';
 import { UsersComponent } from './features/component/platform/users/users.component';
 
+// Dialog Components
+import { UserDialogComponent } from './features/component/platform/users/user-dialog/user-dialog.component';
+import { AccountDialogComponent } from './features/component/platform/accounts/account-dialog/account-dialog.component';
+import { ContactDialogComponent } from './features/component/platform/contacts/contact-dialog/contact-dialog.component';
+import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
+
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
@@ -43,12 +55,17 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     DashboardComponent,
     UsersComponent,
     AccountsComponent,
-    ContactsComponent
+    ContactsComponent,
+    UserDialogComponent,
+    AccountDialogComponent,
+    ContactDialogComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
     //BrowserAnimationsModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     // Material Modules
     MatToolbarModule,
     MatButtonModule,
@@ -60,7 +77,12 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatProgressSpinnerModule,
     MatChipsModule,
     MatDividerModule,
-    MatTableModule
+    MatTableModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSnackBarModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
