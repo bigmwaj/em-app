@@ -122,11 +122,15 @@ src/app/
 │   ├── oauth-callback/           # OAuth callback handler
 │   ├── dashboard/                # Main dashboard
 │   ├── users/                    # User management
+│   │   └── user-dialog/          # Create/Edit user dialog
 │   ├── accounts/                 # Account management
+│   │   └── account-dialog/       # Create/Edit account dialog
 │   └── contacts/                 # Contact management
+│       └── contact-dialog/       # Create/Edit contact dialog
 └── shared/                        # Shared components
     └── components/
-        └── layout/               # Main layout (toolbar + sidenav)
+        ├── layout/               # Main layout (toolbar + sidenav)
+        └── confirm-dialog/       # Reusable confirmation dialog
 ```
 
 ### Key Components
@@ -136,6 +140,15 @@ src/app/
 - **OAuth login** - Redirects to backend OAuth endpoints
 - **Token management** - Stores/retrieves JWT from localStorage
 - **User state** - Observable currentUser for reactive UI updates
+
+#### CRUD Dialog Components
+- **UserDialogComponent** - Create and edit users with form validation
+- **AccountDialogComponent** - Create and edit accounts with type selection
+- **ContactDialogComponent** - Create and edit contacts with company info
+- **ConfirmDialogComponent** - Reusable confirmation dialog for delete operations
+- Uses Angular Material Dialog with reactive forms
+- Real-time form validation and error messages
+- Success/error notifications using MatSnackBar
 
 #### HTTP Interceptors
 1. **JwtInterceptor**: Adds `Authorization: Bearer <token>` to all outgoing requests
@@ -228,6 +241,46 @@ Four providers configured in `application.yml`:
 8. Service calls DAO → Queries database
 9. Response returned with user data
 10. Component receives data → Updates UI
+```
+
+### CRUD Operations Flow
+
+#### Create Entity
+```
+1. User clicks "Add User/Account/Contact" button
+2. Component opens MatDialog with create form
+3. User fills form → Form validates in real-time
+4. User clicks "Create" → Dialog closes with form data
+5. Component calls Service.create(entity)
+6. HttpClient sends POST request with JWT
+7. Backend validates and saves to database
+8. Success: Show notification, refresh list
+9. Error: Show error notification
+```
+
+#### Update Entity
+```
+1. User clicks "Edit" button on entity card
+2. Component opens MatDialog pre-filled with entity data
+3. User modifies form → Form validates changes
+4. User clicks "Save" → Dialog closes with updated data
+5. Component calls Service.update(id, entity)
+6. HttpClient sends PUT request with JWT
+7. Backend validates and updates database
+8. Success: Show notification, refresh list
+9. Error: Show error notification
+```
+
+#### Delete Entity
+```
+1. User clicks "Delete" button on entity card
+2. Component opens ConfirmDialog with warning
+3. User confirms deletion
+4. Component calls Service.delete(id)
+5. HttpClient sends DELETE request with JWT
+6. Backend removes entity from database
+7. Success: Show notification, refresh list
+8. Error: Show error notification
 ```
 
 ## Security Features

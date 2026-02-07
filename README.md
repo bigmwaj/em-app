@@ -53,13 +53,18 @@ Frontend will be available at `http://localhost:4200`
 - Spring Boot 4.0.1
 - OAuth2 authentication (Google, GitHub, Facebook, TikTok)
 - JWT token generation and validation
-- REST API for Users, Accounts, and Contacts
+- REST API for Users, Accounts, and Contacts with full CRUD operations
 - MySQL database integration
 - Swagger UI documentation
 
 ### Frontend
 - Angular 21 with TypeScript strict mode
 - Angular Material Design components
+- **Full CRUD functionality** for Users, Accounts, and Contacts
+  - Create entities with form validation
+  - Edit entities with pre-filled forms
+  - Delete entities with confirmation dialogs
+  - Real-time notifications for all operations
 - JWT authentication with HTTP interceptors
 - Route guards for protected pages
 - Responsive layout (mobile + desktop)
