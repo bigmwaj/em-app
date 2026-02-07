@@ -1,0 +1,66 @@
+<div class="account-form-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon>{{ isEditMode ? 'edit' : 'business_center' }}</mat-icon>
+    {{ isEditMode ? 'Edit Account' : 'Create New Account' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="accountForm" class="account-form">
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Account Name</mat-label>
+        <input matInput formControlName="name" placeholder="Enter account name" required>
+        <mat-icon matPrefix>business</mat-icon>
+        <mat-error *ngIf="accountForm.get('name')?.hasError('required')">
+          Account name is required
+        </mat-error>
+        <mat-error *ngIf="accountForm.get('name')?.hasError('minlength')">
+          Account name must be at least 3 characters
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Account Type</mat-label>
+        <mat-select formControlName="type" required>
+          <mat-option value="BUSINESS">Business</mat-option>
+          <mat-option value="RESIDENTIAL">Residential</mat-option>
+          <mat-option value="COMMERCIAL">Commercial</mat-option>
+          <mat-option value="GOVERNMENT">Government</mat-option>
+        </mat-select>
+        <mat-icon matPrefix>category</mat-icon>
+        <mat-error *ngIf="accountForm.get('type')?.hasError('required')">
+          Account type is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status" required>
+          <mat-option value="ACTIVE">Active</mat-option>
+          <mat-option value="INACTIVE">Inactive</mat-option>
+          <mat-option value="PENDING">Pending</mat-option>
+          <mat-option value="SUSPENDED">Suspended</mat-option>
+        </mat-select>
+        <mat-icon matPrefix>toggle_on</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" 
+                  placeholder="Enter account description (optional)"
+                  rows="4"></textarea>
+        <mat-icon matPrefix>description</mat-icon>
+      </mat-form-field>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()" 
+            [disabled]="!accountForm.valid" cdkFocusInitial>
+      <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Save Changes' : 'Create Account' }}
+    </button>
+  </mat-dialog-actions>
+</div>

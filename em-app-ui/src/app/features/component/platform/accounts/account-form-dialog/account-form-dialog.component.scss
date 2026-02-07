@@ -1,0 +1,44 @@
+.account-form-dialog {
+  min-width: 500px;
+  max-width: 600px;
+
+  h2[mat-dialog-title] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #3f51b5;
+    
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  mat-dialog-content {
+    padding: 20px 24px;
+  }
+
+  .account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .full-width {
+      width: 100%;
+    }
+
+    mat-form-field {
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+  }
+
+  mat-dialog-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+  }
+}

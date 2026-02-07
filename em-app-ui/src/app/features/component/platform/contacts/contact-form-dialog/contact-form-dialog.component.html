@@ -1,0 +1,66 @@
+<div class="contact-form-dialog">
+  <h2 mat-dialog-title>
+    <mat-icon>{{ isEditMode ? 'edit' : 'person_add' }}</mat-icon>
+    {{ isEditMode ? 'Edit Contact' : 'Create New Contact' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="contactForm" class="contact-form">
+      
+      <div class="two-column">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" placeholder="Enter first name" required>
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="contactForm.get('firstName')?.hasError('required')">
+            First name is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" placeholder="Enter last name" required>
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="contactForm.get('lastName')?.hasError('required')">
+            Last name is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" 
+               placeholder="contact@example.com" required>
+        <mat-icon matPrefix>email</mat-icon>
+        <mat-error *ngIf="contactForm.get('email')?.hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="contactForm.get('email')?.hasError('email')">
+          Please enter a valid email address
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" placeholder="(123) 456-7890">
+        <mat-icon matPrefix>phone</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Company</mat-label>
+        <input matInput formControlName="company" placeholder="Enter company name">
+        <mat-icon matPrefix>business</mat-icon>
+      </mat-form-field>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSave()" 
+            [disabled]="!contactForm.valid" cdkFocusInitial>
+      <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Save Changes' : 'Create Contact' }}
+    </button>
+  </mat-dialog-actions>
+</div>

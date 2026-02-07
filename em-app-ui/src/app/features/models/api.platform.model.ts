@@ -5,6 +5,7 @@ export interface Account extends BaseHistDto {
   name: string;
   type: string;
   status: string;
+  description?: string;
   contacts: AccountContact[];
 }
 

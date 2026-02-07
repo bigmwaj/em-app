@@ -1,0 +1,20 @@
+<div class="delete-dialog">
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+  <mat-dialog-content>
+    <div class="warning-icon">
+      <mat-icon color="warn">warning</mat-icon>
+    </div>
+    <p>{{ data.message }}</p>
+    <p *ngIf="data.itemName" class="item-name">
+      <strong>{{ data.itemName }}</strong>
+    </p>
+    <p class="warning-text">This action cannot be undone.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="warn" (click)="onConfirm()" cdkFocusInitial>
+      <mat-icon>delete</mat-icon>
+      Delete
+    </button>
+  </mat-dialog-actions>
+</div>

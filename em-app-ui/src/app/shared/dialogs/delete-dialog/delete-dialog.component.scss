@@ -1,0 +1,39 @@
+.delete-dialog {
+  min-width: 400px;
+
+  .warning-icon {
+    text-align: center;
+    margin: 20px 0;
+
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+    }
+  }
+
+  mat-dialog-content {
+    text-align: center;
+    padding: 20px;
+
+    p {
+      margin: 10px 0;
+    }
+
+    .item-name {
+      font-size: 1.1em;
+      color: #333;
+      margin: 15px 0;
+    }
+
+    .warning-text {
+      color: #f44336;
+      font-weight: 500;
+      margin-top: 20px;
+    }
+  }
+
+  mat-dialog-actions {
+    padding: 16px 24px;
+  }
+}

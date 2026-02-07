@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../../service/platform/account.service';
 import { Account } from '../../../models/api.platform.model';
 import { SearchResult } from '../../../models/api.shared.model';
+import { DeleteDialogComponent } from '../../../../shared/dialogs/delete-dialog/delete-dialog.component';
+import { AccountFormDialogComponent } from './account-form-dialog/account-form-dialog.component';
 
 @Component({
   selector: 'app-accounts',
@@ -15,7 +18,10 @@ export class AccountsComponent implements OnInit {
   message = "";
   error: string | null = null;
 
-  constructor(private accountService: AccountService) {}
+  constructor(
+    private accountService: AccountService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.loadAccounts();
@@ -42,12 +48,71 @@ export class AccountsComponent implements OnInit {
     });
   }
 
+  createAccount(): void {
+    const dialogRef = this.dialog.open(AccountFormDialogComponent, {
+      width: '600px',
+      data: { mode: 'create' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.accountService.createAccount(result).subscribe({
+          next: () => {
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error('Failed to create account:', err);
+            this.error = 'Failed to create account. Please try again.';
+          }
+        });
+      }
+    });
+  }
+
   editAccount(account: Account): void {
-    console.log('Edit account:', account);
+    const dialogRef = this.dialog.open(AccountFormDialogComponent, {
+      width: '600px',
+      data: { account, mode: 'edit' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && account.id) {
+        this.accountService.updateAccount(account.id, result).subscribe({
+          next: () => {
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error('Failed to update account:', err);
+            this.error = 'Failed to update account. Please try again.';
+          }
+        });
+      }
+    });
   }
 
   deleteAccount(account: Account): void {
-    console.log('Delete account:', account);
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      width: '450px',
+      data: {
+        title: 'Delete Account',
+        message: 'Are you sure you want to delete this account?',
+        itemName: account.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed && account.id) {
+        this.accountService.deleteAccount(account.id).subscribe({
+          next: () => {
+            this.loadAccounts();
+          },
+          error: (err) => {
+            console.error('Failed to delete account:', err);
+            this.error = 'Failed to delete account. Please try again.';
+          }
+        });
+      }
+    });
   }
   
 }
