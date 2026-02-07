@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
-import { User } from '../../core/models/user.model';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../model/user.model';
 
 @Component({
   selector: 'app-dashboard',

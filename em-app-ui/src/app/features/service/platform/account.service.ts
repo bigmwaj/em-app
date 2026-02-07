@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Account } from '../models/api.model';
+import { environment } from '../../../../environments/environment';
+import { Account } from '../../models/api.platform.model';
+import { SearchResult } from '../../models/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class AccountService {
   /**
    * Gets all accounts
    */
-  getAccounts(): Observable<Account[]> {
-    return this.http.get<Account[]>(this.apiUrl);
+  getAccounts(): Observable<SearchResult<Account>> {
+    return this.http.get<SearchResult<Account>>(this.apiUrl);
   }
 
   /**

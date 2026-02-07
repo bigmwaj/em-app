@@ -24,7 +24,7 @@
   </div>
 
   <div *ngIf="!loading && !error" class="users-grid">
-    <mat-card *ngFor="let user of users" class="user-card">
+    <mat-card *ngFor="let user of searchResult.data" class="user-card">
       <mat-card-header>
         <div mat-card-avatar class="user-avatar">
           <mat-icon *ngIf="!user.picture">account_circle</mat-icon>
@@ -52,7 +52,7 @@
     </mat-card>
   </div>
 
-  <div *ngIf="!loading && !error && users.length === 0" class="empty-section">
+  <div *ngIf="!loading && !error && searchResult.data.length === 0" class="empty-section">
     <mat-card>
       <mat-icon class="empty-icon">people_outline</mat-icon>
       <h3>No Users Found</h3>

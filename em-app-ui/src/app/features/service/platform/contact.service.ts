@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { Contact } from '../models/api.model';
+import { environment } from '../../../../environments/environment';
+import { Contact } from '../../models/api.platform.model';
+import { SearchResult } from '../../models/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class ContactService {
   /**
    * Gets all contacts
    */
-  getContacts(): Observable<Contact[]> {
-    return this.http.get<Contact[]>(this.apiUrl);
+  getContacts(): Observable<SearchResult<Contact>> {
+    return this.http.get<SearchResult<Contact>>(this.apiUrl);
   }
 
   /**

@@ -1,4 +1,3 @@
-// User model interfaces
 export interface User {
   id?: number;
   email: string;

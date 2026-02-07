@@ -121,4 +121,16 @@ public class UserService extends AbstractService implements UserDetailsService {
         var authorities = Collections.singleton(new AuthenticatedUserGrantedAuthority("USER"));
         return new AuthenticatedUser(GlobalMapper.INSTANCE.toDto(user), enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
+
+    public void validateAccountHolder(String email) {
+        var optionalUserEntity = dao.findByEmail(email);
+        if (optionalUserEntity.isEmpty()) {
+            throw new NoSuchElementException("No user found with email: " + email);
+        }
+
+        var userEntity = optionalUserEntity.get();
+        if (!UserStatusLvo.ACTIVE.equals(userEntity.getStatus())) {
+            throw new IllegalStateException("User account is not active for email: " + email);
+        }
+    }
 }

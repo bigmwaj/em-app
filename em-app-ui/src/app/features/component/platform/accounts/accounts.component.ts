@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from '../../core/services/account.service';
-import { Account } from '../../core/models/api.model';
+import { AccountService } from '../../../service/platform/account.service';
+import { Account } from '../../../models/api.platform.model';
+import { SearchResult } from '../../../models/api.shared.model';
 
 @Component({
   selector: 'app-accounts',
@@ -9,8 +10,9 @@ import { Account } from '../../core/models/api.model';
   standalone: false
 })
 export class AccountsComponent implements OnInit {
-  accounts: Account[] = [];
+  searchResult: SearchResult<Account> = {} as SearchResult<Account>;
   loading = true;
+  message = "";
   error: string | null = null;
 
   constructor(private accountService: AccountService) {}
@@ -24,26 +26,20 @@ export class AccountsComponent implements OnInit {
     this.error = null;
 
     this.accountService.getAccounts().subscribe({
-      next: (accounts) => {
-        this.accounts = accounts;
+      next: (searchResult) => {
+        this.searchResult = searchResult;
         this.loading = false;
       },
       error: (err) => {
         console.error('Failed to load accounts:', err);
-        this.error = 'Failed to load accounts. Using sample data.';
+        this.error = 'Failed to load accounts. Please try again.';
         this.loading = false;
-        // Use mock data for demonstration
-        this.accounts = this.getMockAccounts();
+      }, 
+      complete: () => {
+        this.loading = false;
+        console.log('Finished loading accounts');
       }
     });
-  }
-
-  private getMockAccounts(): Account[] {
-    return [
-      { id: 1, name: 'Acme Corporation', type: 'Business', status: 'Active', createdAt: new Date() },
-      { id: 2, name: 'Tech Solutions Inc', type: 'Enterprise', status: 'Active', createdAt: new Date() },
-      { id: 3, name: 'Global Services LLC', type: 'Business', status: 'Pending', createdAt: new Date() }
-    ];
   }
 
   editAccount(account: Account): void {
@@ -53,4 +49,5 @@ export class AccountsComponent implements OnInit {
   deleteAccount(account: Account): void {
     console.log('Delete account:', account);
   }
+  
 }

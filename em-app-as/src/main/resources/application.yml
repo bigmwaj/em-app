@@ -26,6 +26,7 @@ spring:
               - email
               - profile
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            enabled: true
           github: #https://github.com/settings/developers
             client-id: ${GITHUB_CLIENT_ID:Ov23liBNoJCrAK4844Xz}
             client-secret: ${GITHUB_CLIENT_SECRET:10ea9bcb13aa4d490278b8fe10f20c0c4ceb4e31}
@@ -33,6 +34,7 @@ spring:
               - user:email
               - read:user
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            enabled: true
           facebook:
             client-id: ${FACEBOOK_CLIENT_ID}
             client-secret: ${FACEBOOK_CLIENT_SECRET}
@@ -40,11 +42,13 @@ spring:
               - email
               - public_profile
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            enabled: true
           tiktok:
             client-id: ${TIKTOK_CLIENT_ID}
             client-secret: ${TIKTOK_CLIENT_SECRET}
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            enabled: true
             scope:
               - user.info.basic
         provider:
@@ -63,7 +67,7 @@ app:
     secret: ${JWT_SECRET:ABCD1234!@#$abcd?^kkkkkkkkkkuuuuuuuuuujghgfsssrfgtyhb}
     expiration: ${JWT_EXPIRATION:86400000}
   auth-success:
-    redirect-uri: ${AUTH_SUCCESS_REDIRECT_URI:http://localhost:4200/auth/callback}
+    redirect-uri: ${AUTH_SUCCESS_REDIRECT_URI:http://localhost:4200/oauth/callback}
 
 #https://springdoc.org/
 springdoc:

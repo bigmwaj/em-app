@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -16,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Map;
 
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
@@ -45,28 +49,37 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 throw new RuntimeException("Unhandled authorization type");
             }
         } catch (IllegalArgumentException e) {
-            logger.error("Unable to get JWT Token");
+            logger.error(e);
+            logger.error("Unable to get JWT Token", e);
         } catch (ExpiredJwtException e) {
-            logger.error("JWT Token has expired");
-        } catch (Exception ex) {
-            logger.error("Could not set user authentication in security context", ex);
+            logger.error("JWT Token has expired", e);
+        } catch (Exception e) {
+            logger.error("Could not set user authentication in security context", e);
         }
     }
 
     private void processBearerAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        logger.debug("Processing Bearer token authentication");
+
         var authParam = request.getHeader("Authorization");
         var jwt = authParam.substring(BEARER_PREFIX.length());
 
         if (tokenProvider.validateToken(jwt)) {
             var username = tokenProvider.getUsernameFromJWT(jwt);
-            var authentication = new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
+            var authorizedClientRegistrationId = tokenProvider.getAuthorizedClientRegistrationIdFromJWT(jwt);
+            var oAuth2User = new DefaultOAuth2User(Collections.emptyList(), Map.of("username", username), "username");
+            var authentication = new OAuth2AuthenticationToken(oAuth2User, Collections.emptyList(), authorizedClientRegistrationId);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        }else{
+            logger.warn("Invalid JWT token:" + jwt);
         }
         filterChain.doFilter(request, response);
     }
 
     private void processBasicAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        logger.debug("Processing Basic authentication");
+
         var authParam = request.getHeader("Authorization");
         var encodedParams = authParam.substring(BASIC_PREFIX.length());
         var decodedParams = new String(Base64.getDecoder().decode(encodedParams)).split(":");

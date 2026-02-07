@@ -1,12 +1,12 @@
 package ca.bigmwaj.emapp.as.api.auth.security;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +30,7 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(Authentication authentication) {
+        var auth = (OAuth2AuthenticationToken)authentication;
         var userPrincipal = (OAuth2User) authentication.getPrincipal();
         var now = new Date();
         var expiryDate = new Date(now.getTime() + jwtExpirationMs);
@@ -38,12 +39,11 @@ public class JwtTokenProvider {
         String email = userPrincipal.getAttribute("email");
         String name = userPrincipal.getAttribute("name");
 
-        logger.debug("On génère un token JWT pour l'utilisateur : {}", email != null ? email : userPrincipal.getName());
-
         return Jwts.builder()
                 .subject(email != null ? email : userPrincipal.getName())
                 .claim("name", name)
                 .claim("email", email)
+                .claim("authorizedClientRegistrationId", auth.getAuthorizedClientRegistrationId())
                 .issuedAt(now)
                 .expiration(expiryDate)
                 .signWith(getSigningKey())
@@ -51,13 +51,19 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromJWT(String token) {
-        Claims claims = Jwts.parser()
+        return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
-                .getPayload();
+                .getPayload().getSubject();
+    }
 
-        return claims.getSubject();
+    public String getAuthorizedClientRegistrationIdFromJWT(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload().get("authorizedClientRegistrationId").toString();
     }
 
     public boolean validateToken(String authToken) {

@@ -20,7 +20,7 @@
   </div>
 
   <div *ngIf="!loading" class="contacts-grid">
-    <mat-card *ngFor="let contact of contacts" class="contact-card">
+    <mat-card *ngFor="let contact of searchResult.data" class="contact-card">
       <mat-card-header>
         <mat-icon mat-card-avatar>person</mat-icon>
         <mat-card-title>{{ contact.firstName }} {{ contact.lastName }}</mat-card-title>

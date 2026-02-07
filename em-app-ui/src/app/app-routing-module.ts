@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 
 // Components
-import { LayoutComponent } from './shared/components/layout/layout.component';
-import { LoginComponent } from './features/login/login.component';
-import { OauthCallbackComponent } from './features/oauth-callback/oauth-callback.component';
-import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { UsersComponent } from './features/users/users.component';
-import { AccountsComponent } from './features/accounts/accounts.component';
-import { ContactsComponent } from './features/contacts/contacts.component';
+import { LayoutComponent } from './core/component/layout/layout.component';
+import { DashboardComponent } from './core/component/dashboard/dashboard.component';
+import { UsersComponent } from './features/component/platform/users/users.component';
+import { AccountsComponent } from './features/component/platform/accounts/accounts.component';
+import { ContactsComponent } from './features/component/platform/contacts/contacts.component';
+import { LoginComponent } from './core/component/login/login.component';
+import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
 
 const routes: Routes = [
   // Public routes

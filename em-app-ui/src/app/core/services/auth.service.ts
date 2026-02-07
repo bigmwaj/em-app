@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { User, AuthResponse } from '../models/user.model';
+import { User } from '../model/user.model';
+import { SessionStorageService } from './session-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,9 @@ import { User, AuthResponse } from '../models/user.model';
 export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
-  private readonly TOKEN_KEY = 'auth_token';
 
   constructor(
+    private sessionStorage: SessionStorageService,
     private http: HttpClient,
     private router: Router
   ) {
@@ -53,7 +54,12 @@ export class AuthService {
   /**
    * Loads current user information from the backend
    */
-  loadUserInfo(): Observable<User> {
+  private loadUserInfo(): Observable<User> {
+    var token = this.getToken();
+    if(!token){
+      throw Error("Le token n'existe pas!");
+    }
+
     return this.http.get<User>(`${environment.apiUrl}/auth/user`).pipe(
       tap(user => this.currentUserSubject.next(user)),
       catchError(error => {
@@ -83,21 +89,21 @@ export class AuthService {
   /**
    * Gets the stored JWT token
    */
-  getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+  private getToken(): string | null {
+    return this.sessionStorage.token;
   }
 
   /**
    * Stores the JWT token
    */
   private setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    this.sessionStorage.token = token;
   }
 
   /**
    * Removes the JWT token
    */
   private removeToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    this.sessionStorage.removeToken();
   }
 }

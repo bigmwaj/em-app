@@ -23,6 +23,9 @@ public class SecurityConfig {
     private AuthenticationFilter authenticationFilter;
 
     @Autowired
+    private PostOAuth2Authentication postOAuth2Authentication;
+
+    @Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
@@ -43,7 +46,10 @@ public class SecurityConfig {
                     .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-                    .successHandler(oAuth2AuthenticationSuccessHandler)
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(postOAuth2Authentication)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
                 )
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
