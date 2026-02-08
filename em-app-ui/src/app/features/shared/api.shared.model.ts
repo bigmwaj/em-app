@@ -1,3 +1,5 @@
+import { HttpParams } from "@angular/common/http";
+
 export enum EditActionLvo {
   NONE = 'NONE',
   CREATE = 'CREATE',
@@ -72,3 +74,47 @@ export interface SearchResult<T> {
   data: T[];
   searchInfos: SearchInfos
 }
+
+export function createDefaultFilterDto(): DefaultFilterDto {
+  return {
+    filterByItems: [],
+    sortByItems: [],
+    pageSize: 20,
+    pageIndex: 0,
+    calculateStatTotal: true
+  };
+}
+
+export function mapDefaultFilterDtoToHttpParams(filter: DefaultFilterDto): HttpParams {
+
+  let params = new HttpParams();
+
+  // Pagination parameters
+  if (filter.pageSize !== undefined && filter.pageSize !== null) {
+    params = params.set('pageSize', filter.pageSize.toString());
+  }
+  if (filter.pageIndex !== undefined && filter.pageIndex !== null) {
+    params = params.set('pageIndex', filter.pageIndex.toString());
+  }
+  if (filter.calculateStatTotal !== undefined) {
+    params = params.set('calculateStatTotal', filter.calculateStatTotal.toString());
+  } else {
+    params = params.set('calculateStatTotal', 'true');
+  }           
+
+  // Filters
+  if (filter.filterByItems && filter.filterByItems.length > 0) {
+    filter.filterByItems.forEach(filterBy => {
+      params = params.append('filters', JSON.stringify(filterBy));
+    });
+  }
+
+  // Sorting
+  if (filter.sortByItems && filter.sortByItems.length > 0) {
+    filter.sortByItems.forEach(sortBy => {
+      params = params.append('sortBy', JSON.stringify(sortBy));
+    });
+  }
+
+  return params;
+} 

@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { AccountDto, AccountFilterDto } from '../api.platform.model';
+import { AccountDto, AccountFilterDto, mapAccountFilterDtoToHttpParams } from '../api.platform.model';
 import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
@@ -17,7 +17,13 @@ export class AccountService {
    * Gets all accounts
    */
   getAccounts(filter?: AccountFilterDto): Observable<SearchResult<AccountDto>> {
-    return this.http.get<SearchResult<AccountDto>>(this.apiUrl);
+    let params = new HttpParams();
+
+    if (filter) {
+      params = mapAccountFilterDtoToHttpParams(filter);
+    }
+
+    return this.http.get<SearchResult<AccountDto>>(this.apiUrl, { params });
   }
 
   /**

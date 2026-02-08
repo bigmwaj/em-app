@@ -1,4 +1,5 @@
-import { BaseHistDto, AbstractFilterDto } from "../shared/api.shared.model";
+import { HttpParams } from "@angular/common/http";
+import { BaseHistDto, AbstractFilterDto, createDefaultFilterDto, mapDefaultFilterDtoToHttpParams } from "../shared/api.shared.model";
 
 // Enums from ca.bigmwaj.emapp.dm.lvo.platform
 export enum AccountContactRoleLvo {
@@ -108,3 +109,21 @@ export interface AccountFilterDto extends AbstractFilterDto {
   includeContactRoles?: boolean;
 }
 
+export function createAccountFilterDto(): AccountFilterDto {
+  return {
+    ...createDefaultFilterDto(),
+    includeMainContact: true,
+    includeContactRoles: false
+  };
+}
+
+export function mapAccountFilterDtoToHttpParams(filter: AccountFilterDto): HttpParams {
+  let params = mapDefaultFilterDtoToHttpParams(filter);
+  if (filter.includeMainContact !== undefined) {
+    params = params.set('includeMainContact', filter.includeMainContact.toString());
+  }
+  if (filter.includeContactRoles !== undefined) {
+    params = params.set('includeContactRoles', filter.includeContactRoles.toString());
+  }
+  return params;
+}
