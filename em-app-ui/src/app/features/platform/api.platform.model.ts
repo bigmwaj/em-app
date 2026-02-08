@@ -1,5 +1,5 @@
 import { HttpParams } from "@angular/common/http";
-import { BaseHistDto, AbstractFilterDto, createDefaultFilterDto, mapDefaultFilterDtoToHttpParams } from "../shared/api.shared.model";
+import { BaseHistDto, AbstractSearchCriteria, createDefaultSearchCriteria, mapDefaultSearchCriteriaToHttpParams } from "../shared/api.shared.model";
 
 // Enums from ca.bigmwaj.emapp.dm.lvo.platform
 export enum AccountContactRoleLvo {
@@ -104,26 +104,26 @@ export interface UserDto extends BaseHistDto {
 }
 
 // Filter DTOs from ca.bigmwaj.emapp.as.dto.platform
-export interface AccountFilterDto extends AbstractFilterDto {
+export interface AccountSearchCriteria extends AbstractSearchCriteria {
   includeMainContact?: boolean;
   includeContactRoles?: boolean;
 }
 
-export function createAccountFilterDto(): AccountFilterDto {
+export function createAccountSearchCriteria(): AccountSearchCriteria {
   return {
-    ...createDefaultFilterDto(),
+    ...createDefaultSearchCriteria(),
     includeMainContact: true,
     includeContactRoles: false
   };
 }
 
-export function mapAccountFilterDtoToHttpParams(filter: AccountFilterDto): HttpParams {
-  let params = mapDefaultFilterDtoToHttpParams(filter);
-  if (filter.includeMainContact !== undefined) {
-    params = params.set('includeMainContact', filter.includeMainContact.toString());
+export function mapAccountSearchCriteriaToHttpParams(searchCriteria: AccountSearchCriteria): HttpParams {
+  let params = mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+  if (searchCriteria.includeMainContact !== undefined) {
+    params = params.set('includeMainContact', searchCriteria.includeMainContact.toString());
   }
-  if (filter.includeContactRoles !== undefined) {
-    params = params.set('includeContactRoles', filter.includeContactRoles.toString());
+  if (searchCriteria.includeContactRoles !== undefined) {
+    params = params.set('includeContactRoles', searchCriteria.includeContactRoles.toString());
   }
   return params;
 }

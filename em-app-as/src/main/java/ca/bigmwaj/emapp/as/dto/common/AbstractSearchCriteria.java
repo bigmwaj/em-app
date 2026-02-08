@@ -10,7 +10,7 @@ import java.util.List;
 
 @SuperBuilder(setterPrefix = "with")
 @Data
-public abstract class AbstractFilterDto {
+public abstract class AbstractSearchCriteria {
 
     public static final Short DEFAULT_QUERY_LIMIT = 1_000;
 

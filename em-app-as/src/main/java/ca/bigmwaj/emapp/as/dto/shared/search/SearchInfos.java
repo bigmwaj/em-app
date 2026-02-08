@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.common.AbstractFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,9 +33,9 @@ public class SearchInfos {
         return pageSize;
     }
 
-    public SearchInfos(AbstractFilterDto filterDto) {
-        setCalculateStatTotal(filterDto.isCalculateStatTotal());
-        setPageSize(filterDto.getPageSize());
-        setPageIndex(filterDto.getPageIndex());
+    public SearchInfos(AbstractSearchCriteria searchCriteria) {
+        setCalculateStatTotal(searchCriteria.isCalculateStatTotal());
+        setPageSize(searchCriteria.getPageSize());
+        setPageIndex(searchCriteria.getPageIndex());
     }
 }

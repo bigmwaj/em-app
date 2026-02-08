@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../service/account.service';
-import { AccountDto, AccountFilterDto, ContactDto, createAccountFilterDto } from '../../api.platform.model';
+import { AccountDto, AccountSearchCriteria, ContactDto, createAccountSearchCriteria } from '../../api.platform.model';
 import { SearchResult } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
@@ -20,7 +20,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
   error: string | null = null;
 
-  searchCriteria: AccountFilterDto = createAccountFilterDto();
+  searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
 
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
 
