@@ -6,14 +6,15 @@ import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
+import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
-import ca.bigmwaj.emapp.as.dto.platform.UserFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import ca.bigmwaj.emapp.as.service.platform.UserService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -67,6 +68,7 @@ public class UserController extends AbstractBaseAPI {
             @ValidFilterByPatterns(
                     supportedFields = {
                             @FilterBySupportedField(name = "status", type = UserStatusLvo.class),
+                            @FilterBySupportedField(name = "holderType", type = HolderTypeLvo.class),
                             @FilterBySupportedField(name = "username", type = String.class),
                             @FilterBySupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
                             @FilterBySupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
@@ -77,6 +79,7 @@ public class UserController extends AbstractBaseAPI {
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>status</b></li>" +
+                    "<li><b>holderType</b></li>" +
                     "<li><b>username</b></li>" +
                     "<li><b>firstName</b></li>" +
                     "<li><b>lastName</b></li>" +
@@ -86,11 +89,12 @@ public class UserController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<FilterBy> filterBIES,
+            List<FilterBy> filterByItems,
 
             @ValidSortByPatterns(
                     supportedFields = {
                             @SortBySupportedField(name = "status"),
+                            @SortBySupportedField(name = "holderType"),
                             @SortBySupportedField(name = "username"),
                             @SortBySupportedField(name = "firstName", rootEntityName = "c"),
                             @SortBySupportedField(name = "lastName", rootEntityName = "c"),
@@ -99,15 +103,15 @@ public class UserController extends AbstractBaseAPI {
                             @SortBySupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
-            List<SortBy> sortBIES
+            List<SortBy> sortByItems
     ) {
 
-        var builder = UserFilterDto.builder()
+        var builder = DefaultFilterDto.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterBIES(filterBIES)
-                .withSortBIES(sortBIES);
+                .withFilterByItems(filterByItems)
+                .withSortByItems(sortByItems);
 
         return ResponseEntity.ok(service.search(builder.build()));
     }

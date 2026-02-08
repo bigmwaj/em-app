@@ -1,0 +1,110 @@
+import { BaseHistDto, AbstractFilterDto } from "../shared/api.shared.model";
+
+// Enums from ca.bigmwaj.emapp.dm.lvo.platform
+export enum AccountContactRoleLvo {
+  PRINCIPAL = 'PRINCIPAL',
+  AGENT = 'AGENT'
+}
+
+export enum AccountStatusLvo {
+  ACTIVE = 'ACTIVE',
+  BLOCKED = 'BLOCKED'
+}
+
+export enum AddressTypeLvo {
+  HOME = 'HOME',
+  WORK = 'WORK'
+}
+
+export enum EmailTypeLvo {
+  PERSONAL = 'PERSONAL',
+  WORK = 'WORK'
+}
+
+export enum HolderTypeLvo {
+  CORPORATE = 'CORPORATE',
+  ACCOUNT = 'ACCOUNT'
+}
+
+export enum PhoneTypeLvo {
+  MOBILE = 'MOBILE',
+  HOME = 'HOME',
+  WORK = 'WORK'
+}
+
+export enum UserStatusLvo {
+  ACTIVE = 'ACTIVE',
+  BLOCKED = 'BLOCKED'
+}
+
+// DTOs from ca.bigmwaj.emapp.as.dto.platform
+export interface AccountDto extends BaseHistDto {
+  id?: number;
+  name: string;
+  description?: string;
+  status: AccountStatusLvo;
+  contactRoles?: AccountContactDto[];
+  mainContact?: ContactDto;
+}
+
+export interface ContactDto extends BaseHistDto {
+  id?: number;
+  firstName: string;
+  lastName: string;
+  birthDate?: Date;
+  holderType: HolderTypeLvo;
+  mainEmail?: ContactEmailDto;
+  emails?: ContactEmailDto[];
+  mainPhone?: ContactPhoneDto;
+  phones?: ContactPhoneDto[];
+  mainAddress?: ContactAddressDto;
+  addresses?: ContactAddressDto[];
+}
+
+export interface AccountContactDto extends BaseHistDto {
+  accountId: number;
+  contact: ContactDto;
+  role: AccountContactRoleLvo;
+}
+
+export interface ContactAddressDto extends BaseHistDto {
+  id?: number;
+  address: string;
+  type: AddressTypeLvo;
+  contactId: number;
+  holderType: HolderTypeLvo;
+}
+
+export interface ContactEmailDto extends BaseHistDto {
+  id?: number;
+  email: string;
+  type: EmailTypeLvo;
+  contactId: number;
+  holderType: HolderTypeLvo;
+}
+
+export interface ContactPhoneDto extends BaseHistDto {
+  id?: number;
+  phone: string;
+  type: PhoneTypeLvo;
+  contactId: number;
+  holderType: HolderTypeLvo;
+}
+
+export interface UserDto extends BaseHistDto {
+  picture: string;
+  provider: string;
+  id?: number;
+  username: string;
+  password?: string;
+  contact?: ContactDto;
+  status: UserStatusLvo;
+  holderType: HolderTypeLvo;
+}
+
+// Filter DTOs from ca.bigmwaj.emapp.as.dto.platform
+export interface AccountFilterDto extends AbstractFilterDto {
+  includeMainContact?: boolean;
+  includeContactRoles?: boolean;
+}
+

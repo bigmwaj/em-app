@@ -19,5 +19,7 @@ public class AccountDto extends BaseHistDto {
 
     private AccountStatusLvo status;
 
-    private List<AccountContactDto> contacts;
+    private List<AccountContactDto> contactRoles;
+
+    private ContactDto mainContact;
 }

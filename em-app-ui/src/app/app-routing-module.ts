@@ -5,9 +5,9 @@ import { AuthGuard } from './core/guards/auth.guard';
 // Components
 import { LayoutComponent } from './core/component/layout/layout.component';
 import { DashboardComponent } from './core/component/dashboard/dashboard.component';
-import { UsersComponent } from './features/component/platform/users/users.component';
-import { AccountsComponent } from './features/component/platform/accounts/accounts.component';
-import { ContactsComponent } from './features/component/platform/contacts/contacts.component';
+import { UserIndexComponent } from './features/platform/component/user/user-index.component';
+import { AccountIndexComponent } from './features/platform/component/account/account-index.component';
+import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
 
@@ -24,9 +24,9 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'users', component: UsersComponent },
-      { path: 'accounts', component: AccountsComponent },
-      { path: 'contacts', component: ContactsComponent }
+      { path: 'users', component: UserIndexComponent },
+      { path: 'accounts', component: AccountIndexComponent },
+      { path: 'contacts', component: ContactIndexComponent }
     ]
   },
   

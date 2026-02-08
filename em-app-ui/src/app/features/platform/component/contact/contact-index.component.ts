@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ContactService } from '../../../service/platform/contact.service';
-import { Contact } from '../../../models/api.platform.model';
-import { SearchResult } from '../../../models/api.shared.model';
+import { ContactService } from '../../service/contact.service';
+import { ContactDto } from '../../api.platform.model';
+import { SearchResult } from '../../../shared/api.shared.model';
 
 @Component({
-  selector: 'app-contacts',
-  templateUrl: './contacts.component.html',
-  styleUrls: ['./contacts.component.scss'],
+  selector: 'app-contact-index',
+  templateUrl: './contact-index.component.html',
+  styleUrls: ['./contact-index.component.scss'],
   standalone: false
 })
-export class ContactsComponent implements OnInit {
-  searchResult: SearchResult<Contact> = {} as SearchResult<Contact>;
+export class ContactIndexComponent implements OnInit {
+  searchResult: SearchResult<ContactDto> = {} as SearchResult<ContactDto>;
   loading = true;
   error: string | null = null;
 
@@ -37,11 +37,11 @@ export class ContactsComponent implements OnInit {
     });
   }
   
-  editContact(contact: Contact): void {
+  editContact(contact: ContactDto): void {
     console.log('Edit contact:', contact);
   }
 
-  deleteContact(contact: Contact): void {
+  deleteContact(contact: ContactDto): void {
     console.log('Delete contact:', contact);
   }
 }

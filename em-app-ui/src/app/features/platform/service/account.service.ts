@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Account } from '../../models/api.platform.model';
-import { SearchResult } from '../../models/api.shared.model';
+import { AccountDto, AccountFilterDto } from '../api.platform.model';
+import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,29 +16,29 @@ export class AccountService {
   /**
    * Gets all accounts
    */
-  getAccounts(): Observable<SearchResult<Account>> {
-    return this.http.get<SearchResult<Account>>(this.apiUrl);
+  getAccounts(filter?: AccountFilterDto): Observable<SearchResult<AccountDto>> {
+    return this.http.get<SearchResult<AccountDto>>(this.apiUrl);
   }
 
   /**
    * Gets a single account by ID
    */
-  getAccount(id: number): Observable<Account> {
-    return this.http.get<Account>(`${this.apiUrl}/${id}`);
+  getAccount(id: number): Observable<AccountDto> {
+    return this.http.get<AccountDto>(`${this.apiUrl}/${id}`);
   }
 
   /**
    * Creates a new account
    */
-  createAccount(account: Account): Observable<Account> {
-    return this.http.post<Account>(this.apiUrl, account);
+  createAccount(account: AccountDto): Observable<AccountDto> {
+    return this.http.post<AccountDto>(this.apiUrl, account);
   }
 
   /**
    * Updates an existing account
    */
-  updateAccount(id: number, account: Account): Observable<Account> {
-    return this.http.put<Account>(`${this.apiUrl}/${id}`, account);
+  updateAccount(id: number, account: AccountDto): Observable<AccountDto> {
+    return this.http.put<AccountDto>(`${this.apiUrl}/${id}`, account);
   }
 
   /**

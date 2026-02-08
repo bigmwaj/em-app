@@ -3,11 +3,11 @@ package ca.bigmwaj.emapp.as.service.platform;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUserGrantedAuthority;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
-import ca.bigmwaj.emapp.as.dto.platform.UserFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
@@ -46,7 +46,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         return new SearchResultDto<>(r);
     }
 
-    public SearchResultDto<UserDto> search(UserFilterDto sc) {
+    public SearchResultDto<UserDto> search(DefaultFilterDto sc) {
         if (sc == null) {
             return searchAll();
         }

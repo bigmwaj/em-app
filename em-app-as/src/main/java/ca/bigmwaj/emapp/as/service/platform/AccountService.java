@@ -5,7 +5,7 @@ import ca.bigmwaj.emapp.as.dao.platform.AccountDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.platform.AccountFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
@@ -38,7 +38,7 @@ public class AccountService extends AbstractService {
         return new SearchResultDto<>(r);
     }
 
-    public SearchResultDto<AccountDto> search(AccountFilterDto sc) {
+    public SearchResultDto<AccountDto> search(DefaultFilterDto sc) {
         if (sc == null) {
             return searchAll();
         }
@@ -84,8 +84,8 @@ public class AccountService extends AbstractService {
     }
 
     private void createAccountContact(AccountEntity entity, AccountDto dto) {
-        if (dto.getContacts() != null) {
-            for (var acDto : dto.getContacts()) {
+        if (dto.getContactRoles() != null) {
+            for (var acDto : dto.getContactRoles()) {
                 acDto.setAccountId(entity.getId());
                 accountContactService.create(acDto);
             }
@@ -100,6 +100,6 @@ public class AccountService extends AbstractService {
     private void addAccountContacts(AccountDto dto){
         var l = accountContactDao.findAllByAccountId(dto.getId())
                 .stream().map(GlobalMapper.INSTANCE::toDto).toList();
-        dto.setContacts(l);
+        dto.setContactRoles(l);
     }
 }

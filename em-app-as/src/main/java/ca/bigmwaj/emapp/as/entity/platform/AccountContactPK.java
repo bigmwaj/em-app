@@ -8,7 +8,7 @@ import java.util.Objects;
 @Data
 public class AccountContactPK implements Serializable {
 
-    private Long accountId;
+    private Long account;
 
     private Long contact;
 
@@ -16,16 +16,16 @@ public class AccountContactPK implements Serializable {
         super();
     }
 
-    public AccountContactPK(Long accountId, Long contact) {
+    public AccountContactPK(Long account, Long contact) {
         super();
         this.contact = contact;
-        this.accountId = accountId;
+        this.account = account;
     }
 
     public AccountContactPK(AccountContactEntity entity) {
         super();
         this.contact = entity.getContact().getId();
-        this.accountId = entity.getAccountId();
+        this.account = entity.getAccount().getId();
     }
 
     @Override
@@ -33,11 +33,11 @@ public class AccountContactPK implements Serializable {
         if (!(obj instanceof AccountContactPK pk)) {
             return false;
         }
-        return Objects.equals(contact, pk.contact) && Objects.equals(accountId, pk.accountId);
+        return Objects.equals(contact, pk.contact) && Objects.equals(account, pk.account);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contact, accountId);
+        return Objects.hash(contact, account);
     }
 }

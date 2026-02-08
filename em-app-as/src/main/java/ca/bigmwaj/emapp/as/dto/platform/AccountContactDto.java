@@ -14,4 +14,5 @@ public class AccountContactDto extends BaseHistDto {
     private ContactDto contact;
 
     private AccountContactRoleLvo role;
+
 }

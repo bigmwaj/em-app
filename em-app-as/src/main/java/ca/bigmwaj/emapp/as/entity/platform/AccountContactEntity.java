@@ -14,8 +14,9 @@ import lombok.EqualsAndHashCode;
 public class AccountContactEntity extends AbstractBaseEntity {
 
     @Id
-    @Column(name = "ACCOUNT_ID", nullable = false)
-    private Long accountId;
+    @ManyToOne
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+    private AccountEntity account;
 
     @Id
     @ManyToOne

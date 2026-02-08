@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,10 +22,6 @@ public class UserEntity extends AbstractBaseEntity {
     @Column(name = "USER_NAME", nullable = false)
     private String username;
 
-    // SECURITY WARNING: Passwords must be hashed using BCryptPasswordEncoder before storage
-    // TODO: Implement password hashing in the service layer before persisting
-    //       Example: passwordEncoder.encode(password)
-    //       Never store plain text passwords
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
@@ -35,4 +32,8 @@ public class UserEntity extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false)
     private UserStatusLvo status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "HOLDER_TYPE", nullable = false)
+    private HolderTypeLvo holderType;
 }

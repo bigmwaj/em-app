@@ -3,10 +3,13 @@
     <mat-card>
       <mat-card-header>
         <div mat-card-avatar class="user-avatar">
-          <mat-icon *ngIf="!user?.picture">account_circle</mat-icon>
-          <img *ngIf="user?.picture" [src]="user?.picture" alt="User avatar">
+          @if (user?.picture) {
+            <img [src]="user?.picture" alt="User avatar">
+          }@else {
+          <mat-icon >account_circle</mat-icon>
+          }
         </div>
-        <mat-card-title>Welcome back, {{ user?.name || 'User' }}!</mat-card-title>
+        <mat-card-title>Welcome, {{ user?.name || 'User' }}!</mat-card-title>
         <mat-card-subtitle>{{ user?.email }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>

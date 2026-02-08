@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Contact } from '../../models/api.platform.model';
-import { SearchResult } from '../../models/api.shared.model';
+import { ContactDto } from '../api.platform.model';
+import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,29 +16,29 @@ export class ContactService {
   /**
    * Gets all contacts
    */
-  getContacts(): Observable<SearchResult<Contact>> {
-    return this.http.get<SearchResult<Contact>>(this.apiUrl);
+  getContacts(): Observable<SearchResult<ContactDto>> {
+    return this.http.get<SearchResult<ContactDto>>(this.apiUrl);
   }
 
   /**
    * Gets a single contact by ID
    */
-  getContact(id: number): Observable<Contact> {
-    return this.http.get<Contact>(`${this.apiUrl}/${id}`);
+  getContact(id: number): Observable<ContactDto> {
+    return this.http.get<ContactDto>(`${this.apiUrl}/${id}`);
   }
 
   /**
    * Creates a new contact
    */
-  createContact(contact: Contact): Observable<Contact> {
-    return this.http.post<Contact>(this.apiUrl, contact);
+  createContact(contact: ContactDto): Observable<ContactDto> {
+    return this.http.post<ContactDto>(this.apiUrl, contact);
   }
 
   /**
    * Updates an existing contact
    */
-  updateContact(id: number, contact: Contact): Observable<Contact> {
-    return this.http.put<Contact>(`${this.apiUrl}/${id}`, contact);
+  updateContact(id: number, contact: ContactDto): Observable<ContactDto> {
+    return this.http.put<ContactDto>(`${this.apiUrl}/${id}`, contact);
   }
 
   /**

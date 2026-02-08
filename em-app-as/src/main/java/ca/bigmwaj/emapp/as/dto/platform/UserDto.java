@@ -1,6 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,6 +11,10 @@ import lombok.EqualsAndHashCode;
 public class UserDto extends BaseHistDto {
 
     private Long id;
+
+    private String picture;
+
+    private String provider;
 
     private String username;
 
@@ -22,4 +27,6 @@ public class UserDto extends BaseHistDto {
     private ContactDto contact;
 
     private UserStatusLvo status;
+
+    private HolderTypeLvo holderType;
 }

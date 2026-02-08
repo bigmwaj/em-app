@@ -4,15 +4,15 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { User } from '../model/user.model';
+import { AuthUserInfo } from '../model/user.model';
 import { SessionStorageService } from './session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private currentUserSubject: BehaviorSubject<User | null>;
-  public currentUser: Observable<User | null>;
+  private currentUserSubject: BehaviorSubject<AuthUserInfo | null>;
+  public currentUser: Observable<AuthUserInfo | null>;
 
   constructor(
     private sessionStorage: SessionStorageService,
@@ -21,7 +21,7 @@ export class AuthService {
   ) {
     // Initialize with token from localStorage if available
     const token = this.getToken();
-    this.currentUserSubject = new BehaviorSubject<User | null>(null);
+    this.currentUserSubject = new BehaviorSubject<AuthUserInfo | null>(null);
     this.currentUser = this.currentUserSubject.asObservable();
 
     // Load user info if token exists
@@ -30,7 +30,7 @@ export class AuthService {
     }
   }
 
-  public get currentUserValue(): User | null {
+  public get currentUserValue(): AuthUserInfo | null {
     return this.currentUserSubject.value;
   }
 
@@ -46,7 +46,7 @@ export class AuthService {
    * Handles OAuth callback by storing token and loading user info
    * @param token JWT token received from OAuth callback
    */
-  handleOAuthCallback(token: string): Observable<User> {
+  handleOAuthCallback(token: string): Observable<AuthUserInfo> {
     this.setToken(token);
     return this.loadUserInfo();
   }
@@ -54,13 +54,13 @@ export class AuthService {
   /**
    * Loads current user information from the backend
    */
-  private loadUserInfo(): Observable<User> {
+  private loadUserInfo(): Observable<AuthUserInfo> {
     var token = this.getToken();
     if(!token){
       throw Error("Le token n'existe pas!");
     }
 
-    return this.http.get<User>(`${environment.apiUrl}/auth/user`).pipe(
+    return this.http.get<AuthUserInfo>(`${environment.apiUrl}/auth/user`).pipe(
       tap(user => this.currentUserSubject.next(user)),
       catchError(error => {
         console.error('Failed to load user info:', error);

@@ -3,12 +3,16 @@ package ca.bigmwaj.emapp.as.api.platform;
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
 import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
+import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
-import ca.bigmwaj.emapp.as.dto.platform.ContactFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import ca.bigmwaj.emapp.as.service.platform.ContactService;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -57,6 +61,7 @@ public class ContactController extends AbstractBaseAPI {
             @ValidFilterByPatterns(
                     supportedFields = {
                             @FilterBySupportedField(name = "id", type = Long.class),
+                            @FilterBySupportedField(name = "holderType", type = HolderTypeLvo.class),
                             @FilterBySupportedField(name = "firstName", type = String.class),
                             @FilterBySupportedField(name = "lastName", type = String.class),
                             @FilterBySupportedField(name = "birthDate", type = LocalDate.class),
@@ -67,6 +72,7 @@ public class ContactController extends AbstractBaseAPI {
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>id</b></li>" +
+                    "<li><b>holderType</b></li>" +
                     "<li><b>firstName</b></li>" +
                     "<li><b>lastName</b></li>" +
                     "<li><b>birthDate</b></li>" +
@@ -76,13 +82,23 @@ public class ContactController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<FilterBy> filterBIES) {
+            List<FilterBy> filterByItems,
 
-        var builder = ContactFilterDto.builder()
+            @ValidSortByPatterns(
+                    supportedFields = {
+                            @SortBySupportedField(name = "holderType"),
+                            @SortBySupportedField(name = "firstName"),
+                            @SortBySupportedField(name = "lastName"),
+                    })
+            @RequestParam(value = "sortBy", required = false)
+            List<SortBy> sortByItems) {
+
+        var builder = DefaultFilterDto.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterBIES(filterBIES);
+                .withFilterByItems(filterByItems)
+                .withSortByItems(sortByItems);
         return ResponseEntity.ok(service.search(builder.build()));
     }
 

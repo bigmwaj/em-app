@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { User } from '../../model/user.model';
+import { AuthUserInfo } from '../../model/user.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,7 +10,7 @@ import { User } from '../../model/user.model';
   standalone: false
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  user: User | null = null;
+  user: AuthUserInfo | null = null;
   private userSubscription?: Subscription;
 
   constructor(private authService: AuthService) {}

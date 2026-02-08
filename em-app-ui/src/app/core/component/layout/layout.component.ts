@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { User } from '../../model/user.model';
+import { AuthUserInfo } from '../../model/user.model';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   standalone: false
 })
 export class LayoutComponent implements OnInit, OnDestroy {
-  user: User | null = null;
+  user: AuthUserInfo | null = null;
   sidenavOpened = true;
   private userSubscription?: Subscription;
 

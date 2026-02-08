@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { User } from '../model/user.model';
+import { AuthUserInfo } from '../model/user.model';
 
 @Injectable({
     providedIn: 'root'
@@ -30,12 +30,12 @@ export class SessionStorageService {
         return null;
     }
 
-    set userInfos(value:User){
-        this.setItem<User>(SessionStorageService.USER_INFOS_KEY, value, v => JSON.stringify(v))
+    set userInfos(value:AuthUserInfo){
+        this.setItem<AuthUserInfo>(SessionStorageService.USER_INFOS_KEY, value, v => JSON.stringify(v))
     }
 
-    get userInfos():User | null{
-        return this.getItem<User>(SessionStorageService.USER_INFOS_KEY, v => JSON.parse(v))
+    get userInfos():AuthUserInfo | null{
+        return this.getItem<AuthUserInfo>(SessionStorageService.USER_INFOS_KEY, v => JSON.parse(v))
     }
 
     get token():string | null{

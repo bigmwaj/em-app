@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.EmailTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,4 +30,7 @@ public class ContactEmailEntity extends AbstractBaseEntity {
     @JoinColumn(name = "CONTACT_ID", nullable = false)
     private ContactEntity contact;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "HOLDER_TYPE", nullable = false)
+    private HolderTypeLvo holderType;
 }

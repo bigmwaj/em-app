@@ -14,9 +14,9 @@ public abstract class AbstractFilterDto {
 
     public static final Short DEFAULT_QUERY_LIMIT = 1_000;
 
-    private List<FilterBy> filterBIES;
+    private List<FilterBy> filterByItems;
 
-    private List<SortBy> sortBIES;
+    private List<SortBy> sortByItems;
 
     private Short pageSize;
 

@@ -36,3 +36,40 @@ body {
   height: 100%;
 }
 /* You can add global styles to this file, and also import other style files */
+
+.main-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 400;
+
+    mat-icon {
+      font-size: 40px;
+      color: #3f51b5;
+      margin-bottom: 0;
+      border-radius: 0;
+      height: 35px;
+    width: 40px;
+    }
+
+    span {
+      margin-top: 14px;
+    }
+  }
+
+  button mat-icon {
+    margin-right: 8px;
+  }
+}
+

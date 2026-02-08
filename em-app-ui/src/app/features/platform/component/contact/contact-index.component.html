@@ -24,17 +24,17 @@
       <mat-card-header>
         <mat-icon mat-card-avatar>person</mat-icon>
         <mat-card-title>{{ contact.firstName }} {{ contact.lastName }}</mat-card-title>
-        <mat-card-subtitle>{{ contact.company || 'No company' }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ 'No company' }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
         <div class="contact-info">
           <p>
             <mat-icon>email</mat-icon>
-            {{ contact.email }}
+            {{ contact?.mainEmail?.email }}
           </p>
-          <p *ngIf="contact.phone">
+          <p>
             <mat-icon>phone</mat-icon>
-            {{ contact.phone }}
+            {{ contact?.mainPhone?.phone }}
           </p>
         </div>
       </mat-card-content>

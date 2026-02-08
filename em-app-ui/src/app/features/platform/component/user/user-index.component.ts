@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../service/platform/user.service';
-import { User } from '../../../models/api.platform.model';
-import { SearchResult } from '../../../models/api.shared.model';
+import { UserService } from '../../service/user.service';
+import { UserDto } from '../../api.platform.model';
+import { SearchResult } from '../../../shared/api.shared.model';
 
 @Component({
-  selector: 'app-users',
-  templateUrl: './users.component.html',
-  styleUrls: ['./users.component.scss'],
+  selector: 'app-user-index',
+  templateUrl: './user-index.component.html',
+  styleUrls: ['./user-index.component.scss'],
   standalone: false
 })
-export class UsersComponent implements OnInit {
-  searchResult: SearchResult<User> = {} as SearchResult<User>;
+export class UserIndexComponent implements OnInit {
+  searchResult: SearchResult<UserDto> = {} as SearchResult<UserDto>;
   loading = true;
   error: string | null = null;
 
@@ -43,7 +43,7 @@ export class UsersComponent implements OnInit {
   /**
    * Placeholder for edit functionality
    */
-  editUser(user: User): void {
+  editUser(user: UserDto): void {
     console.log('Edit user:', user);
     // TODO: Implement edit dialog
   }
@@ -51,7 +51,7 @@ export class UsersComponent implements OnInit {
   /**
    * Placeholder for delete functionality
    */
-  deleteUser(user: User): void {
+  deleteUser(user: UserDto): void {
     console.log('Delete user:', user);
     // TODO: Implement delete confirmation
   }

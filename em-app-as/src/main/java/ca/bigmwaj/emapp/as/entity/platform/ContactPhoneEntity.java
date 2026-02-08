@@ -1,6 +1,7 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.PhoneTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,5 +29,9 @@ public class ContactPhoneEntity extends AbstractBaseEntity {
     @ManyToOne
     @JoinColumn(name = "CONTACT_ID", nullable = false)
     private ContactEntity contact;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "HOLDER_TYPE", nullable = false)
+    private HolderTypeLvo holderType;
 
 }

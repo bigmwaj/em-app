@@ -26,9 +26,9 @@ import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-ca
 import { DashboardComponent } from './core/component/dashboard/dashboard.component';
 
 // Feature Components
-import { AccountsComponent } from './features/component/platform/accounts/accounts.component';
-import { ContactsComponent } from './features/component/platform/contacts/contacts.component';
-import { UsersComponent } from './features/component/platform/users/users.component';
+import { AccountIndexComponent } from './features/platform/component/account/account-index.component';
+import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
+import { UserIndexComponent } from './features/platform/component/user/user-index.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
@@ -41,9 +41,9 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     LoginComponent,
     OauthCallbackComponent,
     DashboardComponent,
-    UsersComponent,
-    AccountsComponent,
-    ContactsComponent
+    UserIndexComponent,
+    AccountIndexComponent,
+    ContactIndexComponent
   ],
   imports: [
     BrowserModule,

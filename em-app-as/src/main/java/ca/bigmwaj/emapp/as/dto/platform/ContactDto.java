@@ -1,6 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,9 +20,17 @@ public class ContactDto extends BaseHistDto {
 
     private LocalDate birthDate;
 
+    private HolderTypeLvo holderType;
+
+    private ContactEmailDto mainEmail;
+
     private List<ContactEmailDto> emails;
 
+    private ContactPhoneDto mainPhone;
+
     private List<ContactPhoneDto> phones;
+
+    private ContactAddressDto mainAddress;
 
     private List<ContactAddressDto> addresses;
 }

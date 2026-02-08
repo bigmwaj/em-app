@@ -5,6 +5,7 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactEmailDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactPhoneDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.*;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
@@ -46,7 +47,7 @@ public class ContactService extends AbstractService {
         return new SearchResultDto<>(r);
     }
 
-    public SearchResultDto<ContactDto> search(ContactFilterDto sc) {
+    public SearchResultDto<ContactDto> search(DefaultFilterDto sc) {
         if (sc == null) {
             return searchAll();
         }

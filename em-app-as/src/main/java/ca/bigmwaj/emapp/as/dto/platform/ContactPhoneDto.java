@@ -1,7 +1,9 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.PhoneTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,13 +18,8 @@ public class ContactPhoneDto extends BaseHistDto {
 
     private PhoneTypeLvo type;
 
-    private ContactDto contact;
+    private Long contactId;
 
-    private boolean toDelete;
-
-    @JsonIgnore
-    public boolean isNotToDelete(){
-        return !toDelete;
-    }
+    private HolderTypeLvo holderType;
 
 }
