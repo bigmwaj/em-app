@@ -50,7 +50,7 @@ export interface SortBy extends AbstractClauseBy {
   type: SortType;
 }
 
-export interface AbstractFilterDto {
+export interface AbstractSearchCriteria {
   filterByItems?: FilterBy[];
   sortByItems?: SortBy[];
   pageSize?: number;
@@ -58,7 +58,7 @@ export interface AbstractFilterDto {
   calculateStatTotal?: boolean;
 }
 
-export interface DefaultFilterDto extends AbstractFilterDto {
+export interface DefaultSearchCriteria extends AbstractSearchCriteria {
 }
 
 export interface SearchInfos {
@@ -75,7 +75,7 @@ export interface SearchResult<T> {
   searchInfos: SearchInfos
 }
 
-export function createDefaultFilterDto(): DefaultFilterDto {
+export function createDefaultSearchCriteria(): DefaultSearchCriteria {
   return {
     filterByItems: [],
     sortByItems: [],
@@ -85,33 +85,33 @@ export function createDefaultFilterDto(): DefaultFilterDto {
   };
 }
 
-export function mapDefaultFilterDtoToHttpParams(filter: DefaultFilterDto): HttpParams {
+export function mapDefaultSearchCriteriaToHttpParams(searchCriteria: DefaultSearchCriteria): HttpParams {
 
   let params = new HttpParams();
 
   // Pagination parameters
-  if (filter.pageSize !== undefined && filter.pageSize !== null) {
-    params = params.set('pageSize', filter.pageSize.toString());
+  if (searchCriteria.pageSize !== undefined && searchCriteria.pageSize !== null) {
+    params = params.set('pageSize', searchCriteria.pageSize.toString());
   }
-  if (filter.pageIndex !== undefined && filter.pageIndex !== null) {
-    params = params.set('pageIndex', filter.pageIndex.toString());
+  if (searchCriteria.pageIndex !== undefined && searchCriteria.pageIndex !== null) {
+    params = params.set('pageIndex', searchCriteria.pageIndex.toString());
   }
-  if (filter.calculateStatTotal !== undefined) {
-    params = params.set('calculateStatTotal', filter.calculateStatTotal.toString());
+  if (searchCriteria.calculateStatTotal !== undefined) {
+    params = params.set('calculateStatTotal', searchCriteria.calculateStatTotal.toString());
   } else {
     params = params.set('calculateStatTotal', 'true');
   }           
 
   // Filters
-  if (filter.filterByItems && filter.filterByItems.length > 0) {
-    filter.filterByItems.forEach(filterBy => {
+  if (searchCriteria.filterByItems && searchCriteria.filterByItems.length > 0) {
+    searchCriteria.filterByItems.forEach(filterBy => {
       params = params.append('filters', JSON.stringify(filterBy));
     });
   }
 
   // Sorting
-  if (filter.sortByItems && filter.sortByItems.length > 0) {
-    filter.sortByItems.forEach(sortBy => {
+  if (searchCriteria.sortByItems && searchCriteria.sortByItems.length > 0) {
+    searchCriteria.sortByItems.forEach(sortBy => {
       params = params.append('sortBy', JSON.stringify(sortBy));
     });
   }

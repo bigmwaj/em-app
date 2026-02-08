@@ -7,6 +7,6 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder(setterPrefix = "with")
-public class DefaultFilterDto extends AbstractFilterDto {
+public class DefaultSearchCriteria extends AbstractSearchCriteria {
 
 }

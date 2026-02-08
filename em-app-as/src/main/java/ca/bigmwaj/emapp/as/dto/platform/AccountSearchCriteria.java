@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @SuperBuilder(setterPrefix = "with")
-public class AccountFilterDto extends DefaultFilterDto {
+public class AccountSearchCriteria extends DefaultSearchCriteria {
 
     private boolean includeMainContact;
 

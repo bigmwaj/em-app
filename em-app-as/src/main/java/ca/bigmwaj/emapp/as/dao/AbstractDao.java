@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dao;
 
 import ca.bigmwaj.emapp.as.dao.shared.QueryConfig;
-import ca.bigmwaj.emapp.as.dto.common.AbstractFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -15,18 +15,18 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
 
     Class<E> getEntityClass();
 
-    default QueryConfig prepareQueryConfig(QueryConfig.QueryConfigBuilder builder, AbstractFilterDto filter) {
-        if( filter.getFilterByItems() != null && !filter.getFilterByItems().isEmpty() ){
-            filter.getFilterByItems().forEach(e -> QueryConfig.appendFilter(builder, e));
+    default QueryConfig prepareQueryConfig(QueryConfig.QueryConfigBuilder builder, AbstractSearchCriteria searchCriteria) {
+        if( searchCriteria.getFilterByItems() != null && !searchCriteria.getFilterByItems().isEmpty() ){
+            searchCriteria.getFilterByItems().forEach(e -> QueryConfig.appendFilter(builder, e));
         }
 
-        if( filter.getSortByItems() != null && !filter.getSortByItems().isEmpty() ){
-            filter.getSortByItems().forEach(e -> QueryConfig.appendSortBy(builder, e));
+        if( searchCriteria.getSortByItems() != null && !searchCriteria.getSortByItems().isEmpty() ){
+            searchCriteria.getSortByItems().forEach(e -> QueryConfig.appendSortBy(builder, e));
         }
         return builder.build();
     }
 
-    default <T> TypedQuery<T> prepareQuery(EntityManager em, Class<T> klass, QueryConfig.QueryConfigBuilder builder, AbstractFilterDto sc) {
+    default <T> TypedQuery<T> prepareQuery(EntityManager em, Class<T> klass, QueryConfig.QueryConfigBuilder builder, AbstractSearchCriteria sc) {
         var queryConfig = prepareQueryConfig(builder, sc);
 
         TypedQuery<T> query = em.createQuery(queryConfig.getQueryString(), klass);
@@ -45,7 +45,7 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
         return getQuery(QueryConfig.Q_ROOT);
     }
 
-    default List<E> findAllByCriteria(EntityManager em, AbstractFilterDto sc) {
+    default List<E> findAllByCriteria(EntityManager em, AbstractSearchCriteria sc) {
         var builder = QueryConfig.builder().withBaseQuery(getFindAllQuery());
         return prepareQuery(em, getEntityClass(), builder, sc)
                 .setFirstResult(sc.getOffset())
@@ -57,7 +57,7 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
         return getQuery(String.format("count(%s)", QueryConfig.Q_ROOT));
     }
 
-    default Long countAllByCriteria(EntityManager em, AbstractFilterDto sc) {
+    default Long countAllByCriteria(EntityManager em, AbstractSearchCriteria sc) {
         var builder = QueryConfig.builder().withBaseQuery(getCountAllQuery());
         return prepareQuery(em, Long.class, builder, sc).getSingleResult();
     }

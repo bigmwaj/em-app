@@ -5,7 +5,7 @@ import ca.bigmwaj.emapp.as.dao.platform.AccountDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
@@ -38,7 +38,7 @@ public class AccountService extends AbstractService {
         return new SearchResultDto<>(r);
     }
 
-    public SearchResultDto<AccountDto> search(DefaultFilterDto sc) {
+    public SearchResultDto<AccountDto> search(DefaultSearchCriteria sc) {
         if (sc == null) {
             return searchAll();
         }

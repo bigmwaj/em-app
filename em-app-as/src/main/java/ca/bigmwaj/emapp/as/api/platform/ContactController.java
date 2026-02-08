@@ -6,7 +6,7 @@ import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
-import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
@@ -93,7 +93,7 @@ public class ContactController extends AbstractBaseAPI {
             @RequestParam(value = "sortBy", required = false)
             List<SortBy> sortByItems) {
 
-        var builder = DefaultFilterDto.builder()
+        var builder = DefaultSearchCriteria.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)

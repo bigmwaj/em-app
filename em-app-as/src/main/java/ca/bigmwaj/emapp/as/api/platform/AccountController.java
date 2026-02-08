@@ -6,10 +6,10 @@ import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
 import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
-import ca.bigmwaj.emapp.as.dto.platform.AccountFilterDto;
+import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.common.DefaultFilterDto;
+import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import ca.bigmwaj.emapp.as.service.platform.AccountService;
@@ -94,7 +94,7 @@ public class AccountController extends AbstractBaseAPI {
             @RequestParam(value = "sortBy", required = false)
             List<SortBy> sortByItems) {
 
-        var builder = AccountFilterDto.builder()
+        var builder = AccountSearchCriteria.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
