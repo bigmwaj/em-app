@@ -8,16 +8,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = SortByPatternsValidator.class)
+@Constraint(validatedBy = SortByClausePatternsValidator.class)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidSortByPatterns {
+public @interface ValidSortByClausePatterns {
     String message() default "Invalid request!";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    SortBySupportedField[] supportedFields() default {};
+    SortByClauseSupportedField[] supportedFields() default {};
 }
 

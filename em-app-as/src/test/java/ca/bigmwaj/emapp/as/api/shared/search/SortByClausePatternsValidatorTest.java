@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,13 +13,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
-public class SortByPatternsValidatorTest {
+public class SortByClausePatternsValidatorTest {
     @Test
     void givenWellMappedPatterns_whenIsValid_thenReturnsTrue() {
         // Given
         var supportedFieldNames = List.of("field1", "field2");
-        var validator = new SortByPatternsValidator();
-        var items = List.of(new SortBy("field1"), new SortBy("field2", SortBy.sortType.asc));
+        var validator = new SortByClausePatternsValidator();
+        var items = List.of(new SortByClause("field1"), new SortByClause("field2", SortByClause.sortType.asc));
         var spyValidator = spy(validator);
         doReturn(supportedFieldNames).when(spyValidator).getSupportedFieldNames();
 
@@ -34,8 +34,8 @@ public class SortByPatternsValidatorTest {
     void givenNotWellMappedPatterns_whenIsValid_thenReturnsTrue() {
         // Given
         var supportedFieldNames = List.of("field1", "field3");
-        var validator = new SortByPatternsValidator();
-        var items = List.of(new SortBy("field1"), new SortBy("field2", SortBy.sortType.asc));
+        var validator = new SortByClausePatternsValidator();
+        var items = List.of(new SortByClause("field1"), new SortByClause("field2", SortByClause.sortType.asc));
         var spyValidator = spy(validator);
         var context = new MockConstraintValidatorContext();
         doReturn(supportedFieldNames).when(spyValidator).getSupportedFieldNames();

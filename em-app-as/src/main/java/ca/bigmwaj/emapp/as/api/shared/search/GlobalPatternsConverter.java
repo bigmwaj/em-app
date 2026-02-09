@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;
@@ -35,11 +35,11 @@ public class GlobalPatternsConverter implements GenericConverter {
                         .map(Annotation::annotationType)
                         .anyMatch(p);
 
-        logger.debug("Converting sortBy patterns: {} to List<SortBy>, SourceType:{}", source, sourceType);
-        if (isValid.apply(ValidFilterByPatterns.class::equals)) {
-            return new FilterByPatternsConverter(targetType, (String) source).convert();
-        } else if (isValid.apply(ValidSortByPatterns.class::equals)) {
-            return new SortByPatternsConverter(targetType, (String) source).convert();
+        logger.debug("Converting sortBy patterns: {} to List<SortByClause>, SourceType:{}", source, sourceType);
+        if (isValid.apply(ValidWhereClausePatterns.class::equals)) {
+            return new WhereClausePatternsConverter(targetType, (String) source).convert();
+        } else if (isValid.apply(ValidSortByClausePatterns.class::equals)) {
+            return new SortByClausePatternsConverter(targetType, (String) source).convert();
         }
 
         return null;

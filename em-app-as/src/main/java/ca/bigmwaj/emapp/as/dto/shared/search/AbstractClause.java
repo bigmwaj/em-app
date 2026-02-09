@@ -8,9 +8,9 @@ import java.util.List;
 
 @NoArgsConstructor
 @Data
-public abstract class AbstractClauseBy {
+public abstract class AbstractClause {
 
-    public AbstractClauseBy(String name){
+    public AbstractClause(String name){
         this.name = name;
     }
 

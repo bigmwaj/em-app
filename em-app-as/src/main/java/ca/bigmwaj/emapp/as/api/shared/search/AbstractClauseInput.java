@@ -8,7 +8,7 @@ import java.util.List;
 
 @SuperBuilder(setterPrefix = "with")
 @Data
-public abstract class AbstractQueryInput {
+public abstract class AbstractClauseInput {
 
     private String name;
 

@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dao.shared;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -26,7 +26,7 @@ import java.util.Map;
  *     .withBaseQuery("SELECT qRoot FROM User qRoot");
  *     
  * // Add filter: firstName like '%john%'
- * FilterBy filter = FilterBy.builder()
+ * WhereClause filter = WhereClause.builder()
  *     .name("firstName")
  *     .oper(FilterOperator.like)
  *     .values(List.of("john"))
@@ -34,7 +34,7 @@ import java.util.Map;
  * QueryConfig.appendFilter(qb, filter);
  * 
  * // Add sorting: ORDER BY lastName ASC
- * SortBy sort = SortBy.builder()
+ * SortByClause sort = SortByClause.builder()
  *     .name("lastName")
  *     .direction("asc")
  *     .build();
@@ -43,8 +43,8 @@ import java.util.Map;
  * QueryConfig config = qb.build();
  * }</pre>
  * 
- * @see FilterBy
- * @see SortBy
+ * @see WhereClause
+ * @see SortByClause
  */
 @Builder(setterPrefix = "with")
 public class QueryConfig {
@@ -99,7 +99,7 @@ public class QueryConfig {
      * @param qb the query configuration builder to append to
      * @param filterBy the filter criteria containing field name, operator, and values
      */
-    public static void appendFilter(QueryConfig.QueryConfigBuilder qb, FilterBy filterBy) {
+    public static void appendFilter(QueryConfig.QueryConfigBuilder qb, WhereClause filterBy) {
         var dbFieldName = filterBy.getName();
         var v = filterBy.getValues();
         var rootEntity = Q_ROOT;
@@ -162,7 +162,7 @@ public class QueryConfig {
      * @param qb the query configuration builder to append to
      * @param sortBy the sort criteria containing field name and direction (asc/desc)
      */
-    public static void appendSortBy(QueryConfig.QueryConfigBuilder qb, SortBy sortBy) {
+    public static void appendSortBy(QueryConfig.QueryConfigBuilder qb, SortByClause sortBy) {
         var dbFieldName = sortBy.getName();
         var rootEntity = Q_ROOT;
 
@@ -177,9 +177,9 @@ public class QueryConfig {
         }
 
         // Default to ascending if no sort type specified
-        SortBy.sortType sortType = sortBy.getType();
+        SortByClause.sortType sortType = sortBy.getType();
         if( sortType == null ){
-            sortType = SortBy.sortType.asc;
+            sortType = SortByClause.sortType.asc;
         }
 
         qb.withSortByClause(String.format("%s.%s %s", rootEntity, dbFieldName, sortType));

@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -13,33 +13,33 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class SortByPatternsConverter {
+public class SortByClausePatternsConverter {
 
-    private static final Logger logger = LoggerFactory.getLogger(SortByPatternsConverter.class);
+    private static final Logger logger = LoggerFactory.getLogger(SortByClausePatternsConverter.class);
 
     private TypeDescriptor targetType;
 
     private String patterns;
 
     private static <T> Map<String, T> fetchSupportedMetadata(TypeDescriptor targetType,
-                                                            Function<SortBySupportedField, T> extractor) {
+                                                            Function<SortByClauseSupportedField, T> extractor) {
         return Arrays.stream(targetType.getAnnotations())
-                .filter(e -> e.annotationType().equals(ValidSortByPatterns.class))
-                .map(ValidSortByPatterns.class::cast)
-                .map(ValidSortByPatterns::supportedFields)
+                .filter(e -> e.annotationType().equals(ValidSortByClausePatterns.class))
+                .map(ValidSortByClausePatterns.class::cast)
+                .map(ValidSortByClausePatterns::supportedFields)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toMap(SortBySupportedField::name, extractor));
+                .collect(Collectors.toMap(SortByClauseSupportedField::name, extractor));
     }
 
      Map<String, String> fetchSupportedRootEntityName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, SortBySupportedField::rootEntityName);
+        return fetchSupportedMetadata(targetType, SortByClauseSupportedField::rootEntityName);
     }
 
      Map<String, String> fetchSupportedEntityFieldName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, SortBySupportedField::entityFieldName);
+        return fetchSupportedMetadata(targetType, SortByClauseSupportedField::entityFieldName);
     }
 
-    List<SortBy> convert() {
+    List<SortByClause> convert() {
         if (patterns == null || patterns.isBlank() || targetType == null) {
             return Collections.emptyList();
         }
@@ -56,11 +56,11 @@ public class SortByPatternsConverter {
                 .toList();
     }
 
-    private SortBy mapToSortByItem(SortByInput input) {
+    private SortByClause mapToSortByItem(SortByClauseInput input) {
         try {
-            return QueryInputMapper.INSTANCE.toItem(input);
+            return ClauseInputMapper.INSTANCE.toItem(input);
         } catch (MethodArgumentConversionNotSupportedException e) {
-            var fi = new SortBy();
+            var fi = new SortByClause();
             fi.addMessages(input.getValidationErrorMessages());
             fi.addMessage(e.getMessage());
             logger.error(e.getMessage(), e);
@@ -68,13 +68,13 @@ public class SortByPatternsConverter {
         }
     }
 
-    private SortByInput mapToSortByItemInput(Map<String, String> supportedEntityFieldNameMap,
+    private SortByClauseInput mapToSortByItemInput(Map<String, String> supportedEntityFieldNameMap,
                                              Map<String, String> supportedRootEntityNameMap,
                                              String sortByPattern) {
 
         var args = new ArrayDeque<>(Arrays.asList(sortByPattern.split(":")));
 
-        var builder = SortByInput.builder();
+        var builder = SortByClauseInput.builder();
         if (!args.isEmpty()) {
             var name = args.pollFirst();
             builder.withName(name);
@@ -98,7 +98,7 @@ public class SortByPatternsConverter {
         return builder.build();
     }
 
-    private SortByInput prevalidateSortByItemInput(SortByInput input) {
+    private SortByClauseInput prevalidateSortByItemInput(SortByClauseInput input) {
         if (input.getName() == null) {
             input.addMessage(MessageConstants.MSG0001);
         }

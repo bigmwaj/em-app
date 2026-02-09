@@ -37,22 +37,22 @@ export interface BaseHistDto extends BaseDto {
   updatedDate?: Date;
 }
 
-export interface AbstractClauseBy {
+export interface AbstractClause {
   name: string;
 }
 
-export interface FilterBy extends AbstractClauseBy {
+export interface WhereClause extends AbstractClause {
   oper: FilterOperator;
   values?: any[];
 }
 
-export interface SortBy extends AbstractClauseBy {
+export interface SortByClause extends AbstractClause {
   type: SortType;
 }
 
 export interface AbstractSearchCriteria {
-  filterByItems?: FilterBy[];
-  sortByItems?: SortBy[];
+  filterByItems?: WhereClause[];
+  sortByItems?: SortByClause[];
   pageSize?: number;
   pageIndex?: number;
   calculateStatTotal?: boolean;

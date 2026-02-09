@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.common;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -14,9 +14,9 @@ public abstract class AbstractSearchCriteria {
 
     public static final Short DEFAULT_QUERY_LIMIT = 1_000;
 
-    private List<FilterBy> filterByItems;
+    private List<WhereClause> filterByItems;
 
-    private List<SortBy> sortByItems;
+    private List<SortByClause> sortByItems;
 
     private Short pageSize;
 

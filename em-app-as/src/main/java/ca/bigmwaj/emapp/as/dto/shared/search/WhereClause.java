@@ -13,7 +13,7 @@ import java.util.function.Function;
 @Data
 @ToString(callSuper = true)
 @NoArgsConstructor
-public class FilterBy extends AbstractClauseBy{
+public class WhereClause extends AbstractClause{
 
     public enum oper {
         eq,
@@ -32,16 +32,16 @@ public class FilterBy extends AbstractClauseBy{
 
     private List<?> values;
 
-    public FilterBy(String name){
+    public WhereClause(String name){
         super(name);
     }
 
-    public FilterBy(String name, oper oper){
+    public WhereClause(String name, oper oper){
         this(name);
         this.oper = oper;
     }
 
-    public FilterBy(String name, oper oper, List<?> values){
+    public WhereClause(String name, oper oper, List<?> values){
         this(name, oper);
         this.values = values;
     }

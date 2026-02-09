@@ -8,11 +8,11 @@ import org.springframework.core.convert.TypeDescriptor;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SortByPatternsConverterTest {
+public class SortByClausePatternsConverterTest {
 
     @Test
     void givenNullPatterns_whenConvert_thenReturnsEmptyList() {
-        var converter = new SortByPatternsConverter(null, null);
+        var converter = new SortByClausePatternsConverter(null, null);
         var result = converter.convert();
         assertNotNull(result, "convert() should not return null");
         assertTrue(result.isEmpty(), "convert() should return an empty list when patterns is null");
@@ -20,7 +20,7 @@ public class SortByPatternsConverterTest {
 
     @Test
     void givenNullTargetType_whenConvert_thenReturnsEmptyList() {
-        var converter = new SortByPatternsConverter(null, "anyPattern");
+        var converter = new SortByClausePatternsConverter(null, "anyPattern");
         var result = converter.convert();
         assertNotNull(result, "convert() should not return null");
         assertTrue(result.isEmpty(), "convert() should return an empty list when patterns is null");
@@ -31,7 +31,7 @@ public class SortByPatternsConverterTest {
         // Given
         var patterns = "field1;field2";
         var targetType = TypeDescriptor.valueOf(Void.class);
-        var converter = new SortByPatternsConverter(targetType, patterns);
+        var converter = new SortByClausePatternsConverter(targetType, patterns);
         //var spyConverter = spy(converter);
 
         // Stub the method on the spy

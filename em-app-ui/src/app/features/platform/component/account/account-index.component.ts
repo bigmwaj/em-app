@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../service/account.service';
 import { AccountDto, AccountSearchCriteria, ContactDto, createAccountSearchCriteria } from '../../api.platform.model';
-import { FilterBy, FilterOperator, SearchResult } from '../../../shared/api.shared.model';
+import { WhereClause, FilterOperator, SearchResult } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
@@ -27,12 +27,12 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   constructor(private accountService: AccountService) {
     super();
     this.searchCriteria.includeMainContact = true;
-    const item1 = {} as FilterBy;
+    const item1 = {} as WhereClause;
     item1.name = 'id';
     item1.oper = FilterOperator.IN;
     item1.values = ['1'];
 
-    const item2 = {} as FilterBy;
+    const item2 = {} as WhereClause;
     item2.name = 'email';
     item2.oper = FilterOperator.LIKE;
     item2.values = ['alain'];

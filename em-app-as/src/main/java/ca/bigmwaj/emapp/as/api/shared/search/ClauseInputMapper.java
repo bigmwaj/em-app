@@ -1,8 +1,8 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -14,17 +14,17 @@ import java.util.Arrays;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface QueryInputMapper {
+public interface ClauseInputMapper {
 
-    Logger logger = LoggerFactory.getLogger(QueryInputMapper.class);
+    Logger logger = LoggerFactory.getLogger(ClauseInputMapper.class);
 
-    QueryInputMapper INSTANCE = Mappers.getMapper(QueryInputMapper.class);
+    ClauseInputMapper INSTANCE = Mappers.getMapper(ClauseInputMapper.class);
 
     @Mapping(source = "values", target = "values", qualifiedByName = "ValuesMapper")
     @Mapping(source = "oper", target = "oper", qualifiedByName = "operMapper")
-    FilterBy toItem(FilterByInput input);
+    WhereClause toItem(WhereClauseInput input);
 
-    SortBy toItem(SortByInput input);
+    SortByClause toItem(SortByClauseInput input);
 
     @Named("ValuesMapper")
     default List<?> valuesMapper(String values) {
@@ -32,9 +32,9 @@ public interface QueryInputMapper {
     }
 
     @Named("operMapper")
-    default FilterBy.oper operMapper(String oper) {
+    default WhereClause.oper operMapper(String oper) {
         try {
-            return FilterBy.oper.valueOf(oper);
+            return WhereClause.oper.valueOf(oper);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
             throw new PatternsConversionException(MessageConstants.MSG0004);

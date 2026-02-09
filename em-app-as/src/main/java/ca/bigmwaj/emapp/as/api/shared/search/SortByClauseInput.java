@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder(setterPrefix = "with")
 @Data
-public class SortByInput extends AbstractQueryInput {
+public class SortByClauseInput extends AbstractClauseInput {
 
     private String type;
 }
