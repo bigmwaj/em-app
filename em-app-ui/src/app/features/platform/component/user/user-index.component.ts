@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../service/user.service';
 import { UserDto } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
+import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult } from '../../../shared/api.shared.model';
+import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
   selector: 'app-user-index',
@@ -9,12 +10,19 @@ import { SearchResult } from '../../../shared/api.shared.model';
   styleUrls: ['./user-index.component.scss'],
   standalone: false
 })
-export class UserIndexComponent implements OnInit {
+export class UserIndexComponent extends CommonDataSource<UserDto> implements OnInit {
   searchResult: SearchResult<UserDto> = {} as SearchResult<UserDto>;
   loading = true;
   error: string | null = null;
+  searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
+  displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { super(); }
+
+
+  override getKeyLabel(bean: UserDto): string | number {
+    throw new Error('Method not implemented.');
+  }
 
   ngOnInit(): void {
     this.loadUsers();

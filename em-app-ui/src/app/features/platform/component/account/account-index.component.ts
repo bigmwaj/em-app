@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountService } from '../../service/account.service';
-import { AccountDto, AccountSearchCriteria, ContactDto, createAccountSearchCriteria } from '../../api.platform.model';
-import { WhereClause, FilterOperator, SearchResult } from '../../../shared/api.shared.model';
+import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
+import { SearchResult } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
@@ -13,15 +13,10 @@ import { CommonDataSource } from '../../../shared/common.datasource';
 export class AccountIndexComponent extends CommonDataSource<AccountDto> implements OnInit {
 
   searchResult: SearchResult<AccountDto> = {} as SearchResult<AccountDto>;
-
   loading = true;
-
   message = "";
-
   error: string | null = null;
-
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
-
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
 
   constructor(private accountService: AccountService) {

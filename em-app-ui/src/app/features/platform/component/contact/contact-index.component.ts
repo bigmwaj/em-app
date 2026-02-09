@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../../service/contact.service';
 import { ContactDto } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
+import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult } from '../../../shared/api.shared.model';
+import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
   selector: 'app-contact-index',
@@ -9,12 +10,18 @@ import { SearchResult } from '../../../shared/api.shared.model';
   styleUrls: ['./contact-index.component.scss'],
   standalone: false
 })
-export class ContactIndexComponent implements OnInit {
+export class ContactIndexComponent extends CommonDataSource<ContactDto> implements OnInit {
   searchResult: SearchResult<ContactDto> = {} as SearchResult<ContactDto>;
   loading = true;
   error: string | null = null;
+  searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
+  displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
 
-  constructor(private contactService: ContactService) {}
+  constructor(private contactService: ContactService) { super(); }
+
+  override getKeyLabel(bean: ContactDto): string | number {
+    throw new Error('Method not implemented.');
+  }
 
   ngOnInit(): void {
     this.loadContacts();
@@ -36,7 +43,7 @@ export class ContactIndexComponent implements OnInit {
       }
     });
   }
-  
+
   editContact(contact: ContactDto): void {
     console.log('Edit contact:', contact);
   }
