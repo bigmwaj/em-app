@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { ContactDto } from '../api.platform.model';
+import { ContactDto, ContactSearchCriteria, mapContactSearchCriteriaToHttpParams } from '../api.platform.model';
 import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
@@ -16,8 +16,14 @@ export class ContactService {
   /**
    * Gets all contacts
    */
-  getContacts(): Observable<SearchResult<ContactDto>> {
-    return this.http.get<SearchResult<ContactDto>>(this.apiUrl);
+  getContacts(searchCriteria?: ContactSearchCriteria): Observable<SearchResult<ContactDto>> {
+    let params = new HttpParams();
+
+    if (searchCriteria) {
+      params = mapContactSearchCriteriaToHttpParams(searchCriteria);
+    }
+
+    return this.http.get<SearchResult<ContactDto>>(this.apiUrl, { params });
   }
 
   /**

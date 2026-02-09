@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { UserDto } from '../api.platform.model';
+import { UserDto, UserSearchCriteria, mapUserSearchCriteriaToHttpParams } from '../api.platform.model';
 import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
@@ -16,8 +16,14 @@ export class UserService {
   /**
    * Gets all users
    */
-  getUsers(): Observable<SearchResult<UserDto>> {
-    return this.http.get<SearchResult<UserDto>>(this.apiUrl);
+  getUsers(searchCriteria?: UserSearchCriteria): Observable<SearchResult<UserDto>> {
+    let params = new HttpParams();
+
+    if (searchCriteria) {
+      params = mapUserSearchCriteriaToHttpParams(searchCriteria);
+    }
+
+    return this.http.get<SearchResult<UserDto>>(this.apiUrl, { params });
   }
 
   /**

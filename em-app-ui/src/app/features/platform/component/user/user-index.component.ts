@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../service/user.service';
-import { UserDto } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
+import { UserDto, UserSearchCriteria, createUserSearchCriteria } from '../../api.platform.model';
+import { SearchResult, WhereClause, FilterOperator } from '../../../shared/api.shared.model';
+import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
   selector: 'app-user-index',
@@ -9,12 +10,21 @@ import { SearchResult } from '../../../shared/api.shared.model';
   styleUrls: ['./user-index.component.scss'],
   standalone: false
 })
-export class UserIndexComponent implements OnInit {
+export class UserIndexComponent extends CommonDataSource<UserDto> implements OnInit {
   searchResult: SearchResult<UserDto> = {} as SearchResult<UserDto>;
   loading = true;
   error: string | null = null;
+  searchCriteria: UserSearchCriteria = createUserSearchCriteria();
+  searchTerm: string = '';
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) {
+    super();
+    this.searchCriteria.includeContact = true;
+  }
+
+  override getKeyLabel(bean: UserDto): string | number {
+    throw new Error('Method not implemented.');
+  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -27,10 +37,23 @@ export class UserIndexComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.userService.getUsers().subscribe({
+    // Apply search filter if search term exists
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const whereClause: WhereClause = {
+        name: 'username',
+        oper: FilterOperator.LIKE,
+        values: [this.searchTerm.trim()]
+      };
+      this.searchCriteria.filterByItems = [whereClause];
+    } else {
+      this.searchCriteria.filterByItems = [];
+    }
+
+    this.userService.getUsers(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;
+        this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load users:', err);
@@ -38,6 +61,12 @@ export class UserIndexComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.searchCriteria.filterByItems = [];
+    this.loadUsers();
   }
 
   /**

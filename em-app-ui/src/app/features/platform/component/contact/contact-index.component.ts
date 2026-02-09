@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../../service/contact.service';
-import { ContactDto } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
+import { ContactDto, ContactSearchCriteria, createContactSearchCriteria } from '../../api.platform.model';
+import { SearchResult, WhereClause, FilterOperator } from '../../../shared/api.shared.model';
+import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
   selector: 'app-contact-index',
@@ -9,12 +10,23 @@ import { SearchResult } from '../../../shared/api.shared.model';
   styleUrls: ['./contact-index.component.scss'],
   standalone: false
 })
-export class ContactIndexComponent implements OnInit {
+export class ContactIndexComponent extends CommonDataSource<ContactDto> implements OnInit {
   searchResult: SearchResult<ContactDto> = {} as SearchResult<ContactDto>;
   loading = true;
   error: string | null = null;
+  searchCriteria: ContactSearchCriteria = createContactSearchCriteria();
+  searchTerm: string = '';
 
-  constructor(private contactService: ContactService) {}
+  constructor(private contactService: ContactService) {
+    super();
+    this.searchCriteria.includeEmails = true;
+    this.searchCriteria.includePhones = true;
+    this.searchCriteria.includeAddresses = true;
+  }
+
+  override getKeyLabel(bean: ContactDto): string | number {
+    throw new Error('Method not implemented.');
+  }
 
   ngOnInit(): void {
     this.loadContacts();
@@ -24,10 +36,23 @@ export class ContactIndexComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.contactService.getContacts().subscribe({
+    // Apply search filter if search term exists
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const whereClause: WhereClause = {
+        name: 'firstName',
+        oper: FilterOperator.LIKE,
+        values: [this.searchTerm.trim()]
+      };
+      this.searchCriteria.filterByItems = [whereClause];
+    } else {
+      this.searchCriteria.filterByItems = [];
+    }
+
+    this.contactService.getContacts(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;
+        this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load contacts:', err);
@@ -35,6 +60,12 @@ export class ContactIndexComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.searchCriteria.filterByItems = [];
+    this.loadContacts();
   }
   
   editContact(contact: ContactDto): void {

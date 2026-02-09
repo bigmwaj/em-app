@@ -11,6 +11,31 @@
     </button>
   </div>
 
+  <!-- Search Form -->
+  <mat-card class="search-form">
+    <mat-card-content>
+      <form #searchForm="ngForm" (ngSubmit)="loadAccounts()">
+        <div class="search-fields">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search by Name</mat-label>
+            <input matInput [(ngModel)]="searchTerm" name="searchTerm" placeholder="Enter account name">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          
+          <button mat-raised-button color="primary" type="submit" class="search-button">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          
+          <button mat-raised-button type="button" (click)="clearSearch()" class="clear-button">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
   @if (error && !loading) {
 
   <div class="info-message">

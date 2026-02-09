@@ -7,6 +7,31 @@
     </button>
   </div>
 
+  <!-- Search Form -->
+  <mat-card class="search-form">
+    <mat-card-content>
+      <form #searchForm="ngForm" (ngSubmit)="loadUsers()">
+        <div class="search-fields">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search by Name or Email</mat-label>
+            <input matInput [(ngModel)]="searchTerm" name="searchTerm" placeholder="Enter user name or email">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          
+          <button mat-raised-button color="primary" type="submit" class="search-button">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          
+          <button mat-raised-button type="button" (click)="clearSearch()" class="clear-button">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
   <div *ngIf="loading" class="loading-section">
     <mat-spinner></mat-spinner>
     <p>Loading users...</p>

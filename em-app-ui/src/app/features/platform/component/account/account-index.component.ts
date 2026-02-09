@@ -22,6 +22,8 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
 
+  searchTerm: string = '';
+
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
 
   constructor(private accountService: AccountService) {
@@ -41,6 +43,18 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.loading = true;
     this.error = null;
 
+    // Apply search filter if search term exists
+    if (this.searchTerm && this.searchTerm.trim()) {
+      const whereClause: WhereClause = {
+        name: 'name',
+        oper: FilterOperator.LIKE,
+        values: [this.searchTerm.trim()]
+      };
+      this.searchCriteria.filterByItems = [whereClause];
+    } else {
+      this.searchCriteria.filterByItems = [];
+    }
+
     this.accountService.getAccounts(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
@@ -53,6 +67,12 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
         this.loading = false;
       }
     });
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.searchCriteria.filterByItems = [];
+    this.loadAccounts();
   }
 
   editAccount(account: AccountDto): void {
