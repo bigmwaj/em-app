@@ -32,7 +32,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   override getKeyLabel(bean: AccountDto): string | number {
-    throw new Error('Method not implemented.');
+    return bean.id || bean.name;
   }
 
   ngOnInit(): void {

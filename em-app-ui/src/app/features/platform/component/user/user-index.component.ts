@@ -23,7 +23,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   }
 
   override getKeyLabel(bean: UserDto): string | number {
-    throw new Error('Method not implemented.');
+    return bean.id || bean.username;
   }
 
   ngOnInit(): void {

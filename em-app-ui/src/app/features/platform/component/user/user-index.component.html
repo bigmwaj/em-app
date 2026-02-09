@@ -13,8 +13,8 @@
       <form #searchForm="ngForm" (ngSubmit)="loadUsers()">
         <div class="search-fields">
           <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search by Name or Email</mat-label>
-            <input matInput [(ngModel)]="searchTerm" name="searchTerm" placeholder="Enter user name or email">
+            <mat-label>Search by Username</mat-label>
+            <input matInput [(ngModel)]="searchTerm" name="searchTerm" placeholder="Enter username">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
           

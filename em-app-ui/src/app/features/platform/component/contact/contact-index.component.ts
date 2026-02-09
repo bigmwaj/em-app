@@ -25,7 +25,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   }
 
   override getKeyLabel(bean: ContactDto): string | number {
-    throw new Error('Method not implemented.');
+    return bean.id || `${bean.firstName} ${bean.lastName}`;
   }
 
   ngOnInit(): void {
