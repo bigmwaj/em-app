@@ -34,7 +34,9 @@ public class AccountService extends AbstractService {
     private EntityManager entityManager;
 
     protected SearchResultDto<AccountDto> searchAll() {
-        var r = dao.findAll().stream().map(GlobalMapper.INSTANCE::toDto).map(this::addChildren).toList();
+        var r = dao.findAll().stream()
+                .map(this::toDtoWithChildren)
+                .toList();
         return new SearchResultDto<>(r);
     }
 
@@ -51,8 +53,7 @@ public class AccountService extends AbstractService {
         }
         var r = dao.findAllByCriteria(entityManager, sc)
                 .stream()
-                .map(GlobalMapper.INSTANCE::toDto)
-                .map(this::addChildren)
+                .map(this::toDtoWithChildren)
                 .toList();
 
         return new SearchResultDto<>(searchStats, r);
@@ -60,8 +61,7 @@ public class AccountService extends AbstractService {
 
     public AccountDto findById(Long accountId) {
         return dao.findById(accountId)
-                .map(GlobalMapper.INSTANCE::toDto)
-                .map(this::addChildren)
+                .map(this::toDtoWithChildren)
                 .orElseThrow(() -> new NoSuchElementException("Account not found with id: " + accountId));
     }
 
@@ -92,11 +92,35 @@ public class AccountService extends AbstractService {
         }
     }
 
+    /**
+     * Performance optimization: Maps entity to DTO and includes contact roles.
+     * The AccountEntity now has @OneToMany relationship with SUBSELECT fetch mode,
+     * which loads all account contacts efficiently. This eliminates the N+1 query problem.
+     */
+    private AccountDto toDtoWithChildren(AccountEntity entity) {
+        AccountDto dto = GlobalMapper.INSTANCE.toDto(entity);
+        
+        // Map contact roles directly from the entity's pre-loaded collection
+        dto.setContactRoles(entity.getContactRoles().stream()
+                .map(GlobalMapper.INSTANCE::toDto)
+                .toList());
+        
+        return dto;
+    }
+
+    /**
+     * @deprecated Use toDtoWithChildren(AccountEntity) instead for better performance
+     */
+    @Deprecated(since = "2026-02-09", forRemoval = true)
     private AccountDto addChildren(AccountDto dto){
         addAccountContacts(dto);
         return dto;
     }
 
+    /**
+     * @deprecated Use toDtoWithChildren(AccountEntity) instead for better performance
+     */
+    @Deprecated(since = "2026-02-09", forRemoval = true)
     private void addAccountContacts(AccountDto dto){
         var l = accountContactDao.findAllByAccountId(dto.getId())
                 .stream().map(GlobalMapper.INSTANCE::toDto).toList();

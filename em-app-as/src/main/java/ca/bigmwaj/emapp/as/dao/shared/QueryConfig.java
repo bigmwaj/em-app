@@ -41,7 +41,7 @@ public class QueryConfig {
 
         var q = switch (filterBy.getOper()) {
             case like -> {
-                var param = v.getFirst().toString().toLowerCase();
+                var param = v.get(0).toString().toLowerCase();
                 qb.withParam(dbFieldName, "%" + param + "%");
                 yield String.format("lower(%s.%s) like :%s", rootEntity, dbFieldName, dbFieldName);
             }
@@ -50,19 +50,19 @@ public class QueryConfig {
                 yield String.format("%s.%s in (:%s)", rootEntity, dbFieldName, dbFieldName);
             }
             case lt -> {
-                qb.withParam(dbFieldName, v.getFirst());
+                qb.withParam(dbFieldName, v.get(0));
                 yield String.format("%s.%s < :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case lte -> {
-                qb.withParam(dbFieldName, v.getFirst());
+                qb.withParam(dbFieldName, v.get(0));
                 yield String.format("%s.%s <= :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case gt -> {
-                qb.withParam(dbFieldName, v.getFirst());
+                qb.withParam(dbFieldName, v.get(0));
                 yield String.format("%s.%s > :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case gte -> {
-                qb.withParam(dbFieldName, v.getFirst());
+                qb.withParam(dbFieldName, v.get(0));
                 yield String.format("%s.%s >= :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case ne, ni -> {
@@ -70,8 +70,8 @@ public class QueryConfig {
                 yield String.format("%s.%s not in (:%s)", rootEntity, dbFieldName, dbFieldName);
             }
             case btw -> {
-                qb.withParam(dbFieldName + "Min", v.getFirst())
-                        .withParam(dbFieldName + "Max", v.getLast());
+                qb.withParam(dbFieldName + "Min", v.get(0))
+                        .withParam(dbFieldName + "Max", v.get(v.size() - 1));
                 yield String.format("%s.%s between :%sMin and :%sMax", rootEntity, dbFieldName, dbFieldName, dbFieldName);
             }
         };

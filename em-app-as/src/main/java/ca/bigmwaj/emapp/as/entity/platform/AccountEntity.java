@@ -5,6 +5,11 @@ import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -27,4 +32,11 @@ public class AccountEntity extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false)
     private AccountStatusLvo status;
+
+    /**
+     * Performance optimization: Fetch account contacts using SUBSELECT to prevent N+1 queries.
+     */
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<AccountContactEntity> contactRoles = new ArrayList<>();
 }
