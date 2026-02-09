@@ -38,7 +38,9 @@ public class AccountService extends AbstractService {
     private EntityManager entityManager;
 
     protected SearchResultDto<AccountDto> searchAll() {
-        var r = dao.findAll().stream().map(GlobalMapper.INSTANCE::toDto).toList();
+        var r = dao.findAll().stream()
+                .map(this::toDtoWithChildren)
+                .toList();
         return new SearchResultDto<>(r);
     }
 
@@ -55,8 +57,7 @@ public class AccountService extends AbstractService {
         }
         var r = dao.findAllByCriteria(entityManager, sc)
                 .stream()
-                .map(GlobalMapper.INSTANCE::toDto)
-                .map(e -> addChildren(sc, e))
+                .map(this::toDtoWithChildren)
                 .toList();
 
         return new SearchResultDto<>(searchStats, r);
@@ -64,7 +65,7 @@ public class AccountService extends AbstractService {
 
     public AccountDto findById(Long accountId) {
         return dao.findById(accountId)
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(this::toDtoWithChildren)
                 .orElseThrow(() -> new NoSuchElementException("Account not found with id: " + accountId));
     }
 
@@ -95,54 +96,18 @@ public class AccountService extends AbstractService {
         }
     }
 
-    private AccountDto addChildren(AccountSearchCriteria sc, AccountDto dto){
-        if( sc.isIncludeContactRoles()){
-            dto.setAccountContacts(getAccountContacts(dto));
-        }
-
-        if( sc.isIncludeMainContact()){
-            dto.setMainContact(getMainAccountContact(dto).getContact());
-        }
-        return dto;
-    }
-
-    private List<AccountContactDto> getAccountContacts(AccountDto dto){
-        return accountContactDao.findAllByAccountId(dto.getId())
-                .stream().map(this::map).toList();
-    }
-
-    private AccountContactDto getMainAccountContact(AccountDto dto){
-        return accountContactDao.findAtMostOneByAccountIdAndRole(dto.getId(), AccountContactRoleLvo.PRINCIPAL)
-                .map(this::map).orElse(null);
-    }
-
-    private AccountContactDto map(AccountContactEntity entity) {
+    /**
+     * Performance optimization: Maps entity to DTO and includes contact roles.
+     * The AccountEntity now has @OneToMany relationship with SUBSELECT fetch mode,
+     * which loads all account contacts efficiently. This eliminates the N+1 query problem.
+     */
+    private AccountDto toDtoWithChildren(AccountEntity entity) {
         var dto = GlobalMapper.INSTANCE.toDto(entity);
-        var contactDto = dto.getContact();
-        var contactEntity = entity.getContact();
 
-        if( contactDto != null && contactEntity != null ){
-            if( contactEntity.getEmails() != null && !contactEntity.getEmails().isEmpty() ){
-                contactDto.setMainEmail(GlobalMapper.INSTANCE.toDto(contactEntity.getEmails().getFirst()));
-            }else{
-                System.out.println("contactEntity.getEmails() = " + contactEntity.getEmails());
-            }
+        dto.setAccountContacts(entity.getContactRoles().stream()
+                .map(GlobalMapper.INSTANCE::toDto)
+                .toList());
 
-            if( contactEntity.getPhones() != null && !contactEntity.getPhones().isEmpty() ){
-                contactDto.setMainPhone(GlobalMapper.INSTANCE.toDto(contactEntity.getPhones().getFirst()));
-            }else{
-                System.out.println("contactEntity.getPhones() = " + contactEntity.getPhones());
-            }
-
-            if( contactEntity.getAddresses() != null && !contactEntity.getAddresses().isEmpty() ){
-                contactDto.setMainAddress(GlobalMapper.INSTANCE.toDto(contactEntity.getAddresses().getFirst()));
-            }else{
-                System.out.println("contactEntity.getAddresses() = " + contactEntity.getAddresses());
-            }
-        }else {
-            System.out.println("contactEntity = " + contactEntity);
-            System.out.println("contactDto = " + contactDto);
-        }
         return dto;
     }
 }

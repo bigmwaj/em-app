@@ -43,7 +43,9 @@ public class ContactService extends AbstractService {
     private EntityManager entityManager;
 
     protected SearchResultDto<ContactDto> searchAll() {
-        var r = dao.findAll().stream().map(GlobalMapper.INSTANCE::toDto).map(this::addChildren).toList();
+        var r = dao.findAll().stream()
+                .map(this::toDtoWithChildren)
+                .toList();
         return new SearchResultDto<>(r);
     }
 
@@ -60,8 +62,7 @@ public class ContactService extends AbstractService {
         }
         var r = dao.findAllByCriteria(entityManager, sc)
                 .stream()
-                .map(GlobalMapper.INSTANCE::toDto)
-                .map(this::addChildren)
+                .map(this::toDtoWithChildren)
                 .toList();
 
         return new SearchResultDto<>(searchStats, r);
@@ -69,8 +70,7 @@ public class ContactService extends AbstractService {
 
     public ContactDto findById(Long contactId) {
         return dao.findById(contactId)
-                .map(GlobalMapper.INSTANCE::toDto)
-                .map(this::addChildren)
+                .map(this::toDtoWithChildren)
                 .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
     }
 
@@ -193,6 +193,35 @@ public class ContactService extends AbstractService {
         }
     }
 
+    /**
+     * Performance optimization: Maps entity to DTO and includes children collections.
+     * The ContactEntity now has @OneToMany relationships with SUBSELECT fetch mode,
+     * which loads all children efficiently for all contacts in the result set.
+     * This eliminates the N+1 query problem where each contact would trigger 3 additional queries.
+     */
+    private ContactDto toDtoWithChildren(ContactEntity entity) {
+        ContactDto dto = GlobalMapper.INSTANCE.toDto(entity);
+        
+        // Map child collections directly from the entity's pre-loaded collections
+        dto.setEmails(entity.getEmails().stream()
+                .map(GlobalMapper.INSTANCE::toDto)
+                .toList());
+        
+        dto.setPhones(entity.getPhones().stream()
+                .map(GlobalMapper.INSTANCE::toDto)
+                .toList());
+        
+        dto.setAddresses(entity.getAddresses().stream()
+                .map(GlobalMapper.INSTANCE::toDto)
+                .toList());
+        
+        return dto;
+    }
+
+    /**
+     * @deprecated Use toDtoWithChildren(ContactEntity) instead for better performance
+     */
+    @Deprecated(since = "2026-02-09", forRemoval = true)
     private ContactDto addChildren(ContactDto dto){
         addEmails(dto);
         addPhones(dto);
@@ -200,12 +229,20 @@ public class ContactService extends AbstractService {
         return dto;
     }
 
+    /**
+     * @deprecated Use toDtoWithChildren(ContactEntity) instead for better performance
+     */
+    @Deprecated(since = "2026-02-09", forRemoval = true)
     private void addEmails(ContactDto dto){
         var l = emailDao.findAllByContactId(dto.getId())
                 .stream().map(GlobalMapper.INSTANCE::toDto).toList();
         dto.setEmails(l);
     }
 
+    /**
+     * @deprecated Use toDtoWithChildren(ContactEntity) instead for better performance
+     */
+    @Deprecated(since = "2026-02-09", forRemoval = true)
     private void addPhones(ContactDto dto){
         var l = phoneDao.findAllByContactId(dto.getId())
                 .stream().map(GlobalMapper.INSTANCE::toDto).toList();
@@ -213,6 +250,10 @@ public class ContactService extends AbstractService {
 
     }
 
+    /**
+     * @deprecated Use toDtoWithChildren(ContactEntity) instead for better performance
+     */
+    @Deprecated(since = "2026-02-09", forRemoval = true)
     private void addAddresses(ContactDto dto){
         var l = addressDao.findAllByContactId(dto.getId())
                 .stream().map(GlobalMapper.INSTANCE::toDto).toList();

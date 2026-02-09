@@ -9,7 +9,6 @@ import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
 import ca.bigmwaj.emapp.as.service.platform.AccountService;
@@ -118,7 +117,7 @@ public class AccountController extends AbstractBaseAPI {
                 .withPageIndex(pageIndex)
                 .withFilterByItems(filterByItems)
                 .withSortByItems(sortByItems)
-                .withIncludeContactRoles(includeContactRoles)
+                .withIncludeAccountContacts(includeContactRoles)
                 .withIncludeMainContact(includeMainContact);
         return ResponseEntity.ok(service.search(builder.build()));
     }
