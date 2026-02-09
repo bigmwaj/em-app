@@ -3,6 +3,7 @@ package ca.bigmwaj.emapp.as.dto.shared.search;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.function.Function;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@ToString(callSuper = true)
 @NoArgsConstructor
 public class FilterBy extends AbstractClauseBy{
 

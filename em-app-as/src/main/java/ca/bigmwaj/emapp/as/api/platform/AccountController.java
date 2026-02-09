@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +52,7 @@ public class AccountController extends AbstractBaseAPI {
             @RequestParam(value = "pageSize", required = false)
             Short pageSize,
 
-            @Positive
+            @PositiveOrZero
             @Parameter(description = "The page index for filtering")
             @RequestParam(value = "pageIndex", required = false)
             Integer pageIndex,
@@ -73,13 +74,25 @@ public class AccountController extends AbstractBaseAPI {
                     supportedFields = {
                             @FilterBySupportedField(name = "id", type = Long.class),
                             @FilterBySupportedField(name = "name", type = String.class),
-                            @FilterBySupportedField(name = "status", type = AccountStatusLvo.class)
+                            @FilterBySupportedField(name = "status", type = AccountStatusLvo.class),
+                            @FilterBySupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
+                            @FilterBySupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
+                            @FilterBySupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
+                            @FilterBySupportedField(name = "email", type = String.class, rootEntityName = "ce"),
+                            @FilterBySupportedField(name = "address", type = String.class, rootEntityName = "ca"),
+
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>id</b></li>" +
                     "<li><b>name</b></li>" +
                     "<li><b>status</b></li>" +
+                    "<li><b>firstName</b></li>" +
+                    "<li><b>lastName</b></li>" +
+                    "<li><b>lastName</b></li>" +
+                    "<li><b>phone</b></li>" +
+                    "<li><b>email</b></li>" +
+                    "<li><b>address</b></li>" +
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
@@ -87,9 +100,14 @@ public class AccountController extends AbstractBaseAPI {
 
             @ValidSortByPatterns(
                     supportedFields = {
+                            @SortBySupportedField(name = "id"),
                             @SortBySupportedField(name = "status"),
                             @SortBySupportedField(name = "name"),
-                            @SortBySupportedField(name = "status"),
+                            @SortBySupportedField(name = "firstName", rootEntityName = "c"),
+                            @SortBySupportedField(name = "lastName", rootEntityName = "c"),
+                            @SortBySupportedField(name = "phone", rootEntityName = "cp"),
+                            @SortBySupportedField(name = "email", rootEntityName = "ce"),
+                            @SortBySupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
             List<SortBy> sortByItems) {
@@ -99,6 +117,7 @@ public class AccountController extends AbstractBaseAPI {
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
                 .withFilterByItems(filterByItems)
+                .withSortByItems(sortByItems)
                 .withIncludeContactRoles(includeContactRoles)
                 .withIncludeMainContact(includeMainContact);
         return ResponseEntity.ok(service.search(builder.build()));

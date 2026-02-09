@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -32,4 +33,13 @@ public class ContactEntity extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "HOLDER_TYPE", nullable = false)
     private HolderTypeLvo holderType;
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactPhoneEntity> phones;
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactEmailEntity> emails;
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactAddressEntity> addresses;
 }

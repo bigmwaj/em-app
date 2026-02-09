@@ -1,5 +1,8 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
+import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.GenericConverter;
 import org.springframework.stereotype.Component;
@@ -14,6 +17,8 @@ import java.util.function.Predicate;
 @Component
 public class GlobalPatternsConverter implements GenericConverter {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalPatternsConverter.class);
+
     @Override
     public Set<ConvertiblePair> getConvertibleTypes() {
         return Set.of(new ConvertiblePair(String.class, List.class));
@@ -27,9 +32,10 @@ public class GlobalPatternsConverter implements GenericConverter {
 
         Function<Predicate<Class<?>>, Boolean> isValid =
                 p -> Arrays.stream(targetType.getAnnotations())
-                .map(Annotation::annotationType)
-                .anyMatch(p);
+                        .map(Annotation::annotationType)
+                        .anyMatch(p);
 
+        logger.debug("Converting sortBy patterns: {} to List<SortBy>, SourceType:{}", source, sourceType);
         if (isValid.apply(ValidFilterByPatterns.class::equals)) {
             return new FilterByPatternsConverter(targetType, (String) source).convert();
         } else if (isValid.apply(ValidSortByPatterns.class::equals)) {
@@ -38,4 +44,5 @@ public class GlobalPatternsConverter implements GenericConverter {
 
         return null;
     }
+
 }

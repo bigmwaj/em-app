@@ -17,6 +17,7 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
 
     default QueryConfig prepareQueryConfig(QueryConfig.QueryConfigBuilder builder, AbstractSearchCriteria searchCriteria) {
         if( searchCriteria.getFilterByItems() != null && !searchCriteria.getFilterByItems().isEmpty() ){
+            System.out.println("Appending filters: " + searchCriteria.getFilterByItems());
             searchCriteria.getFilterByItems().forEach(e -> QueryConfig.appendFilter(builder, e));
         }
 

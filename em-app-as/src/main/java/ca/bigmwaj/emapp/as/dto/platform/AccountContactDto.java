@@ -15,4 +15,7 @@ public class AccountContactDto extends BaseHistDto {
 
     private AccountContactRoleLvo role;
 
+    public boolean getIsMain() {
+        return AccountContactRoleLvo.PRINCIPAL.equals(role);
+    }
 }

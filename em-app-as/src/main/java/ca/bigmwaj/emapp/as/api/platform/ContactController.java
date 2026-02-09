@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +50,7 @@ public class ContactController extends AbstractBaseAPI {
             @RequestParam(value = "pageSize", required = false)
             Short pageSize,
 
-            @Positive
+            @PositiveOrZero
             @Parameter(description = "The page index for filtering")
             @RequestParam(value = "pageIndex", required = false)
             Integer pageIndex,
@@ -86,9 +87,13 @@ public class ContactController extends AbstractBaseAPI {
 
             @ValidSortByPatterns(
                     supportedFields = {
+                            @SortBySupportedField(name = "id"),
                             @SortBySupportedField(name = "holderType"),
                             @SortBySupportedField(name = "firstName"),
                             @SortBySupportedField(name = "lastName"),
+                            @SortBySupportedField(name = "phone", rootEntityName = "cp"),
+                            @SortBySupportedField(name = "email", rootEntityName = "ce"),
+                            @SortBySupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
             List<SortBy> sortByItems) {

@@ -2,7 +2,6 @@ package ca.bigmwaj.emapp.as.dto;
 
 import ca.bigmwaj.emapp.as.dto.platform.*;
 import ca.bigmwaj.emapp.as.entity.platform.*;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -21,7 +20,7 @@ public interface GlobalMapper {
     AccountContactEntity toEntity(AccountContactDto dto);
 
     @AnyEntityToAnyDtoMapping
-    @Mapping(target = "contactRoles", ignore = true)
+    @Mapping(target = "accountContacts", ignore = true)
     @Mapping(target = "mainContact", ignore = true)
     AccountDto toDto(AccountEntity entity);
     @AnyDtoToAnyEntityMapping
@@ -49,6 +48,7 @@ public interface GlobalMapper {
     ContactPhoneEntity toEntity(ContactPhoneDto dto);
 
     @AnyEntityToAnyDtoMapping
+    @Mapping(target = "picture", ignore = true)
     UserDto toDto(UserEntity entity);
     @AnyDtoToAnyEntityMapping
     UserEntity toEntity(UserDto dto);

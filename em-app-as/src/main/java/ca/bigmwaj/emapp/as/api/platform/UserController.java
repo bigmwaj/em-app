@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -56,7 +57,7 @@ public class UserController extends AbstractBaseAPI {
             @RequestParam(value = "pageSize", required = false)
             Short pageSize,
 
-            @Positive
+            @PositiveOrZero
             @Parameter(description = "The page index for filtering")
             @RequestParam(value = "pageIndex", required = false)
             Integer pageIndex,

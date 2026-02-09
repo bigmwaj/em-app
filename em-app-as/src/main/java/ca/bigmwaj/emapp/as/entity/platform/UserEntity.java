@@ -25,6 +25,9 @@ public class UserEntity extends AbstractBaseEntity {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
+    @Column(name = "PROVIDER")
+    private String provider;
+
     @ManyToOne
     @JoinColumn(name = "CONTACT_ID", nullable = false)
     private ContactEntity contact;
