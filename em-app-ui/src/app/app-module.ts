@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { ReactiveFormsModule } from '@angular/forms';
 //import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Angular Material Modules
@@ -8,7 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -49,6 +52,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     BrowserModule,
     //BrowserAnimationsModule,
     AppRoutingModule,
+    ReactiveFormsModule,
     // Material Modules
     MatToolbarModule,
     MatButtonModule,
@@ -60,7 +64,9 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatProgressSpinnerModule,
     MatChipsModule,
     MatDividerModule,
-    MatTableModule
+    MatTableModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
