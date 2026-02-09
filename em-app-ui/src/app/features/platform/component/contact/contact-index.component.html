@@ -1,53 +1,106 @@
-<div class="contacts-container">
-  <div class="header">
-    <h1>Contacts Management</h1>
+<div class="main-container contacts-container">
+
+  <div class="main-header">
+    <h1 class="title">
+      <mat-icon mat-card-avatar>person</mat-icon>
+      <span>Contacts Management</span>
+    </h1>
     <button mat-raised-button color="primary">
       <mat-icon>add</mat-icon>
       Add Contact
     </button>
   </div>
 
-  <div *ngIf="loading" class="loading-section">
-    <mat-spinner></mat-spinner>
-    <p>Loading contacts...</p>
+  <div class="search-section">
+    <mat-card>
+      <mat-card-content>
+        <form class="search-form">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search by First Name</mat-label>
+            <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter first name">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="onSearch()" type="button">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          <button mat-raised-button (click)="onClearSearch()" type="button">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
   </div>
 
-  <div *ngIf="error && !loading" class="info-message">
+  @if (error && !loading) {
+
+  <div class="info-message">
     <mat-card>
       <mat-icon>info</mat-icon>
       <p>{{ error }}</p>
     </mat-card>
   </div>
 
-  <div *ngIf="!loading" class="contacts-grid">
-    <mat-card *ngFor="let contact of searchResult.data" class="contact-card">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>person</mat-icon>
-        <mat-card-title>{{ contact.firstName }} {{ contact.lastName }}</mat-card-title>
-        <mat-card-subtitle>{{ 'No company' }}</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="contact-info">
-          <p>
-            <mat-icon>email</mat-icon>
-            {{ contact?.mainEmail?.email }}
-          </p>
-          <p>
-            <mat-icon>phone</mat-icon>
-            {{ contact?.mainPhone?.phone }}
-          </p>
-        </div>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button color="primary" (click)="editContact(contact)">
+  }
+
+  @if (loading) {
+
+  <div class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Loading contacts...</p>
+  </div>
+
+  } @else {
+
+  <table mat-table [dataSource]="data" class="mat-elevation-z8 mat-mdc-card contacts-table">
+    <!-- First Name Column -->
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef>First Name</th>
+      <td mat-cell *matCellDef="let element">{{element.firstName}}</td>
+    </ng-container>
+    <!-- Last Name Column -->
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef>Last Name</th>
+      <td mat-cell *matCellDef="let element">{{element.lastName}}</td>
+    </ng-container>
+    <!-- Email Column -->
+    <ng-container matColumnDef="mainEmail">
+      <th mat-header-cell *matHeaderCellDef>Main Email</th>
+      <td mat-cell *matCellDef="let element">{{element?.mainEmail?.email}}</td>
+    </ng-container>
+    <!-- Phone Column -->
+    <ng-container matColumnDef="mainPhone">
+      <th mat-header-cell *matHeaderCellDef>Main Phone</th>
+      <td mat-cell *matCellDef="let element">{{element?.mainPhone?.phone}}</td>
+    </ng-container>
+    <!-- Address Column -->
+    <ng-container matColumnDef="mainAddress">
+      <th mat-header-cell *matHeaderCellDef>Main Address</th>
+      <td mat-cell *matCellDef="let element">{{element?.mainAddress?.address}}</td>
+    </ng-container>
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        <button mat-button color="warn">
+          <mat-icon>add</mat-icon>
+          Create
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" (click)="editContact(element)">
           <mat-icon>edit</mat-icon>
           Edit
         </button>
-        <button mat-button color="warn" (click)="deleteContact(contact)">
+        <button mat-button color="warn" (click)="deleteContact(element)">
           <mat-icon>delete</mat-icon>
           Delete
         </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  }
 </div>

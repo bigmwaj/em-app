@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../../service/contact.service';
 import { ContactDto } from '../../api.platform.model';
-import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult } from '../../../shared/api.shared.model';
+import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
@@ -16,6 +16,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   error: string | null = null;
   searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
   displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
+  searchText = '';
 
   constructor(private contactService: ContactService) { super(); }
 
@@ -31,10 +32,11 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
     this.loading = true;
     this.error = null;
 
-    this.contactService.getContacts().subscribe({
+    this.contactService.getContacts(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;
+        this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load contacts:', err);
@@ -50,5 +52,25 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
 
   deleteContact(contact: ContactDto): void {
     console.log('Delete contact:', contact);
+  }
+
+  onSearch(): void {
+    this.searchCriteria = createDefaultSearchCriteria();
+    
+    if (this.searchText && this.searchText.trim()) {
+      this.searchCriteria.filterByItems = [{
+        name: 'firstName',
+        oper: FilterOperator.LIKE,
+        values: [this.searchText.trim()]
+      }];
+    }
+    
+    this.loadContacts();
+  }
+
+  onClearSearch(): void {
+    this.searchText = '';
+    this.searchCriteria = createDefaultSearchCriteria();
+    this.loadContacts();
   }
 }

@@ -11,6 +11,28 @@
     </button>
   </div>
 
+  <div class="search-section">
+    <mat-card>
+      <mat-card-content>
+        <form class="search-form">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search by Name</mat-label>
+            <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter account name">
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="onSearch()" type="button">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          <button mat-raised-button (click)="onClearSearch()" type="button">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
   @if (error && !loading) {
 
   <div class="info-message">

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../service/user.service';
 import { UserDto } from '../../api.platform.model';
-import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult } from '../../../shared/api.shared.model';
+import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
@@ -16,6 +16,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   error: string | null = null;
   searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
   displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
+  searchText = '';
 
   constructor(private userService: UserService) { super(); }
 
@@ -35,10 +36,11 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
     this.loading = true;
     this.error = null;
 
-    this.userService.getUsers().subscribe({
+    this.userService.getUsers(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;
+        this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load users:', err);
@@ -62,5 +64,25 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   deleteUser(user: UserDto): void {
     console.log('Delete user:', user);
     // TODO: Implement delete confirmation
+  }
+
+  onSearch(): void {
+    this.searchCriteria = createDefaultSearchCriteria();
+    
+    if (this.searchText && this.searchText.trim()) {
+      this.searchCriteria.filterByItems = [{
+        name: 'firstName',
+        oper: FilterOperator.LIKE,
+        values: [this.searchText.trim()]
+      }];
+    }
+    
+    this.loadUsers();
+  }
+
+  onClearSearch(): void {
+    this.searchText = '';
+    this.searchCriteria = createDefaultSearchCriteria();
+    this.loadUsers();
   }
 }
