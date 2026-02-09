@@ -18,6 +18,7 @@ public class WhereClausePatternsConverter {
     private static final Logger logger = LoggerFactory.getLogger(WhereClausePatternsConverter.class);
 
     private TypeDescriptor targetType;
+
     private String patterns;
 
     private static <T> Map<String, T> fetchSupportedMetadata(TypeDescriptor targetType,

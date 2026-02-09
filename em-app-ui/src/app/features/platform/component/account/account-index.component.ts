@@ -27,16 +27,6 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   constructor(private accountService: AccountService) {
     super();
     this.searchCriteria.includeMainContact = true;
-    const item1 = {} as WhereClause;
-    item1.name = 'id';
-    item1.oper = FilterOperator.IN;
-    item1.values = ['1'];
-
-    const item2 = {} as WhereClause;
-    item2.name = 'email';
-    item2.oper = FilterOperator.LIKE;
-    item2.values = ['alain'];
-    this.searchCriteria.filterByItems = [item1, item2];
   }
 
   override getKeyLabel(bean: AccountDto): string | number {

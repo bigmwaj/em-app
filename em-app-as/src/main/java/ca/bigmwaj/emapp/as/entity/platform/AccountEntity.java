@@ -38,5 +38,5 @@ public class AccountEntity extends AbstractBaseEntity {
      */
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
-    private List<AccountContactEntity> contactRoles = new ArrayList<>();
+    private List<AccountContactEntity> accountContacts = new ArrayList<>();
 }

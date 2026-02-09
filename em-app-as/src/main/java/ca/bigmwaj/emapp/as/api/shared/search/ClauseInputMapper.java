@@ -37,7 +37,7 @@ public interface ClauseInputMapper {
             return WhereClause.oper.valueOf(oper);
         } catch (IllegalArgumentException e) {
             logger.error(e.getMessage(), e);
-            throw new PatternsConversionException(MessageConstants.MSG0004);
+            throw new ClausePatternsConversionException(MessageConstants.MSG0004);
         }
     }
 }

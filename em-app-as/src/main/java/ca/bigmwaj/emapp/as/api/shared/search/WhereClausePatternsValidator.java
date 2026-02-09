@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 
 public class WhereClausePatternsValidator implements ConstraintValidator<ValidWhereClausePatterns, List<WhereClause>> {
 
-    private ValidWhereClausePatterns validFilterByPatterns;
+    private ValidWhereClausePatterns patterns;
 
     @Override
     public void initialize(ValidWhereClausePatterns constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.validFilterByPatterns = constraintAnnotation;
+        this.patterns = constraintAnnotation;
     }
 
     @Override
@@ -97,6 +97,6 @@ public class WhereClausePatternsValidator implements ConstraintValidator<ValidWh
     }
 
     List<String> getSupportedFieldNames() {
-        return Arrays.stream(validFilterByPatterns.supportedFields()).map(WhereClauseSupportedField::name).toList();
+        return Arrays.stream(patterns.supportedFields()).map(WhereClauseSupportedField::name).toList();
     }
 }

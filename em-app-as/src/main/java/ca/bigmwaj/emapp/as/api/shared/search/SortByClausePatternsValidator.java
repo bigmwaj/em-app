@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 
 public class SortByClausePatternsValidator implements ConstraintValidator<ValidSortByClausePatterns, List<SortByClause>> {
 
-    private ValidSortByClausePatterns validSortByPatterns;
+    private ValidSortByClausePatterns patterns;
 
     @Override
     public void initialize(ValidSortByClausePatterns constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
-        this.validSortByPatterns = constraintAnnotation;
+        this.patterns = constraintAnnotation;
     }
 
     @Override
@@ -68,6 +68,6 @@ public class SortByClausePatternsValidator implements ConstraintValidator<ValidS
     }
 
     List<String> getSupportedFieldNames() {
-        return Arrays.stream(validSortByPatterns.supportedFields()).map(SortByClauseSupportedField::name).toList();
+        return Arrays.stream(patterns.supportedFields()).map(SortByClauseSupportedField::name).toList();
     }
 }

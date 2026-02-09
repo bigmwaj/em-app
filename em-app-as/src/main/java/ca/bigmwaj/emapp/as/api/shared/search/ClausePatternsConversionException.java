@@ -2,11 +2,11 @@ package ca.bigmwaj.emapp.as.api.shared.search;
 
 import lombok.Getter;
 
-public class PatternsConversionException extends RuntimeException{
+public class ClausePatternsConversionException extends RuntimeException{
 
     @Getter
     private final String message;
-    public PatternsConversionException(String message){
+    public ClausePatternsConversionException(String message){
         this.message = message;
     }
 }

@@ -11,14 +11,12 @@ import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -33,6 +31,9 @@ public class AccountService extends AbstractService {
 
     @Autowired
     private AccountContactService accountContactService;
+
+    @Autowired
+    private ContactService contactService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -97,17 +98,27 @@ public class AccountService extends AbstractService {
     }
 
     /**
-     * Performance optimization: Maps entity to DTO and includes contact roles.
+     * Performance optimization: Maps entity to DTO and includes account contacts.
      * The AccountEntity now has @OneToMany relationship with SUBSELECT fetch mode,
      * which loads all account contacts efficiently. This eliminates the N+1 query problem.
      */
     private AccountDto toDtoWithChildren(AccountEntity entity) {
         var dto = GlobalMapper.INSTANCE.toDto(entity);
 
-        dto.setAccountContacts(entity.getContactRoles().stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+        dto.setAccountContacts(entity.getAccountContacts().stream()
+                .map(this::toDtoWithChildren)
                 .toList());
 
+        dto.getAccountContacts().stream().filter(AccountContactDto::isMain).findFirst()
+                .map(AccountContactDto::getContact)
+                .ifPresent(dto::setMainContact);
+
+        return dto;
+    }
+
+    private AccountContactDto toDtoWithChildren(AccountContactEntity entity){
+        var dto = GlobalMapper.INSTANCE.toDto(entity);
+        dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
         return dto;
     }
 }

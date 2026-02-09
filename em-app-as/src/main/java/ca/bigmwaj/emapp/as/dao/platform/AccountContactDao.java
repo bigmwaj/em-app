@@ -13,7 +13,4 @@ import java.util.Optional;
 @Repository
 public interface AccountContactDao extends JpaRepository<AccountContactEntity, AccountContactPK> {
 
-    List<AccountContactEntity> findAllByAccountId(Long id);
-
-    Optional<AccountContactEntity> findAtMostOneByAccountIdAndRole(Long id, AccountContactRoleLvo accountContactRoleLvo);
 }

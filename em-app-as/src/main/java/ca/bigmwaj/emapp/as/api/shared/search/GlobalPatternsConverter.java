@@ -1,6 +1,5 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;
@@ -35,7 +34,6 @@ public class GlobalPatternsConverter implements GenericConverter {
                         .map(Annotation::annotationType)
                         .anyMatch(p);
 
-        logger.debug("Converting patterns: {} to target type, SourceType:{}", source, sourceType);
         if (isValid.apply(ValidWhereClausePatterns.class::equals)) {
             return new WhereClausePatternsConverter(targetType, (String) source).convert();
         } else if (isValid.apply(ValidSortByClausePatterns.class::equals)) {
