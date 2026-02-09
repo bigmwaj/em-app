@@ -7,17 +7,17 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data
-public class SortBy extends AbstractClauseBy{
+public class SortByClause extends AbstractClause{
 
     public enum sortType{
         asc, desc
     }
 
-    public SortBy(String name){
+    public SortByClause(String name){
         super(name);
     }
 
-    public SortBy(String name, sortType type){
+    public SortByClause(String name, sortType type){
         this(name);
         this.type = type;
     }

@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,15 +13,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @ExtendWith(MockitoExtension.class)
-public class FilterByPatternsValidatorTest {
+public class WhereClausePatternsValidatorTest {
     @Test
     void givenWellMappedPatterns_whenIsValid_thenReturnsTrue() {
         // Given
         var supportedFieldNames = List.of("field1", "field2");
-        var validator = new FilterByPatternsValidator();
+        var validator = new WhereClausePatternsValidator();
         var items = List.of(
-                new FilterBy("field1", FilterBy.oper.eq, List.of("V1")),
-                new FilterBy("field2", FilterBy.oper.ne, List.of("V2")));
+                new WhereClause("field1", WhereClause.oper.eq, List.of("V1")),
+                new WhereClause("field2", WhereClause.oper.ne, List.of("V2")));
 
         var spyValidator = spy(validator);
         var context = new MockConstraintValidatorContext();
@@ -38,10 +38,10 @@ public class FilterByPatternsValidatorTest {
     void givenNotWellMappedPatterns_whenIsValid_thenReturnsTrue() {
         // Given
         var supportedFieldNames = List.of("field1", "field3");
-        var validator = new FilterByPatternsValidator();
+        var validator = new WhereClausePatternsValidator();
         var items = List.of(
-                new FilterBy("field1"),
-                new FilterBy("field2", FilterBy.oper.eq)
+                new WhereClause("field1"),
+                new WhereClause("field2", WhereClause.oper.eq)
         );
         var spyValidator = spy(validator);
         doReturn(supportedFieldNames).when(spyValidator).getSupportedFieldNames();

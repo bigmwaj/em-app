@@ -8,16 +8,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = FilterByPatternsValidator.class)
+@Constraint(validatedBy = WhereClausePatternsValidator.class)
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidFilterByPatterns {
+public @interface ValidWhereClausePatterns {
     String message() default "Invalid request filter!";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    FilterBySupportedField[] supportedFields() default {};
+    WhereClauseSupportedField[] supportedFields() default {};
 }
 

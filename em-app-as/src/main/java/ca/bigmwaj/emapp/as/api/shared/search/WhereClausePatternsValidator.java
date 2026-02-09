@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -9,28 +9,28 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FilterByPatternsValidator implements ConstraintValidator<ValidFilterByPatterns, List<FilterBy>> {
+public class WhereClausePatternsValidator implements ConstraintValidator<ValidWhereClausePatterns, List<WhereClause>> {
 
-    private ValidFilterByPatterns validFilterByPatterns;
+    private ValidWhereClausePatterns validFilterByPatterns;
 
     @Override
-    public void initialize(ValidFilterByPatterns constraintAnnotation) {
+    public void initialize(ValidWhereClausePatterns constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
         this.validFilterByPatterns = constraintAnnotation;
     }
 
     @Override
-    public boolean isValid(List<FilterBy> filterByItems, ConstraintValidatorContext context) {
+    public boolean isValid(List<WhereClause> filterByItems, ConstraintValidatorContext context) {
         if (filterByItems == null || filterByItems.isEmpty()) {
             return true;
         }
 
         filterByItems.stream()
-                .filter(FilterBy::isValid)
+                .filter(WhereClause::isValid)
                 .forEach(this::validate);
 
         var errorMessages = filterByItems.stream()
-                .map(FilterBy::getValidationErrorMessages)
+                .map(WhereClause::getValidationErrorMessages)
                 .flatMap(List::stream)
                 .collect(Collectors.joining(","));
 
@@ -43,7 +43,7 @@ public class FilterByPatternsValidator implements ConstraintValidator<ValidFilte
         return true;
     }
 
-    private void validate(FilterBy filterBy) {
+    private void validate(WhereClause filterBy) {
         if (filterBy.isNotValid()) {
             return;
         }
@@ -53,7 +53,7 @@ public class FilterByPatternsValidator implements ConstraintValidator<ValidFilte
         validateValues(filterBy);
     }
 
-    private void validateFieldName(FilterBy filterBy) {
+    private void validateFieldName(WhereClause filterBy) {
         String fieldName = filterBy.getName();
 
         if (fieldName == null) {
@@ -71,13 +71,13 @@ public class FilterByPatternsValidator implements ConstraintValidator<ValidFilte
         }
     }
 
-    private void validateOperator(FilterBy filterBy) {
+    private void validateOperator(WhereClause filterBy) {
         if (filterBy.getOper() == null) {
             filterBy.addMessage(MessageConstants.MSG0007);
         }
     }
 
-    private void validateValues(FilterBy filterBy) {
+    private void validateValues(WhereClause filterBy) {
         var values = filterBy.getValues();
 
         if (values == null) {
@@ -97,6 +97,6 @@ public class FilterByPatternsValidator implements ConstraintValidator<ValidFilte
     }
 
     List<String> getSupportedFieldNames() {
-        return Arrays.stream(validFilterByPatterns.supportedFields()).map(FilterBySupportedField::name).toList();
+        return Arrays.stream(validFilterByPatterns.supportedFields()).map(WhereClauseSupportedField::name).toList();
     }
 }

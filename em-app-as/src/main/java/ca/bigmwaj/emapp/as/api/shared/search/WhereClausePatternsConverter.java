@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -14,35 +14,35 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class FilterByPatternsConverter {
-    private static final Logger logger = LoggerFactory.getLogger(FilterByPatternsConverter.class);
+public class WhereClausePatternsConverter {
+    private static final Logger logger = LoggerFactory.getLogger(WhereClausePatternsConverter.class);
 
     private TypeDescriptor targetType;
     private String patterns;
 
     private static <T> Map<String, T> fetchSupportedMetadata(TypeDescriptor targetType,
-                                                        Function<FilterBySupportedField, T> extractor) {
+                                                        Function<WhereClauseSupportedField, T> extractor) {
         return Arrays.stream(targetType.getAnnotations())
-                .filter(e -> e.annotationType().equals(ValidFilterByPatterns.class))
-                .map(ValidFilterByPatterns.class::cast)
-                .map(ValidFilterByPatterns::supportedFields)
+                .filter(e -> e.annotationType().equals(ValidWhereClausePatterns.class))
+                .map(ValidWhereClausePatterns.class::cast)
+                .map(ValidWhereClausePatterns::supportedFields)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toMap(FilterBySupportedField::name, extractor));
+                .collect(Collectors.toMap(WhereClauseSupportedField::name, extractor));
     }
 
     private Map<String, Class<?>> fetchSupportedFieldType(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, FilterBySupportedField::type);
+        return fetchSupportedMetadata(targetType, WhereClauseSupportedField::type);
     }
 
     private Map<String, String> fetchSupportedRootEntityName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, FilterBySupportedField::rootEntityName);
+        return fetchSupportedMetadata(targetType, WhereClauseSupportedField::rootEntityName);
     }
 
     private Map<String, String> fetchSupportedEntityFieldName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, FilterBySupportedField::entityFieldName);
+        return fetchSupportedMetadata(targetType, WhereClauseSupportedField::entityFieldName);
     }
 
-    List<FilterBy> convert() {
+    List<WhereClause> convert() {
         if (patterns == null || patterns.isBlank()) {
             return Collections.emptyList();
         }
@@ -61,11 +61,11 @@ public class FilterByPatternsConverter {
                 .toList();
     }
 
-    private FilterBy mapToFilterItem(FilterByInput input) {
+    private WhereClause mapToFilterItem(WhereClauseInput input) {
         try {
-            return QueryInputMapper.INSTANCE.toItem(input);
+            return ClauseInputMapper.INSTANCE.toItem(input);
         } catch (MethodArgumentConversionNotSupportedException e) {
-            var fi = new FilterBy();
+            var fi = new WhereClause();
             fi.addMessages(input.getValidationErrorMessages());
             fi.addMessage(e.getMessage());
             logger.error(e.getMessage(), e);
@@ -73,13 +73,13 @@ public class FilterByPatternsConverter {
         }
     }
 
-    private FilterByInput mapToFilterItemInput(Map<String, String> supportedEntityFieldNameMap,
+    private WhereClauseInput mapToFilterItemInput(Map<String, String> supportedEntityFieldNameMap,
                                                Map<String, String> supportedRootEntityNameMap,
                                                String filterPattern) {
 
         var args = new ArrayDeque<>(Arrays.asList(filterPattern.split(":")));
 
-        var builder = FilterByInput.builder();
+        var builder = WhereClauseInput.builder();
         if (!args.isEmpty()) {
             var filterName = args.pollFirst();
             builder.withName(filterName);
@@ -106,7 +106,7 @@ public class FilterByPatternsConverter {
         return builder.build();
     }
 
-    private FilterByInput prevalidateFilterItemInput(FilterByInput input) {
+    private WhereClauseInput prevalidateFilterItemInput(WhereClauseInput input) {
         if (input.getName() == null) {
             input.addMessage(MessageConstants.MSG0001);
         }
@@ -119,7 +119,7 @@ public class FilterByPatternsConverter {
         return input;
     }
 
-    private FilterBy castValues(Map<String, Class<?>> supportedFieldMap, FilterBy filterBy) {
+    private WhereClause castValues(Map<String, Class<?>> supportedFieldMap, WhereClause filterBy) {
         var fieldName = filterBy.getName();
         if (fieldName != null && supportedFieldMap.containsKey(fieldName)) {
             var type = supportedFieldMap.get(fieldName);

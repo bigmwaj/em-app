@@ -2,15 +2,15 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
-import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
-import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
-import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
+import ca.bigmwaj.emapp.as.api.shared.search.WhereClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.service.platform.AccountService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
@@ -69,16 +69,16 @@ public class AccountController extends AbstractBaseAPI {
             @RequestParam(value = "includeContactRoles", required = false)
             boolean includeContactRoles,
 
-            @ValidFilterByPatterns(
+            @ValidWhereClausePatterns(
                     supportedFields = {
-                            @FilterBySupportedField(name = "id", type = Long.class),
-                            @FilterBySupportedField(name = "name", type = String.class),
-                            @FilterBySupportedField(name = "status", type = AccountStatusLvo.class),
-                            @FilterBySupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
-                            @FilterBySupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
-                            @FilterBySupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
-                            @FilterBySupportedField(name = "email", type = String.class, rootEntityName = "ce"),
-                            @FilterBySupportedField(name = "address", type = String.class, rootEntityName = "ca"),
+                            @WhereClauseSupportedField(name = "id", type = Long.class),
+                            @WhereClauseSupportedField(name = "name", type = String.class),
+                            @WhereClauseSupportedField(name = "status", type = AccountStatusLvo.class),
+                            @WhereClauseSupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
+                            @WhereClauseSupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
+                            @WhereClauseSupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
+                            @WhereClauseSupportedField(name = "email", type = String.class, rootEntityName = "ce"),
+                            @WhereClauseSupportedField(name = "address", type = String.class, rootEntityName = "ca"),
 
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
@@ -95,21 +95,21 @@ public class AccountController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<FilterBy> filterByItems,
+            List<WhereClause> filterByItems,
 
-            @ValidSortByPatterns(
+            @ValidSortByClausePatterns(
                     supportedFields = {
-                            @SortBySupportedField(name = "id"),
-                            @SortBySupportedField(name = "status"),
-                            @SortBySupportedField(name = "name"),
-                            @SortBySupportedField(name = "firstName", rootEntityName = "c"),
-                            @SortBySupportedField(name = "lastName", rootEntityName = "c"),
-                            @SortBySupportedField(name = "phone", rootEntityName = "cp"),
-                            @SortBySupportedField(name = "email", rootEntityName = "ce"),
-                            @SortBySupportedField(name = "address", rootEntityName = "ca"),
+                            @SortByClauseSupportedField(name = "id"),
+                            @SortByClauseSupportedField(name = "status"),
+                            @SortByClauseSupportedField(name = "name"),
+                            @SortByClauseSupportedField(name = "firstName", rootEntityName = "c"),
+                            @SortByClauseSupportedField(name = "lastName", rootEntityName = "c"),
+                            @SortByClauseSupportedField(name = "phone", rootEntityName = "cp"),
+                            @SortByClauseSupportedField(name = "email", rootEntityName = "ce"),
+                            @SortByClauseSupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
-            List<SortBy> sortByItems) {
+            List<SortByClause> sortByItems) {
 
         var builder = AccountSearchCriteria.builder()
                 .withCalculateStatTotal(calculateStatTotal)

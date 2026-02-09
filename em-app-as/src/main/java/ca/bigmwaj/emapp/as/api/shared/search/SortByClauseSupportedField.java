@@ -7,13 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = FilterByPatternsValidator.class) // Link to the validator class
+@Constraint(validatedBy = SortByClausePatternsValidator.class)
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FilterBySupportedField {
+public @interface SortByClauseSupportedField {
     String name();
-
-    Class<?> type();
 
     String rootEntityName() default "";
 

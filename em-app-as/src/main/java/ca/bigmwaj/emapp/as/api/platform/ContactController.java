@@ -2,15 +2,15 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.api.shared.search.FilterBySupportedField;
-import ca.bigmwaj.emapp.as.api.shared.search.SortBySupportedField;
-import ca.bigmwaj.emapp.as.api.shared.search.ValidFilterByPatterns;
-import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByPatterns;
+import ca.bigmwaj.emapp.as.api.shared.search.WhereClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.FilterBy;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortBy;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.service.platform.ContactService;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -59,16 +59,16 @@ public class ContactController extends AbstractBaseAPI {
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
 
-            @ValidFilterByPatterns(
+            @ValidWhereClausePatterns(
                     supportedFields = {
-                            @FilterBySupportedField(name = "id", type = Long.class),
-                            @FilterBySupportedField(name = "holderType", type = HolderTypeLvo.class),
-                            @FilterBySupportedField(name = "firstName", type = String.class),
-                            @FilterBySupportedField(name = "lastName", type = String.class),
-                            @FilterBySupportedField(name = "birthDate", type = LocalDate.class),
-                            @FilterBySupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
-                            @FilterBySupportedField(name = "email", type = String.class, rootEntityName = "ce"),
-                            @FilterBySupportedField(name = "address", type = String.class, rootEntityName = "ca"),
+                            @WhereClauseSupportedField(name = "id", type = Long.class),
+                            @WhereClauseSupportedField(name = "holderType", type = HolderTypeLvo.class),
+                            @WhereClauseSupportedField(name = "firstName", type = String.class),
+                            @WhereClauseSupportedField(name = "lastName", type = String.class),
+                            @WhereClauseSupportedField(name = "birthDate", type = LocalDate.class),
+                            @WhereClauseSupportedField(name = "phone", type = String.class, rootEntityName = "cp"),
+                            @WhereClauseSupportedField(name = "email", type = String.class, rootEntityName = "ce"),
+                            @WhereClauseSupportedField(name = "address", type = String.class, rootEntityName = "ca"),
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
@@ -83,20 +83,20 @@ public class ContactController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<FilterBy> filterByItems,
+            List<WhereClause> filterByItems,
 
-            @ValidSortByPatterns(
+            @ValidSortByClausePatterns(
                     supportedFields = {
-                            @SortBySupportedField(name = "id"),
-                            @SortBySupportedField(name = "holderType"),
-                            @SortBySupportedField(name = "firstName"),
-                            @SortBySupportedField(name = "lastName"),
-                            @SortBySupportedField(name = "phone", rootEntityName = "cp"),
-                            @SortBySupportedField(name = "email", rootEntityName = "ce"),
-                            @SortBySupportedField(name = "address", rootEntityName = "ca"),
+                            @SortByClauseSupportedField(name = "id"),
+                            @SortByClauseSupportedField(name = "holderType"),
+                            @SortByClauseSupportedField(name = "firstName"),
+                            @SortByClauseSupportedField(name = "lastName"),
+                            @SortByClauseSupportedField(name = "phone", rootEntityName = "cp"),
+                            @SortByClauseSupportedField(name = "email", rootEntityName = "ce"),
+                            @SortByClauseSupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
-            List<SortBy> sortByItems) {
+            List<SortByClause> sortByItems) {
 
         var builder = DefaultSearchCriteria.builder()
                 .withCalculateStatTotal(calculateStatTotal)
