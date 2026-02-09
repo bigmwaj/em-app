@@ -38,8 +38,9 @@ public class ContactEntity extends AbstractBaseEntity {
     private HolderTypeLvo holderType;
 
     /**
-     * Performance optimization: Fetch children eagerly using JOIN to prevent N+1 queries.
-     * When loading a contact, all related emails, phones, and addresses are loaded in a single query.
+     * Performance optimization: Fetch children using SUBSELECT to prevent N+1 queries.
+     * When loading multiple contacts, all related emails/phones/addresses are loaded
+     * in separate optimized queries (one per collection type), rather than one query per contact.
      */
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
