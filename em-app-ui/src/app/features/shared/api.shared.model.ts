@@ -85,36 +85,35 @@ export function createDefaultSearchCriteria(): DefaultSearchCriteria {
   };
 }
 
-export function mapDefaultSearchCriteriaToHttpParams(searchCriteria: DefaultSearchCriteria): HttpParams {
+export function mapDefaultSearchCriteriaToHttpParams(sc: DefaultSearchCriteria): HttpParams {
 
   let params = new HttpParams();
 
   // Pagination parameters
-  if (searchCriteria.pageSize !== undefined && searchCriteria.pageSize !== null) {
-    params = params.set('pageSize', searchCriteria.pageSize.toString());
+  if (sc.pageSize !== undefined && sc.pageSize !== null) {
+    params = params.set('pageSize', sc.pageSize.toString());
   }
-  if (searchCriteria.pageIndex !== undefined && searchCriteria.pageIndex !== null) {
-    params = params.set('pageIndex', searchCriteria.pageIndex.toString());
+  if (sc.pageIndex !== undefined && sc.pageIndex !== null) {
+    params = params.set('pageIndex', sc.pageIndex.toString());
   }
-  if (searchCriteria.calculateStatTotal !== undefined) {
-    params = params.set('calculateStatTotal', searchCriteria.calculateStatTotal.toString());
+  if (sc.calculateStatTotal !== undefined) {
+    params = params.set('calculateStatTotal', sc.calculateStatTotal.toString());
   } else {
     params = params.set('calculateStatTotal', 'true');
-  }           
+  }
 
   // Filters
-  if (searchCriteria.filterByItems && searchCriteria.filterByItems.length > 0) {
-    searchCriteria.filterByItems.forEach(filterBy => {
-      params = params.append('filters', JSON.stringify(filterBy));
-    });
+  if (sc.filterByItems && sc.filterByItems.length > 0) {
+    var filters = sc.filterByItems.map(e =>  e.name + ":" + e.oper + ":" + e.values?.reduce((acc, val) => acc + "," + val))
+    .reduce((acc, val) => acc + ";" + val)      
+    params = params.append('filters', filters);
   }
 
   // Sorting
-  if (searchCriteria.sortByItems && searchCriteria.sortByItems.length > 0) {
-    searchCriteria.sortByItems.forEach(sortBy => {
-      params = params.append('sortBy', JSON.stringify(sortBy));
-    });
+  if (sc.sortByItems && sc.sortByItems.length > 0) {
+    var sorts = sc.sortByItems.map(e => e.name + ":" + e.type).reduce((acc, val) => acc + ";" + val)      
+    params = params.append('sortBy', sorts);
   }
 
   return params;
-} 
+}

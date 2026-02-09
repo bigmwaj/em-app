@@ -103,7 +103,6 @@ export interface UserDto extends BaseHistDto {
   holderType: HolderTypeLvo;
 }
 
-// Filter DTOs from ca.bigmwaj.emapp.as.dto.platform
 export interface AccountSearchCriteria extends AbstractSearchCriteria {
   includeMainContact?: boolean;
   includeContactRoles?: boolean;
