@@ -1,62 +1,125 @@
-<div class="users-container">
-  <div class="header">
-    <h1>Users Management</h1>
+<div class="main-container users-container">
+
+  <div class="main-header">
+    <h1 class="title">
+      <mat-icon mat-card-avatar>people</mat-icon>
+      <span>Users Management</span>
+    </h1>
     <button mat-raised-button color="primary">
       <mat-icon>add</mat-icon>
       Add User
     </button>
   </div>
 
-  <div *ngIf="loading" class="loading-section">
+  <div class="search-section">
+    <mat-card class="search-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>search</mat-icon>
+        <mat-card-title>Search Users</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="searchForm" class="search-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" placeholder="Search by username">
+            <mat-icon matPrefix>account_circle</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Search by first name">
+            <mat-icon matPrefix>person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Search by last name">
+            <mat-icon matPrefix>person_outline</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Search by email">
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+
+          <div class="search-actions">
+            <button mat-raised-button color="primary" (click)="onSearch()" type="button">
+              <mat-icon>search</mat-icon>
+              Search
+            </button>
+            <button mat-button (click)="resetSearch()" type="button">
+              <mat-icon>refresh</mat-icon>
+              Reset
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  @if (error && !loading) {
+
+  <div class="info-message">
+    <mat-card>
+      <mat-icon>info</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+
+  }
+
+  @if (loading) {
+
+  <div class="loading-section">
     <mat-spinner></mat-spinner>
     <p>Loading users...</p>
   </div>
 
-  <div *ngIf="error && !loading" class="error-section">
-    <mat-card>
-      <mat-icon class="error-icon">error_outline</mat-icon>
-      <p>{{ error }}</p>
-      <button mat-button color="primary" (click)="loadUsers()">
-        <mat-icon>refresh</mat-icon>
-        Retry
-      </button>
-    </mat-card>
-  </div>
+  } @else {
 
-  <div *ngIf="!loading && !error" class="users-grid">
-    <mat-card *ngFor="let user of searchResult.data" class="user-card">
-      <mat-card-header>
-        <div mat-card-avatar class="user-avatar">
-          <mat-icon *ngIf="!user.picture">account_circle</mat-icon>
-          <img *ngIf="user.picture" [src]="user.picture" alt="User avatar">
-        </div>
-        <mat-card-title>{{ user?.contact?.firstName }} {{ user?.contact?.lastName }}</mat-card-title>
-        <mat-card-subtitle>{{ user?.contact?.mainEmail?.email }}</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="provider-info">
-          <mat-icon>security</mat-icon>
-          Provider: <strong>{{ user.provider || 'Local' }}</strong>
-        </p>
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button color="primary" (click)="editUser(user)">
+  <table mat-table [dataSource]="data" class="mat-elevation-z8 mat-mdc-card users-table">
+    <ng-container matColumnDef="username">
+      <th mat-header-cell *matHeaderCellDef>Username</th>
+      <td mat-cell *matCellDef="let element">{{element.username}}</td>
+    </ng-container>
+    <ng-container matColumnDef="firstName">
+      <th mat-header-cell *matHeaderCellDef>First Name</th>
+      <td mat-cell *matCellDef="let element">{{element?.contact?.firstName}}</td>
+    </ng-container>
+    <ng-container matColumnDef="lastName">
+      <th mat-header-cell *matHeaderCellDef>Last Name</th>
+      <td mat-cell *matCellDef="let element">{{element?.contact?.lastName}}</td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let element">{{element?.contact?.mainEmail?.email}}</td>
+    </ng-container>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let element">{{element.status}}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>
+        <button mat-button color="warn">
+          <mat-icon>add</mat-icon>
+          Create
+        </button>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" (click)="editUser(element)">
           <mat-icon>edit</mat-icon>
           Edit
         </button>
-        <button mat-button color="warn" (click)="deleteUser(user)">
+        <button mat-button color="warn" (click)="deleteUser(element)">
           <mat-icon>delete</mat-icon>
           Delete
         </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 
-  <div *ngIf="!loading && !error && searchResult.data.length === 0" class="empty-section">
-    <mat-card>
-      <mat-icon class="empty-icon">people_outline</mat-icon>
-      <h3>No Users Found</h3>
-      <p>There are no users to display.</p>
-    </mat-card>
-  </div>
+  }
 </div>

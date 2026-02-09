@@ -11,6 +11,41 @@
     </button>
   </div>
 
+  <div class="search-section">
+    <mat-card class="search-card">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>search</mat-icon>
+        <mat-card-title>Search Accounts</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="searchForm" class="search-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Account Name</mat-label>
+            <input matInput formControlName="name" placeholder="Search by name">
+            <mat-icon matPrefix>business</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Search by email">
+            <mat-icon matPrefix>email</mat-icon>
+          </mat-form-field>
+
+          <div class="search-actions">
+            <button mat-raised-button color="primary" (click)="onSearch()" type="button">
+              <mat-icon>search</mat-icon>
+              Search
+            </button>
+            <button mat-button (click)="resetSearch()" type="button">
+              <mat-icon>refresh</mat-icon>
+              Reset
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
   @if (error && !loading) {
 
   <div class="info-message">

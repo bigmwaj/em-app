@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { UserService } from '../../service/user.service';
-import { UserDto } from '../../api.platform.model';
-import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult } from '../../../shared/api.shared.model';
+import { UserDto, UserSearchCriteria, createUserSearchCriteria } from '../../api.platform.model';
+import { SearchResult, FilterOperator, WhereClause } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
@@ -13,11 +14,22 @@ import { CommonDataSource } from '../../../shared/common.datasource';
 export class UserIndexComponent extends CommonDataSource<UserDto> implements OnInit {
   searchResult: SearchResult<UserDto> = {} as SearchResult<UserDto>;
   loading = true;
+  message = "";
   error: string | null = null;
-  searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
+  searchCriteria: UserSearchCriteria = createUserSearchCriteria();
+  displayedColumns: string[] = ['username', 'firstName', 'lastName', 'email', 'status', 'actions'];
+  
+  searchForm = new FormGroup({
+    username: new FormControl(''),
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
+    email: new FormControl('')
+  });
 
-  constructor(private userService: UserService) { super(); }
+  constructor(private userService: UserService) { 
+    super();
+    this.searchCriteria.includeContact = true;
+  }
 
 
   override getKeyLabel(bean: UserDto): string | number {
@@ -35,10 +47,11 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
     this.loading = true;
     this.error = null;
 
-    this.userService.getUsers().subscribe({
+    this.userService.getUsers(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;
+        this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load users:', err);
@@ -46,6 +59,51 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
         this.loading = false;
       }
     });
+  }
+
+  onSearch(): void {
+    const filters: WhereClause[] = [];
+    
+    if (this.searchForm.value.username) {
+      filters.push({ 
+        name: 'username', 
+        oper: FilterOperator.LIKE, 
+        values: [this.searchForm.value.username] 
+      });
+    }
+    
+    if (this.searchForm.value.firstName) {
+      filters.push({ 
+        name: 'firstName', 
+        oper: FilterOperator.LIKE, 
+        values: [this.searchForm.value.firstName] 
+      });
+    }
+    
+    if (this.searchForm.value.lastName) {
+      filters.push({ 
+        name: 'lastName', 
+        oper: FilterOperator.LIKE, 
+        values: [this.searchForm.value.lastName] 
+      });
+    }
+    
+    if (this.searchForm.value.email) {
+      filters.push({ 
+        name: 'email', 
+        oper: FilterOperator.LIKE, 
+        values: [this.searchForm.value.email] 
+      });
+    }
+    
+    this.searchCriteria.filterByItems = filters;
+    this.loadUsers();
+  }
+
+  resetSearch(): void {
+    this.searchForm.reset();
+    this.searchCriteria.filterByItems = [];
+    this.loadUsers();
   }
 
   /**

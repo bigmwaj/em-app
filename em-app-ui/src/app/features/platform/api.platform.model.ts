@@ -126,3 +126,51 @@ export function mapAccountSearchCriteriaToHttpParams(searchCriteria: AccountSear
   }
   return params;
 }
+
+export interface ContactSearchCriteria extends AbstractSearchCriteria {
+  includeEmails?: boolean;
+  includePhones?: boolean;
+  includeAddresses?: boolean;
+}
+
+export function createContactSearchCriteria(): ContactSearchCriteria {
+  return {
+    ...createDefaultSearchCriteria(),
+    includeEmails: true,
+    includePhones: true,
+    includeAddresses: true
+  };
+}
+
+export function mapContactSearchCriteriaToHttpParams(searchCriteria: ContactSearchCriteria): HttpParams {
+  let params = mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+  if (searchCriteria.includeEmails !== undefined) {
+    params = params.set('includeEmails', searchCriteria.includeEmails.toString());
+  }
+  if (searchCriteria.includePhones !== undefined) {
+    params = params.set('includePhones', searchCriteria.includePhones.toString());
+  }
+  if (searchCriteria.includeAddresses !== undefined) {
+    params = params.set('includeAddresses', searchCriteria.includeAddresses.toString());
+  }
+  return params;
+}
+
+export interface UserSearchCriteria extends AbstractSearchCriteria {
+  includeContact?: boolean;
+}
+
+export function createUserSearchCriteria(): UserSearchCriteria {
+  return {
+    ...createDefaultSearchCriteria(),
+    includeContact: true
+  };
+}
+
+export function mapUserSearchCriteriaToHttpParams(searchCriteria: UserSearchCriteria): HttpParams {
+  let params = mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+  if (searchCriteria.includeContact !== undefined) {
+    params = params.set('includeContact', searchCriteria.includeContact.toString());
+  }
+  return params;
+}

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AccountService } from '../../service/account.service';
 import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
+import { SearchResult, FilterOperator, WhereClause } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
@@ -18,6 +19,11 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   error: string | null = null;
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
+  
+  searchForm = new FormGroup({
+    name: new FormControl(''),
+    email: new FormControl('')
+  });
 
   constructor(private accountService: AccountService) {
     super();
@@ -56,6 +62,35 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
   deleteAccount(account: AccountDto): void {
     console.log('Delete account:', account);
+  }
+
+  onSearch(): void {
+    const filters: WhereClause[] = [];
+    
+    if (this.searchForm.value.name) {
+      filters.push({ 
+        name: 'name', 
+        oper: FilterOperator.LIKE, 
+        values: [this.searchForm.value.name] 
+      });
+    }
+    
+    if (this.searchForm.value.email) {
+      filters.push({ 
+        name: 'email', 
+        oper: FilterOperator.LIKE, 
+        values: [this.searchForm.value.email] 
+      });
+    }
+    
+    this.searchCriteria.filterByItems = filters;
+    this.loadAccounts();
+  }
+
+  resetSearch(): void {
+    this.searchForm.reset();
+    this.searchCriteria.filterByItems = [];
+    this.loadAccounts();
   }
 
 }
