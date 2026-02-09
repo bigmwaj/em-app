@@ -35,7 +35,7 @@ public class GlobalPatternsConverter implements GenericConverter {
                         .map(Annotation::annotationType)
                         .anyMatch(p);
 
-        logger.debug("Converting sortBy patterns: {} to List<SortByClause>, SourceType:{}", source, sourceType);
+        logger.debug("Converting patterns: {} to target type, SourceType:{}", source, sourceType);
         if (isValid.apply(ValidWhereClausePatterns.class::equals)) {
             return new WhereClausePatternsConverter(targetType, (String) source).convert();
         } else if (isValid.apply(ValidSortByClausePatterns.class::equals)) {
