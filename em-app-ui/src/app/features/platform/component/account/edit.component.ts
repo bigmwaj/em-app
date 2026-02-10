@@ -244,12 +244,11 @@ export class AccountEditComponent implements OnInit {
         accountDto.mainContact.mainEmail = {
           email: contactFormValue.mainEmail,
           type: contactFormValue.mainEmailType,
-          contactId: 0,
           holderType: contactFormValue.holderType,
           createdBy: '',
           createdDate: new Date(),
           updatedBy: ''
-        };
+        } as any;
       }
 
       // Add main phone if provided
@@ -257,12 +256,11 @@ export class AccountEditComponent implements OnInit {
         accountDto.mainContact.mainPhone = {
           phone: contactFormValue.mainPhone,
           type: contactFormValue.mainPhoneType,
-          contactId: 0,
           holderType: contactFormValue.holderType,
           createdBy: '',
           createdDate: new Date(),
           updatedBy: ''
-        };
+        } as any;
       }
 
       // Add main address if provided
@@ -270,12 +268,11 @@ export class AccountEditComponent implements OnInit {
         accountDto.mainContact.mainAddress = {
           address: contactFormValue.mainAddress,
           type: contactFormValue.mainAddressType,
-          contactId: 0,
           holderType: contactFormValue.holderType,
           createdBy: '',
           createdDate: new Date(),
           updatedBy: ''
-        };
+        } as any;
       }
     }
 
