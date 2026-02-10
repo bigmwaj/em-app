@@ -6,6 +6,7 @@ import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
+import { AccountDeleteComponent } from './delete.component';
 
 @Component({
   selector: 'app-account-index',
@@ -77,7 +78,17 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   deleteAccount(account: AccountDto): void {
-    console.log('Delete account:', account);
+    const dialogRef = this.dialog.open(AccountDeleteComponent, {
+      width: '400px',
+      data: { account: account }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Refresh the accounts list after successful delete
+        this.loadAccounts();
+      }
+    });
   }
 
   onSearch(): void {
