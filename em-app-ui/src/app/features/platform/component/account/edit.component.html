@@ -53,7 +53,7 @@
         <form [formGroup]="accountForm" class="account-form">
           
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Account Name *</mat-label>
+            <mat-label>Account Name</mat-label>
             <input matInput formControlName="name" placeholder="Enter account name">
             <mat-error *ngIf="accountForm.get('name')?.hasError('required')">
               Account name is required
@@ -66,7 +66,7 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Status *</mat-label>
+            <mat-label>Status</mat-label>
             <mat-select formControlName="status">
               <mat-option *ngFor="let status of accountStatuses" [value]="status">
                 {{ status }}
@@ -94,7 +94,7 @@
           
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field half-width">
-              <mat-label>First Name *</mat-label>
+              <mat-label>First Name</mat-label>
               <input matInput formControlName="firstName" placeholder="Enter first name">
               <mat-error *ngIf="mainContactForm.get('firstName')?.hasError('required')">
                 First name is required
@@ -102,7 +102,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field half-width">
-              <mat-label>Last Name *</mat-label>
+              <mat-label>Last Name</mat-label>
               <input matInput formControlName="lastName" placeholder="Enter last name">
               <mat-error *ngIf="mainContactForm.get('lastName')?.hasError('required')">
                 Last name is required
@@ -117,7 +117,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field half-width">
-              <mat-label>Holder Type *</mat-label>
+              <mat-label>Holder Type</mat-label>
               <mat-select formControlName="holderType">
                 <mat-option *ngFor="let type of holderTypes" [value]="type">
                   {{ type }}
@@ -199,7 +199,7 @@
         <form [formGroup]="mainUserForm" class="user-form">
           
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Username *</mat-label>
+            <mat-label>Username </mat-label>
             <input matInput formControlName="username" placeholder="Enter username">
             <mat-error *ngIf="mainUserForm.get('username')?.hasError('required')">
               Username is required
