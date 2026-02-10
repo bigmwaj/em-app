@@ -11,6 +11,7 @@ import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.AccountService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
@@ -59,6 +60,11 @@ public class AccountController extends AbstractBaseAPI {
             @Parameter(description = "Calculate the total corresponding to filters")
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
+
+            @DefaultValue("and")
+            @Parameter(description = "Where clause join operator. Default is and")
+            @RequestParam(value = "whereClauseJoinOp", required = false)
+            WhereClauseJoinOp whereClauseJoinOp,
 
             @DefaultValue("true")
             @Parameter(description = "Include the main contact in the response")
@@ -115,8 +121,9 @@ public class AccountController extends AbstractBaseAPI {
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterByItems(filterByItems)
-                .withSortByItems(sortByItems)
+                .withWhereClauseJoinOp(whereClauseJoinOp)
+                .withWhereClauses(filterByItems)
+                .withSortByClauses(sortByItems)
                 .withIncludeAccountContacts(includeContactRoles)
                 .withIncludeMainContact(includeMainContact);
         return ResponseEntity.ok(service.search(builder.build()));

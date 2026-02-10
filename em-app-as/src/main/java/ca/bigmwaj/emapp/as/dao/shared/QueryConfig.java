@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.dao.shared;
 
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
@@ -48,6 +49,8 @@ import java.util.Map;
  */
 @Builder(setterPrefix = "with")
 public class QueryConfig {
+
+    private WhereClauseJoinOp whereClauseJoinOp;
 
     /**
      * Base JPQL query string (e.g., "SELECT qRoot FROM User qRoot").
@@ -97,24 +100,24 @@ public class QueryConfig {
      * </ul>
      * 
      * @param qb the query configuration builder to append to
-     * @param filterBy the filter criteria containing field name, operator, and values
+     * @param whereClause the filter criteria containing field name, operator, and values
      */
-    public static void appendFilter(QueryConfig.QueryConfigBuilder qb, WhereClause filterBy) {
-        var dbFieldName = filterBy.getName();
-        var v = filterBy.getValues();
+    public static void appendWhereClause(QueryConfig.QueryConfigBuilder qb, WhereClause whereClause) {
+        var dbFieldName = whereClause.getName();
+        var v = whereClause.getValues();
         var rootEntity = Q_ROOT;
 
         // Allow custom field mapping (e.g., "user.firstName" instead of "firstName")
-        if (filterBy.getEntityFieldName() != null && !filterBy.getEntityFieldName().isEmpty()) {
-            dbFieldName = filterBy.getEntityFieldName();
+        if (whereClause.getEntityFieldName() != null && !whereClause.getEntityFieldName().isEmpty()) {
+            dbFieldName = whereClause.getEntityFieldName();
         }
 
         // Allow custom entity alias (e.g., "u" instead of "qRoot")
-        if (filterBy.getRootEntityName() != null && !filterBy.getRootEntityName().isEmpty()) {
-            rootEntity = filterBy.getRootEntityName();
+        if (whereClause.getRootEntityName() != null && !whereClause.getRootEntityName().isEmpty()) {
+            rootEntity = whereClause.getRootEntityName();
         }
 
-        var q = switch (filterBy.getOper()) {
+        var q = switch (whereClause.getOper()) {
             case like -> {
                 var param = v.get(0).toString().toLowerCase();
                 qb.withParam(dbFieldName, "%" + param + "%");
@@ -162,7 +165,7 @@ public class QueryConfig {
      * @param qb the query configuration builder to append to
      * @param sortBy the sort criteria containing field name and direction (asc/desc)
      */
-    public static void appendSortBy(QueryConfig.QueryConfigBuilder qb, SortByClause sortBy) {
+    public static void appendSortByClause(QueryConfig.QueryConfigBuilder qb, SortByClause sortBy) {
         var dbFieldName = sortBy.getName();
         var rootEntity = Q_ROOT;
 
@@ -203,7 +206,7 @@ public class QueryConfig {
     public String getQueryString() {
         var query = baseQuery;
         if (whereClauses != null && !whereClauses.isEmpty()) {
-            query += " where " + String.join(" and ", whereClauses);
+            query += " where " + String.join(" " + whereClauseJoinOp + " ", whereClauses);
         }
         if (sortByClauses != null && !sortByClauses.isEmpty()) {
             query += " order by " + String.join(", ", sortByClauses);

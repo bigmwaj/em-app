@@ -1,7 +1,7 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Angular Material Modules
@@ -29,7 +29,7 @@ import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-ca
 import { DashboardComponent } from './core/component/dashboard/dashboard.component';
 
 // Feature Components
-import { AccountIndexComponent } from './features/platform/component/account/account-index.component';
+import { AccountIndexComponent } from './features/platform/component/account/index.component';
 import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
 import { UserIndexComponent } from './features/platform/component/user/user-index.component';
 
@@ -53,6 +53,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     //BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     // Material Modules
     MatToolbarModule,
     MatButtonModule,

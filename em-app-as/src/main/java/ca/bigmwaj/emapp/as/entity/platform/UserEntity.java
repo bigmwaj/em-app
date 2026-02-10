@@ -25,7 +25,7 @@ public class UserEntity extends AbstractBaseEntity {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column(name = "PROVIDER")
+    @Column(name = "PROVIDER", nullable = false)
     private String provider;
 
     @ManyToOne

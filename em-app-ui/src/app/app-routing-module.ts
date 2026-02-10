@@ -6,7 +6,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { LayoutComponent } from './core/component/layout/layout.component';
 import { DashboardComponent } from './core/component/dashboard/dashboard.component';
 import { UserIndexComponent } from './features/platform/component/user/user-index.component';
-import { AccountIndexComponent } from './features/platform/component/account/account-index.component';
+import { AccountIndexComponent } from './features/platform/component/account/index.component';
 import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';

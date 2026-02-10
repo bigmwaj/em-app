@@ -11,6 +11,7 @@ import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.ContactService;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -58,6 +60,11 @@ public class ContactController extends AbstractBaseAPI {
             @Parameter(description = "Calculate the total corresponding to filters")
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
+
+            @DefaultValue("and")
+            @Parameter(description = "Where clause join operator. Default is and")
+            @RequestParam(value = "whereClauseJoinOp", required = false)
+            WhereClauseJoinOp whereClauseJoinOp,
 
             @ValidWhereClausePatterns(
                     supportedFields = {
@@ -102,8 +109,9 @@ public class ContactController extends AbstractBaseAPI {
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterByItems(filterByItems)
-                .withSortByItems(sortByItems);
+                .withWhereClauseJoinOp(whereClauseJoinOp)
+                .withWhereClauses(filterByItems)
+                .withSortByClauses(sortByItems);
         return ResponseEntity.ok(service.search(builder.build()));
     }
 

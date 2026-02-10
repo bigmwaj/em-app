@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.dao;
 
 import ca.bigmwaj.emapp.as.dao.shared.QueryConfig;
 import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -16,13 +17,12 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
     Class<E> getEntityClass();
 
     default QueryConfig prepareQueryConfig(QueryConfig.QueryConfigBuilder builder, AbstractSearchCriteria searchCriteria) {
-        if( searchCriteria.getFilterByItems() != null && !searchCriteria.getFilterByItems().isEmpty() ){
-            System.out.println("Appending filters: " + searchCriteria.getFilterByItems());
-            searchCriteria.getFilterByItems().forEach(e -> QueryConfig.appendFilter(builder, e));
+        if( searchCriteria.getWhereClauses() != null && !searchCriteria.getWhereClauses().isEmpty() ){
+            searchCriteria.getWhereClauses().forEach(e -> QueryConfig.appendWhereClause(builder, e));
         }
 
-        if( searchCriteria.getSortByItems() != null && !searchCriteria.getSortByItems().isEmpty() ){
-            searchCriteria.getSortByItems().forEach(e -> QueryConfig.appendSortBy(builder, e));
+        if( searchCriteria.getSortByClauses() != null && !searchCriteria.getSortByClauses().isEmpty() ){
+            searchCriteria.getSortByClauses().forEach(e -> QueryConfig.appendSortByClause(builder, e));
         }
         return builder.build();
     }
@@ -47,7 +47,13 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
     }
 
     default List<E> findAllByCriteria(EntityManager em, AbstractSearchCriteria sc) {
-        var builder = QueryConfig.builder().withBaseQuery(getFindAllQuery());
+        var whereClauseJoinOp = WhereClauseJoinOp.AND;
+        if( sc.getWhereClauseJoinOp() != null ){
+            whereClauseJoinOp = sc.getWhereClauseJoinOp();
+        }
+        var builder = QueryConfig.builder().withBaseQuery(getFindAllQuery())
+                .withWhereClauseJoinOp(whereClauseJoinOp);
+
         return prepareQuery(em, getEntityClass(), builder, sc)
                 .setFirstResult(sc.getOffset())
                 .setMaxResults(sc.getLimit())

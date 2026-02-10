@@ -11,6 +11,7 @@ import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.UserService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
@@ -22,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +63,11 @@ public class UserController extends AbstractBaseAPI {
             @Parameter(description = "The page index for filtering")
             @RequestParam(value = "pageIndex", required = false)
             Integer pageIndex,
+
+            @DefaultValue("and")
+            @Parameter(description = "Where clause join operator. Default is and")
+            @RequestParam(value = "whereClauseJoinOp", required = false)
+            WhereClauseJoinOp whereClauseJoinOp,
 
             @Parameter(description = "Calculate the total corresponding to filters")
             @RequestParam(value = "calculateStatTotal", required = false)
@@ -111,8 +118,9 @@ public class UserController extends AbstractBaseAPI {
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
-                .withFilterByItems(filterByItems)
-                .withSortByItems(sortByItems);
+                .withWhereClauseJoinOp(whereClauseJoinOp)
+                .withWhereClauses(filterByItems)
+                .withSortByClauses(sortByItems);
 
         return ResponseEntity.ok(service.search(builder.build()));
     }

@@ -6,8 +6,8 @@ import { CommonDataSource } from '../../../shared/common.datasource';
 
 @Component({
   selector: 'app-account-index',
-  templateUrl: './account-index.component.html',
-  styleUrls: ['./account-index.component.scss'],
+  templateUrl: './index.component.html',
+  styleUrls: ['./index.component.scss'],
   standalone: false
 })
 export class AccountIndexComponent extends CommonDataSource<AccountDto> implements OnInit {
@@ -79,6 +79,11 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.searchCriteria = createAccountSearchCriteria();
     this.searchCriteria.includeMainContact = true;
     this.loadAccounts();
+  }
+  
+
+  onInitAdvancedASearch(): void {
+    
   }
 
 }

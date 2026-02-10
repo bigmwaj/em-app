@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.dto.common;
 
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -14,15 +15,17 @@ public abstract class AbstractSearchCriteria {
 
     public static final Short DEFAULT_QUERY_LIMIT = 1_000;
 
-    private List<WhereClause> filterByItems;
+    private List<WhereClause> whereClauses;
 
-    private List<SortByClause> sortByItems;
+    private List<SortByClause> sortByClauses;
 
     private Short pageSize;
 
     private Integer pageIndex;
 
     private boolean calculateStatTotal;
+
+    private WhereClauseJoinOp whereClauseJoinOp;
 
     @JsonIgnore
     public Integer getOffset() {
