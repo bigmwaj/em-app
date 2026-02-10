@@ -30,6 +30,10 @@
         <mat-icon>swap_horiz</mat-icon>
         Change Status
       </button>
+      <button *ngIf="showDeleteButton" mat-raised-button color="warn" (click)="onDelete()" type="button">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
       <button *ngIf="showCancelButton" mat-raised-button (click)="onCancel()" type="button" class="cancel-button">
         <mat-icon>cancel</mat-icon>
         Cancel

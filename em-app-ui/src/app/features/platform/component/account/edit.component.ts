@@ -14,6 +14,7 @@ import {
   AddressTypeLvo
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
+import { AccountDeleteComponent } from './delete.component';
 
 export enum AccountEditMode {
   CREATE = 'create',
@@ -404,5 +405,27 @@ export class AccountEditComponent implements OnInit {
 
   get showChangeStatusButton(): boolean {
     return this.mode === AccountEditMode.EDIT || this.mode === AccountEditMode.VIEW;
+  }
+
+  get showDeleteButton(): boolean {
+    return this.mode === AccountEditMode.VIEW;
+  }
+
+  onDelete(): void {
+    if (!this.account) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(AccountDeleteComponent, {
+      width: '400px',
+      data: { account: this.account }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Navigate back to accounts list
+        this.router.navigate(['/accounts']);
+      }
+    });
   }
 }
