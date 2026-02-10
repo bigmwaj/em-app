@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { 
   AccountDto, 
@@ -12,6 +13,7 @@ import {
   PhoneTypeLvo,
   AddressTypeLvo
 } from '../../api.platform.model';
+import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 
 export enum AccountEditMode {
   CREATE = 'create',
@@ -48,7 +50,8 @@ export class AccountEditComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -98,7 +101,15 @@ export class AccountEditComponent implements OnInit {
       
       if (modeParam === 'create') {
         this.mode = AccountEditMode.CREATE;
-        this.setupCreateMode();
+        // Check if we have a duplicated account to populate
+        if (state.account) {
+          this.account = state.account;
+          if (this.account) {
+            this.populateForms(this.account);
+          }
+        } else {
+          this.setupCreateMode();
+        }
       } else if (modeParam === 'edit' && state.account) {
         this.mode = AccountEditMode.EDIT;
         this.account = state.account;
@@ -305,5 +316,93 @@ export class AccountEditComponent implements OnInit {
 
   get showSaveButton(): boolean {
     return this.mode === AccountEditMode.CREATE || this.mode === AccountEditMode.EDIT;
+  }
+
+  onDuplicate(): void {
+    if (!this.account) {
+      return;
+    }
+
+    // Create a deep copy of the account
+    const duplicatedAccount: AccountDto = JSON.parse(JSON.stringify(this.account));
+    
+    // Clear identifier fields
+    delete duplicatedAccount.id;
+    
+    // Clear IDs from nested objects
+    if (duplicatedAccount.mainContact) {
+      delete duplicatedAccount.mainContact.id;
+      if (duplicatedAccount.mainContact.mainEmail) {
+        delete duplicatedAccount.mainContact.mainEmail.id;
+      }
+      if (duplicatedAccount.mainContact.mainPhone) {
+        delete duplicatedAccount.mainContact.mainPhone.id;
+      }
+      if (duplicatedAccount.mainContact.mainAddress) {
+        delete duplicatedAccount.mainContact.mainAddress.id;
+      }
+    }
+
+    // Navigate to create mode with duplicated data
+    this.router.navigate(['/accounts/edit', 'create'], {
+      state: { mode: 'create', account: duplicatedAccount }
+    });
+  }
+
+  onCreateAccount(): void {
+    this.router.navigate(['/accounts/edit', 'create'], {
+      state: { mode: 'create' }
+    });
+  }
+
+  onEditAccount(): void {
+    if (this.mode === AccountEditMode.VIEW) {
+      this.mode = AccountEditMode.EDIT;
+      this.enableAllForms();
+    }
+  }
+
+  onChangeStatus(): void {
+    if (!this.account) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(AccountChangeStatusDialogComponent, {
+      width: '400px',
+      data: { account: this.account }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && this.account) {
+        // Update the status
+        this.account.status = result;
+        this.accountForm.patchValue({ status: result });
+
+        // In a real application, you would reload from the server
+        // For now, just update the form to reflect the change
+      }
+    });
+  }
+
+  private enableAllForms(): void {
+    this.accountForm.enable();
+    this.mainContactForm.enable();
+    this.mainUserForm.enable();
+  }
+
+  get showDuplicateButton(): boolean {
+    return this.mode === AccountEditMode.EDIT || this.mode === AccountEditMode.VIEW;
+  }
+
+  get showCreateAccountButton(): boolean {
+    return true; // Visible in all modes
+  }
+
+  get showEditAccountButton(): boolean {
+    return this.mode === AccountEditMode.VIEW;
+  }
+
+  get showChangeStatusButton(): boolean {
+    return this.mode === AccountEditMode.EDIT || this.mode === AccountEditMode.VIEW;
   }
 }

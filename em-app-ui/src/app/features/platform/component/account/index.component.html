@@ -96,6 +96,14 @@
               <mat-icon>edit</mat-icon>
               Edit
             </button>
+            <button mat-button (click)="duplicateAccount(element)">
+              <mat-icon>content_copy</mat-icon>
+              Duplicate
+            </button>
+            <button mat-button (click)="changeAccountStatus(element)">
+              <mat-icon>swap_horiz</mat-icon>
+              Change Status
+            </button>
             <button mat-button color="warn" (click)="deleteAccount(element)">
               <mat-icon>delete</mat-icon>
               Delete

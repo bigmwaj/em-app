@@ -14,6 +14,22 @@
         <mat-icon>arrow_back</mat-icon>
         Back
       </button>
+      <button *ngIf="showCreateAccountButton" mat-raised-button color="accent" (click)="onCreateAccount()" type="button">
+        <mat-icon>add</mat-icon>
+        Create Account
+      </button>
+      <button *ngIf="showDuplicateButton" mat-raised-button (click)="onDuplicate()" type="button">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate
+      </button>
+      <button *ngIf="showEditAccountButton" mat-raised-button color="accent" (click)="onEditAccount()" type="button">
+        <mat-icon>edit</mat-icon>
+        Edit Account
+      </button>
+      <button *ngIf="showChangeStatusButton" mat-raised-button (click)="onChangeStatus()" type="button">
+        <mat-icon>swap_horiz</mat-icon>
+        Change Status
+      </button>
       <button *ngIf="showCancelButton" mat-raised-button (click)="onCancel()" type="button" class="cancel-button">
         <mat-icon>cancel</mat-icon>
         Cancel
