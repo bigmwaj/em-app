@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>Change Account Status</h2>
+
+<mat-dialog-content>
+  <p>Change status for account: <strong>{{ data.account.name }}</strong></p>
+  
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Select New Status</mat-label>
+    <mat-select [(ngModel)]="selectedStatus">
+      <mat-option *ngFor="let status of accountStatuses" [value]="status">
+        {{ status }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="onConfirm()">
+    Confirm
+  </button>
+</mat-dialog-actions>

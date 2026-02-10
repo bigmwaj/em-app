@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
+import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 
 @Component({
   selector: 'app-account-index',
@@ -23,7 +25,8 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
   constructor(
     private accountService: AccountService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     super();
     this.searchCriteria.includeMainContact = true;
@@ -102,6 +105,52 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
   onInitAdvancedASearch(): void {
     
+  }
+
+  duplicateAccount(account: AccountDto): void {
+    // Create a deep copy of the account
+    const duplicatedAccount: AccountDto = JSON.parse(JSON.stringify(account));
+    
+    // Clear identifier fields
+    delete duplicatedAccount.id;
+    
+    // Clear IDs from nested objects
+    if (duplicatedAccount.mainContact) {
+      delete duplicatedAccount.mainContact.id;
+      if (duplicatedAccount.mainContact.mainEmail) {
+        delete duplicatedAccount.mainContact.mainEmail.id;
+      }
+      if (duplicatedAccount.mainContact.mainPhone) {
+        delete duplicatedAccount.mainContact.mainPhone.id;
+      }
+      if (duplicatedAccount.mainContact.mainAddress) {
+        delete duplicatedAccount.mainContact.mainAddress.id;
+      }
+    }
+
+    // Navigate to create mode with duplicated data
+    this.router.navigate(['/accounts/edit', 'create'], {
+      state: { mode: 'create', account: duplicatedAccount }
+    });
+  }
+
+  changeAccountStatus(account: AccountDto): void {
+    const dialogRef = this.dialog.open(AccountChangeStatusDialogComponent, {
+      width: '400px',
+      data: { account: account }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Update the status in the account
+        account.status = result;
+        
+        // In a real application, you would save this to the server
+        // and then reload the accounts list
+        // For now, just update the local data
+        this.loadAccounts();
+      }
+    });
   }
 
 }
