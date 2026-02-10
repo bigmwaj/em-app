@@ -102,11 +102,15 @@ export class AccountEditComponent implements OnInit {
       } else if (modeParam === 'edit' && state.account) {
         this.mode = AccountEditMode.EDIT;
         this.account = state.account;
-        this.populateForms(this.account);
+        if (this.account) {
+          this.populateForms(this.account);
+        }
       } else if (modeParam === 'view' && state.account) {
         this.mode = AccountEditMode.VIEW;
         this.account = state.account;
-        this.populateForms(this.account);
+        if (this.account) {
+          this.populateForms(this.account);
+        }
         this.disableAllForms();
       } else {
         // Invalid state - redirect back to index
