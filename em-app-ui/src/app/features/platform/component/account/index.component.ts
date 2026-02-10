@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AccountService } from '../../service/account.service';
 import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
@@ -20,7 +21,10 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
   searchText = '';
 
-  constructor(private accountService: AccountService) {
+  constructor(
+    private accountService: AccountService,
+    private router: Router
+  ) {
     super();
     this.searchCriteria.includeMainContact = true;
   }
@@ -51,8 +55,22 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     });
   }
 
+  createAccount(): void {
+    this.router.navigate(['/accounts/edit', 'create'], {
+      state: { mode: 'create' }
+    });
+  }
+
   editAccount(account: AccountDto): void {
-    console.log('Edit account:', account);
+    this.router.navigate(['/accounts/edit', 'edit'], {
+      state: { mode: 'edit', account: account }
+    });
+  }
+
+  viewAccount(account: AccountDto): void {
+    this.router.navigate(['/accounts/edit', 'view'], {
+      state: { mode: 'view', account: account }
+    });
   }
 
   deleteAccount(account: AccountDto): void {

@@ -7,6 +7,7 @@ import { LayoutComponent } from './core/component/layout/layout.component';
 import { DashboardComponent } from './core/component/dashboard/dashboard.component';
 import { UserIndexComponent } from './features/platform/component/user/user-index.component';
 import { AccountIndexComponent } from './features/platform/component/account/index.component';
+import { AccountEditComponent } from './features/platform/component/account/edit.component';
 import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'users', component: UserIndexComponent },
       { path: 'accounts', component: AccountIndexComponent },
+      { path: 'accounts/edit/:mode', component: AccountEditComponent },
       { path: 'contacts', component: ContactIndexComponent }
     ]
   },

@@ -18,6 +18,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -30,6 +31,7 @@ import { DashboardComponent } from './core/component/dashboard/dashboard.compone
 
 // Feature Components
 import { AccountIndexComponent } from './features/platform/component/account/index.component';
+import { AccountEditComponent } from './features/platform/component/account/edit.component';
 import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
 import { UserIndexComponent } from './features/platform/component/user/user-index.component';
 
@@ -46,6 +48,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     DashboardComponent,
     UserIndexComponent,
     AccountIndexComponent,
+    AccountEditComponent,
     ContactIndexComponent
   ],
   imports: [
@@ -67,7 +70,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatDividerModule,
     MatTableModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
