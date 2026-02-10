@@ -375,16 +375,11 @@ export class AccountEditComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result && this.account) {
         // Update the status
-        const previousStatus = this.account.status;
         this.account.status = result;
         this.accountForm.patchValue({ status: result });
 
-        // If in view mode, refresh the data
-        if (this.mode === AccountEditMode.VIEW) {
-          // In a real application, you would reload from the server
-          // For now, just update the form
-          this.accountForm.patchValue({ status: result });
-        }
+        // In a real application, you would reload from the server
+        // For now, just update the form to reflect the change
       }
     });
   }

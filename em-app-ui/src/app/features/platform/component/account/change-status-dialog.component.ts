@@ -20,7 +20,7 @@ export class AccountChangeStatusDialogComponent {
     public dialogRef: MatDialogRef<AccountChangeStatusDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AccountChangeStatusDialogData
   ) {
-    this.selectedStatus = data.account.status;
+    this.selectedStatus = data.account.status || AccountStatusLvo.ACTIVE;
   }
 
   onCancel(): void {
