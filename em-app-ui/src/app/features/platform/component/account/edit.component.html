@@ -1,0 +1,240 @@
+<div class="main-container account-edit-container">
+  
+  <!-- Header -->
+  <div class="main-header">
+    <h1 class="title">
+      <mat-icon mat-card-avatar>business</mat-icon>
+      <span *ngIf="isCreateMode">Create Account</span>
+      <span *ngIf="isEditMode">Edit Account</span>
+      <span *ngIf="isViewMode">View Account</span>
+    </h1>
+    
+    <div class="header-actions">
+      <button mat-raised-button (click)="onBack()" type="button">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+      <button *ngIf="showCancelButton" mat-raised-button (click)="onCancel()" type="button" class="cancel-button">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      <button *ngIf="showSaveButton" mat-raised-button color="primary" (click)="onSave()" type="button" [disabled]="loading">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+    </div>
+  </div>
+
+  @if (error && !loading) {
+    <div class="error-message">
+      <mat-card>
+        <mat-icon color="warn">error</mat-icon>
+        <p>{{ error }}</p>
+      </mat-card>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading-section">
+      <mat-spinner></mat-spinner>
+      <p>Saving account...</p>
+    </div>
+  } @else {
+
+    <!-- Section 1: Account Details -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>business</mat-icon>
+          Account Details
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="accountForm" class="account-form">
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Account Name *</mat-label>
+            <input matInput formControlName="name" placeholder="Enter account name">
+            <mat-error *ngIf="accountForm.get('name')?.hasError('required')">
+              Account name is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="Enter account description" rows="3"></textarea>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Status *</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of accountStatuses" [value]="status">
+                {{ status }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="accountForm.get('status')?.hasError('required')">
+              Status is required
+            </mat-error>
+          </mat-form-field>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 2: Account Main Contact -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          Account Main Contact
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="mainContactForm" class="contact-form">
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>First Name *</mat-label>
+              <input matInput formControlName="firstName" placeholder="Enter first name">
+              <mat-error *ngIf="mainContactForm.get('firstName')?.hasError('required')">
+                First name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Last Name *</mat-label>
+              <input matInput formControlName="lastName" placeholder="Enter last name">
+              <mat-error *ngIf="mainContactForm.get('lastName')?.hasError('required')">
+                Last name is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Birth Date</mat-label>
+              <input matInput type="date" formControlName="birthDate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Holder Type *</mat-label>
+              <mat-select formControlName="holderType">
+                <mat-option *ngFor="let type of holderTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Main Email -->
+          <div class="subsection-title">Main Email</div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Email Address</mat-label>
+              <input matInput type="email" formControlName="mainEmail" placeholder="Enter email address">
+              <mat-icon matPrefix>email</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Email Type</mat-label>
+              <mat-select formControlName="mainEmailType">
+                <mat-option *ngFor="let type of emailTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Main Phone -->
+          <div class="subsection-title">Main Phone</div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Phone Number</mat-label>
+              <input matInput type="tel" formControlName="mainPhone" placeholder="Enter phone number">
+              <mat-icon matPrefix>phone</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Phone Type</mat-label>
+              <mat-select formControlName="mainPhoneType">
+                <mat-option *ngFor="let type of phoneTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Main Address -->
+          <div class="subsection-title">Main Address</div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="mainAddress" placeholder="Enter address">
+              <mat-icon matPrefix>location_on</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Address Type</mat-label>
+              <mat-select formControlName="mainAddressType">
+                <mat-option *ngFor="let type of addressTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 3: Account Main User -->
+    <mat-card class="form-section" *ngIf="isCreateMode">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>account_circle</mat-icon>
+          Account Main User
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="mainUserForm" class="user-form">
+          
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Username *</mat-label>
+            <input matInput formControlName="username" placeholder="Enter username">
+            <mat-error *ngIf="mainUserForm.get('username')?.hasError('required')">
+              Username is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" placeholder="Enter password">
+          </mat-form-field>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Status *</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of userStatuses" [value]="status">
+                  {{ status }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Holder Type *</mat-label>
+              <mat-select formControlName="holderType">
+                <mat-option *ngFor="let type of holderTypes" [value]="type">
+                  {{ type }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+  }
+
+</div>
