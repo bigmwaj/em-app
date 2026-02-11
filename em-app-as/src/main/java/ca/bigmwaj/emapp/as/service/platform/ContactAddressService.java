@@ -73,4 +73,8 @@ public class ContactAddressService extends AbstractService {
         entity.setContact(contactEntity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
+
+    public boolean isAddressUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String address) {
+        return !dao.existsByHolderTypeAndAddress(holderType, address);
+    }
 }

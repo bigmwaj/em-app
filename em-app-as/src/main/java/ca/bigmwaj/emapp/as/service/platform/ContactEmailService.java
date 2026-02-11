@@ -72,4 +72,8 @@ public class ContactEmailService extends AbstractService {
         entity.setContact(contactEntity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
+
+    public boolean isEmailUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String email) {
+        return !dao.existsByHolderTypeAndEmail(holderType, email);
+    }
 }
