@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
+import ca.bigmwaj.emapp.as.api.shared.validator.SortByClausePatternsValidator;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

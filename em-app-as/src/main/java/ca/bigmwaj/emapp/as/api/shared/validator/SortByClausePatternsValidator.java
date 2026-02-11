@@ -1,4 +1,4 @@
-package ca.bigmwaj.emapp.as.api.shared.search;
+package ca.bigmwaj.emapp.as.api.shared.validator;
 
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;

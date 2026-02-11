@@ -1,6 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.shared.search;
 
 import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,7 @@ public class SearchInfos {
 
     private boolean calculateStatTotal;
 
+    @JsonIgnore
     public Integer getOffset() {
         if (pageSize != null) {
             return pageSize * pageIndex;
@@ -26,6 +28,7 @@ public class SearchInfos {
         return pageIndex;
     }
 
+    @JsonIgnore
     public Short getLimit() {
         if (pageSize == null) {
             return DEFAULT_QUERY_LIMIT;

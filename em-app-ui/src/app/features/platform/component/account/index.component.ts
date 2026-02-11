@@ -6,7 +6,7 @@ import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
-import { AccountDeleteComponent } from './delete.component';
+import { AccountDeleteDialogComponent } from './delete-dialog.component';
 
 @Component({
   selector: 'app-account-index',
@@ -78,7 +78,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   deleteAccount(account: AccountDto): void {
-    const dialogRef = this.dialog.open(AccountDeleteComponent, {
+    const dialogRef = this.dialog.open(AccountDeleteDialogComponent, {
       width: '400px',
       data: { account: account }
     });
@@ -96,7 +96,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.searchCriteria.includeMainContact = true;
     
     if (this.searchText && this.searchText.trim()) {
-      this.searchCriteria.filterByItems = [{
+      this.searchCriteria.whereClauses = [{
         name: 'name',
         oper: FilterOperator.LIKE,
         values: [this.searchText.trim()]

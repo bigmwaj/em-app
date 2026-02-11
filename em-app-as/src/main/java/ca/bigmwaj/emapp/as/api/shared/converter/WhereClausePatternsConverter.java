@@ -1,5 +1,9 @@
-package ca.bigmwaj.emapp.as.api.shared.search;
+package ca.bigmwaj.emapp.as.api.shared.converter;
 
+import ca.bigmwaj.emapp.as.api.shared.search.ClauseInputMapper;
+import ca.bigmwaj.emapp.as.api.shared.search.WhereClauseInput;
+import ca.bigmwaj.emapp.as.api.shared.validator.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.validator.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import lombok.AllArgsConstructor;

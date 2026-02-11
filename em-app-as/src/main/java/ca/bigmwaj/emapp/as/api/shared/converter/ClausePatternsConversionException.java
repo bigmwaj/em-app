@@ -1,4 +1,4 @@
-package ca.bigmwaj.emapp.as.api.shared.search;
+package ca.bigmwaj.emapp.as.api.shared.converter;
 
 import lombok.Getter;
 

@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
+import ca.bigmwaj.emapp.as.api.shared.validator.WhereClausePatternsValidator;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

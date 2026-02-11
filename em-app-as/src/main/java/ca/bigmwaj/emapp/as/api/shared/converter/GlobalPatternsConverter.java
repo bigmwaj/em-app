@@ -1,5 +1,7 @@
-package ca.bigmwaj.emapp.as.api.shared.search;
+package ca.bigmwaj.emapp.as.api.shared.converter;
 
+import ca.bigmwaj.emapp.as.api.shared.validator.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.validator.ValidWhereClausePatterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;

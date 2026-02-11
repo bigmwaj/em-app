@@ -15,12 +15,14 @@ public class AccountContactEntity extends AbstractBaseEntity {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "ACCOUNT_ID", nullable = false)
+    @JoinColumn(name = "ACCOUNT_ID", nullable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "ACCOUNT_CONTACT_FK_ACCOUNT"))
     private AccountEntity account;
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "CONTACT_ID", nullable = false)
+    @JoinColumn(name = "CONTACT_ID", nullable = false, updatable = false,
+    foreignKey = @ForeignKey(name = "ACCOUNT_CONTACT_FK_CONTACT"))
     private ContactEntity contact;
 
     @Enumerated(EnumType.STRING)

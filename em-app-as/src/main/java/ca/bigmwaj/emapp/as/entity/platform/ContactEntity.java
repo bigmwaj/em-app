@@ -34,23 +34,15 @@ public class ContactEntity extends AbstractBaseEntity {
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "HOLDER_TYPE", nullable = false)
+    @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
     private HolderTypeLvo holderType;
 
-    /**
-     * Performance optimization: Fetch children using SUBSELECT to prevent N+1 queries.
-     * When loading multiple contacts, all related emails/phones/addresses are loaded
-     * in separate optimized queries (one per collection type), rather than one query per contact.
-     */
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
     private List<ContactEmailEntity> emails = new ArrayList<>();
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
     private List<ContactPhoneEntity> phones = new ArrayList<>();
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
     private List<ContactAddressEntity> addresses = new ArrayList<>();
 }

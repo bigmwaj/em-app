@@ -1,5 +1,10 @@
 import { HttpParams } from "@angular/common/http";
 
+export enum WhereClauseJoinOp {
+  AND = 'AND',
+  OR = 'OR'
+}
+
 export enum EditActionLvo {
   NONE = 'NONE',
   CREATE = 'CREATE',
@@ -51,8 +56,9 @@ export interface SortByClause extends AbstractClause {
 }
 
 export interface AbstractSearchCriteria {
-  filterByItems?: WhereClause[];
-  sortByItems?: SortByClause[];
+  whereClauseJoinOp?: WhereClauseJoinOp;
+  whereClauses?: WhereClause[];
+  sortByClauses?: SortByClause[];
   pageSize?: number;
   pageIndex?: number;
   calculateStatTotal?: boolean;
@@ -77,8 +83,8 @@ export interface SearchResult<T> {
 
 export function createDefaultSearchCriteria(): DefaultSearchCriteria {
   return {
-    filterByItems: [],
-    sortByItems: [],
+    whereClauses: [],
+    sortByClauses: [],
     pageSize: 20,
     pageIndex: 0,
     calculateStatTotal: true
@@ -88,6 +94,13 @@ export function createDefaultSearchCriteria(): DefaultSearchCriteria {
 export function mapDefaultSearchCriteriaToHttpParams(sc: DefaultSearchCriteria): HttpParams {
 
   let params = new HttpParams();
+
+  // Where clause join operator
+  if (sc.whereClauseJoinOp !== undefined) {
+    params = params.set('whereClauseJoinOp', sc.whereClauseJoinOp);
+  } else {
+    params = params.set('whereClauseJoinOp', WhereClauseJoinOp.OR);
+  }
 
   // Pagination parameters
   if (sc.pageSize !== undefined && sc.pageSize !== null) {
@@ -102,16 +115,16 @@ export function mapDefaultSearchCriteriaToHttpParams(sc: DefaultSearchCriteria):
     params = params.set('calculateStatTotal', 'true');
   }
 
-  // Filters
-  if (sc.filterByItems && sc.filterByItems.length > 0) {
-    var filters = sc.filterByItems.map(e =>  e.name + ":" + e.oper + ":" + e.values?.reduce((acc, val) => acc + "," + val))
-    .reduce((acc, val) => acc + ";" + val)      
+  // Where Clauses
+  if (sc.whereClauses && sc.whereClauses.length > 0) {
+    var filters = sc.whereClauses.map(e => e.name + ":" + e.oper + ":" + e.values?.reduce((acc, val) => acc + "," + val))
+      .reduce((acc, val) => acc + ";" + val)
     params = params.append('filters', filters);
   }
 
   // Sorting
-  if (sc.sortByItems && sc.sortByItems.length > 0) {
-    var sorts = sc.sortByItems.map(e => e.name + ":" + e.type).reduce((acc, val) => acc + ";" + val)      
+  if (sc.sortByClauses && sc.sortByClauses.length > 0) {
+    var sorts = sc.sortByClauses.map(e => e.name + ":" + e.type).reduce((acc, val) => acc + ";" + val)
     params = params.append('sortBy', sorts);
   }
 

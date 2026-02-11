@@ -1,23 +1,23 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.AddressTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "PLATFORM_CONTACT_ADDRESS")
+@Table(
+        name = "PLATFORM_CONTACT_ADDRESS",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {"ADDRESS", "HOLDER_TYPE"},
+                        name = "PLATFORM_CONTACT_ADDRESS_UK_ADDRESS_HOLDER_TYPE"
+                )
+        }
+)
 @Data
-public class ContactAddressEntity extends AbstractBaseEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", updatable = false)
-    @EqualsAndHashCode.Include()
-    private Long id;
+public class ContactAddressEntity extends AbstractContactPointEntity {
 
     @Column(name = "ADDRESS", nullable = false)
     private String address;
@@ -26,12 +26,13 @@ public class ContactAddressEntity extends AbstractBaseEntity {
     @Column(name = "TYPE", nullable = false)
     private AddressTypeLvo type;
 
-    @ManyToOne
-    @JoinColumn(name = "CONTACT_ID", nullable = false)
-    private ContactEntity contact;
+    @Column(name = "COUNTRY")
+    private String country;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "HOLDER_TYPE", nullable = false)
-    private HolderTypeLvo holderType;
+    @Column(name = "REGION")
+    private String region;
+
+    @Column(name = "CITY")
+    private String city;
 
 }

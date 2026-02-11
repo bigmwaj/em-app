@@ -46,6 +46,7 @@ export interface AccountDto extends BaseHistDto {
   status: AccountStatusLvo;
   contactRoles?: AccountContactDto[];
   mainContact?: ContactDto;
+  accountUsername?: string;
 }
 
 export interface ContactDto extends BaseHistDto {
@@ -68,34 +69,36 @@ export interface AccountContactDto extends BaseHistDto {
   role: AccountContactRoleLvo;
 }
 
-export interface ContactAddressDto extends BaseHistDto {
+
+export interface AbstractContactPointDto extends BaseHistDto {
   id?: number;
+  contactId: number;
+  holderType: HolderTypeLvo;
+  defaultContactPoint: boolean;
+}
+
+export interface ContactAddressDto extends AbstractContactPointDto {
   address: string;
   type: AddressTypeLvo;
-  contactId: number;
-  holderType: HolderTypeLvo;
+  country?: string;
+  region?: string;
+  city?: string;
 }
 
-export interface ContactEmailDto extends BaseHistDto {
-  id?: number;
+export interface ContactEmailDto extends AbstractContactPointDto {
   email: string;
   type: EmailTypeLvo;
-  contactId: number;
-  holderType: HolderTypeLvo;
 }
 
-export interface ContactPhoneDto extends BaseHistDto {
-  id?: number;
+export interface ContactPhoneDto extends AbstractContactPointDto {
   phone: string;
   type: PhoneTypeLvo;
-  contactId: number;
-  holderType: HolderTypeLvo;
 }
 
 export interface UserDto extends BaseHistDto {
+  id?: number;
   picture: string;
   provider: string;
-  id?: number;
   username: string;
   password?: string;
   contact?: ContactDto;

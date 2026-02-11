@@ -2,20 +2,24 @@
 
 <mat-dialog-content>
   <p>Change status for account: <strong>{{ data.account.name }}</strong></p>
-  
+
   <mat-form-field appearance="outline" class="full-width">
     <mat-label>Select New Status</mat-label>
     <mat-select [(ngModel)]="selectedStatus">
-      <mat-option *ngFor="let status of accountStatuses" [value]="status">
+      @for (status of accountStatuses; track $index) {
+      <mat-option [value]="status">
         {{ status }}
       </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button (click)="onCancel()">
+    <mat-icon>delete</mat-icon>Cancel
+  </button>
   <button mat-raised-button color="primary" (click)="onConfirm()">
-    Confirm
+    <mat-icon>check</mat-icon>Confirm
   </button>
 </mat-dialog-actions>

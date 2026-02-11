@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
+import ca.bigmwaj.emapp.as.api.shared.converter.WhereClausePatternsConverter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;

@@ -33,10 +33,6 @@ public class AccountEntity extends AbstractBaseEntity {
     @Column(name = "STATUS", nullable = false)
     private AccountStatusLvo status;
 
-    /**
-     * Performance optimization: Fetch account contacts using SUBSELECT to prevent N+1 queries.
-     */
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SUBSELECT)
     private List<AccountContactEntity> accountContacts = new ArrayList<>();
 }

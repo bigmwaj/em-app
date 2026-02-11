@@ -10,16 +10,10 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ContactPhoneDto extends BaseHistDto {
-
-    private Long id;
+public class ContactPhoneDto extends AbstractContactPointDto {
 
     private String phone;
 
     private PhoneTypeLvo type;
-
-    private Long contactId;
-
-    private HolderTypeLvo holderType;
 
 }

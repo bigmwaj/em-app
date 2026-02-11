@@ -2,10 +2,10 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.api.shared.search.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.as.api.shared.search.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.api.shared.search.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.api.shared.search.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.validator.WhereClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.validator.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.validator.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.validator.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
@@ -97,7 +97,7 @@ public class UserController extends AbstractBaseAPI {
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
-            List<WhereClause> filterByItems,
+            List<WhereClause> whereClauses,
 
             @ValidSortByClausePatterns(
                     supportedFields = {
@@ -111,7 +111,7 @@ public class UserController extends AbstractBaseAPI {
                             @SortByClauseSupportedField(name = "address", rootEntityName = "ca"),
                     })
             @RequestParam(value = "sortBy", required = false)
-            List<SortByClause> sortByItems
+            List<SortByClause> sortByClauses
     ) {
 
         var builder = DefaultSearchCriteria.builder()
@@ -119,8 +119,8 @@ public class UserController extends AbstractBaseAPI {
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
                 .withWhereClauseJoinOp(whereClauseJoinOp)
-                .withWhereClauses(filterByItems)
-                .withSortByClauses(sortByItems);
+                .withWhereClauses(whereClauses)
+                .withSortByClauses(sortByClauses);
 
         return ResponseEntity.ok(service.search(builder.build()));
     }

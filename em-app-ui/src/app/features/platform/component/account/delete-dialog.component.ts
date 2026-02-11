@@ -8,17 +8,17 @@ export interface AccountDeleteDialogData {
 }
 
 @Component({
-  selector: 'app-account-delete',
-  templateUrl: './delete.component.html',
-  styleUrls: ['./delete.component.scss'],
+  selector: 'app-account-delete-dialog',
+  templateUrl: './delete-dialog.component.html',
+  styleUrls: ['./delete-dialog.component.scss'],
   standalone: false
 })
-export class AccountDeleteComponent {
+export class AccountDeleteDialogComponent {
   loading = false;
   error: string | null = null;
 
   constructor(
-    public dialogRef: MatDialogRef<AccountDeleteComponent>,
+    public dialogRef: MatDialogRef<AccountDeleteDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AccountDeleteDialogData,
     private accountService: AccountService
   ) {}

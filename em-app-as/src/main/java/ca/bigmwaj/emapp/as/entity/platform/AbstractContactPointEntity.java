@@ -1,17 +1,16 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.PhoneTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "PLATFORM_USER")
+@MappedSuperclass()
 @Data
-public class UserEntity extends AbstractBaseEntity {
+public abstract class AbstractContactPointEntity extends AbstractBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,24 +18,15 @@ public class UserEntity extends AbstractBaseEntity {
     @EqualsAndHashCode.Include()
     private Long id;
 
-    @Column(name = "USER_NAME", nullable = false, unique = true)
-    private String username;
-
-    @Column(name = "PASSWORD")
-    private String password;
-
-    @Column(name = "PROVIDER", nullable = false)
-    private String provider;
-
     @ManyToOne
     @JoinColumn(name = "CONTACT_ID", nullable = false, updatable = false)
     private ContactEntity contact;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false)
-    private UserStatusLvo status;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
     private HolderTypeLvo holderType;
+
+    @Column(name = "DEFAULT_CONTACT_POINT")
+    private Boolean defaultContactPoint;
+
 }

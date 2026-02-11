@@ -1,5 +1,9 @@
-package ca.bigmwaj.emapp.as.api.shared.search;
+package ca.bigmwaj.emapp.as.api.shared.converter;
 
+import ca.bigmwaj.emapp.as.api.shared.search.ClauseInputMapper;
+import ca.bigmwaj.emapp.as.api.shared.search.SortByClauseInput;
+import ca.bigmwaj.emapp.as.api.shared.validator.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.api.shared.validator.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import lombok.AllArgsConstructor;

@@ -21,9 +21,10 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
+  <button mat-raised-button (click)="onCancel()" [disabled]="loading">
+    <mat-icon>cancel</mat-icon>Cancel
+  </button>
   <button mat-raised-button color="warn" (click)="onConfirmDelete()" [disabled]="loading">
-    <mat-icon>delete</mat-icon>
-    Confirm Delete
+    <mat-icon>delete</mat-icon>Confirm
   </button>
 </mat-dialog-actions>

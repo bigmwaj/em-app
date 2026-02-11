@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.shared.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,12 +15,15 @@ public abstract class AbstractClause {
         this.name = name;
     }
 
-    private final List<String> validationErrorMessages = new ArrayList<>();
-
     private String name;
 
+    @JsonIgnore
+    private final List<String> validationErrorMessages = new ArrayList<>();
+
+    @JsonIgnore
     private String entityFieldName;
 
+    @JsonIgnore
     private String rootEntityName;
 
     public void addMessage(String message) {

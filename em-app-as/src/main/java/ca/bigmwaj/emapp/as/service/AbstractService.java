@@ -11,6 +11,8 @@ public class AbstractService {
     protected <E extends AbstractBaseEntity> E beforeCreateHistEntity(E entity) {
         entity.setCreatedBy(SYSTEM_USER);
         entity.setCreatedDate(LocalDateTime.now());
+        entity.setUpdatedBy(SYSTEM_USER);
+        entity.setUpdatedDate(LocalDateTime.now());
 
         return entity;
     }

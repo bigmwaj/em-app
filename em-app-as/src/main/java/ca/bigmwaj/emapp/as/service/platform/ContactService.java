@@ -9,10 +9,7 @@ import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.*;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
-import ca.bigmwaj.emapp.as.entity.platform.ContactAddressEntity;
-import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
-import ca.bigmwaj.emapp.as.entity.platform.ContactEmailEntity;
-import ca.bigmwaj.emapp.as.entity.platform.ContactPhoneEntity;
+import ca.bigmwaj.emapp.as.entity.platform.*;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -20,7 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -81,61 +84,64 @@ public class ContactService extends AbstractService {
     public ContactDto create(ContactDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeCreateHistEntity(entity);
+        initCreateContactPoints(entity, entity.getEmails());
+        initCreateContactPoints(entity, entity.getPhones());
+        initCreateContactPoints(entity, entity.getAddresses());
         entity = dao.save(entity);
-        createEmails(dto, entity);
-        createPhones(dto, entity);
-        createAddresses(dto, entity);
         return findById(entity.getId());
     }
 
     public ContactDto update(ContactDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
-        updateEmails(dto, entity);
-        updatePhones(dto, entity);
-        updateAddresses(dto, entity);
+        beforeUpdateHistEntity(entity);
+        initUpdateContactPoints(entity, entity.getEmails(), dto.getEmails(), this::deleteEmailIfApplicable);
+        initUpdateContactPoints(entity, entity.getPhones(), dto.getPhones(), this::deletePhoneIfApplicable);
+        initUpdateContactPoints(entity, entity.getAddresses(), dto.getAddresses(), this::deleteAddressIfApplicable);
         entity = dao.save(entity);
         return findById(entity.getId());
     }
 
-    private void createEmails(ContactDto dto, ContactEntity contactEntity) {
-        if (dto.getEmails() != null) {
-            UnaryOperator<ContactEmailEntity> setContact = e -> {
-                e.setContact(contactEntity);
+    private <T extends AbstractContactPointEntity>
+    void initCreateContactPoints(ContactEntity entity, List<T> contactPoints) {
+        if (contactPoints != null) {
+            UnaryOperator<T> setContact = e -> {
+                e.setContact(entity);
                 return e;
             };
-            dto.getEmails().stream()
-                    .map(GlobalMapper.INSTANCE::toEntity)
-                    .map(this::beforeCreateHistEntity)
+            contactPoints.stream()
                     .map(setContact)
-                    .forEach(emailDao::save);
+                    .forEach(this::beforeCreateHistEntity);
         }
     }
 
-    private void createPhones(ContactDto dto, ContactEntity contactEntity) {
-        if (dto.getPhones() != null) {
-            UnaryOperator<ContactPhoneEntity> setContact = e -> {
-                e.setContact(contactEntity);
-                return e;
-            };
-            dto.getPhones().stream()
-                    .map(GlobalMapper.INSTANCE::toEntity)
-                    .map(this::beforeCreateHistEntity)
-                    .map(setContact)
-                    .forEach(phoneDao::save);
-        }
-    }
+    private<D extends AbstractContactPointDto, T extends AbstractContactPointEntity>
+    void initUpdateContactPoints(ContactEntity entity, List<T> contactPoints, List<D> contactPointDtos, Consumer<D> deleteFunction) {
+        if (contactPoints != null) {
+            final List<Long> toDelete;
+            // Review this method and exclude deleted contact points that do not have an ID
+            // (i.e. new contact points that are added and marked for deletion in the same update)
+            if( contactPointDtos != null ){
+                toDelete = contactPointDtos.stream()
+                        .filter(AbstractContactPointDto::isToDelete)
+                        .peek(deleteFunction)
+                        .map(AbstractContactPointDto::getId)
+                        .filter(Objects::nonNull)
+                        .toList();
+            } else {
+                toDelete = Collections.emptyList();
+            }
 
-    private void createAddresses(ContactDto dto, ContactEntity contactEntity) {
-        if (dto.getAddresses() != null) {
-            UnaryOperator<ContactAddressEntity> setContact = e -> {
-                e.setContact(contactEntity);
+            UnaryOperator<T> setContact = e -> {
+                e.setContact(entity);
                 return e;
             };
-            dto.getAddresses().stream()
-                    .map(GlobalMapper.INSTANCE::toEntity)
-                    .map(this::beforeCreateHistEntity)
+
+            Predicate<T> isNotToDelete = e -> toDelete.isEmpty() || !toDelete.contains(e.getId());
+
+            contactPoints.stream()
+                    .filter(isNotToDelete)
                     .map(setContact)
-                    .forEach(addressDao::save);
+                    .forEach(this::beforeUpdateHistEntity);
         }
     }
 
@@ -146,32 +152,10 @@ public class ContactService extends AbstractService {
         }
     }
 
-    private void updateEmails(ContactDto dto, ContactEntity contactEntity) {
-        if (dto.getEmails() != null) {
-            dto.getEmails().stream()
-                    .peek(this::deleteEmailIfApplicable)
-                    .filter(ContactEmailDto::isNotToDelete)
-                    .map(GlobalMapper.INSTANCE::toEntity)
-                    .map(this::beforeUpdateHistEntity)
-                    .forEach(emailDao::save);
-        }
-    }
-
     private void deletePhoneIfApplicable(ContactPhoneDto phone) {
         if (phone.isToDelete()) {
             var entity = GlobalMapper.INSTANCE.toEntity(phone);
             phoneDao.delete(entity);
-        }
-    }
-
-    private void updatePhones(ContactDto dto, ContactEntity contactEntity) {
-        if (dto.getPhones() != null) {
-            dto.getPhones().stream()
-                    .peek(this::deletePhoneIfApplicable)
-                    .filter(ContactPhoneDto::isNotToDelete)
-                    .map(GlobalMapper.INSTANCE::toEntity)
-                    .map(this::beforeUpdateHistEntity)
-                    .forEach(phoneDao::save);
         }
     }
 
@@ -182,17 +166,6 @@ public class ContactService extends AbstractService {
         }
     }
 
-    private void updateAddresses(ContactDto dto, ContactEntity contactEntity) {
-        if (dto.getAddresses() != null) {
-            dto.getAddresses().stream()
-                    .peek(this::deleteAddressIfApplicable)
-                    .filter(ContactAddressDto::isNotToDelete)
-                    .map(GlobalMapper.INSTANCE::toEntity)
-                    .map(this::beforeUpdateHistEntity)
-                    .forEach(addressDao::save);
-        }
-    }
-
     /**
      * Performance optimization: Maps entity to DTO and includes children collections.
      * The ContactEntity now has @OneToMany relationships with SUBSELECT fetch mode,
@@ -200,7 +173,7 @@ public class ContactService extends AbstractService {
      * This eliminates the N+1 query problem where each contact would trigger 3 additional queries.
      */
     protected ContactDto toDtoWithChildren(ContactEntity entity) {
-        ContactDto dto = GlobalMapper.INSTANCE.toDto(entity);
+        var dto = GlobalMapper.INSTANCE.toDto(entity);
         
         // Map child collections directly from the entity's pre-loaded collections
         dto.setEmails(entity.getEmails().stream()

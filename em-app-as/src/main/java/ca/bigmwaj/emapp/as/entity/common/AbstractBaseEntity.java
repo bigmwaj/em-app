@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 @Data
 public abstract class AbstractBaseEntity {
 
-    @Column(name = "CREATED_BY")
+    @Column(name = "CREATED_BY", updatable = false, nullable = false)
     private String createdBy;
 
-    @Column(name = "CREATED_DATE")
+    @Column(name = "CREATED_DATE", updatable = false, nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "UPDATED_BY")
+    @Column(name = "UPDATED_BY", updatable = false)
     private String updatedBy;
 
-    @Column(name = "UPDATED_DATE")
+    @Column(name = "UPDATED_DATE", updatable = false)
     private LocalDateTime updatedDate;
 
 }

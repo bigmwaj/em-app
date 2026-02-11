@@ -14,7 +14,7 @@ import {
   AddressTypeLvo
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
-import { AccountDeleteComponent } from './delete.component';
+import { AccountDeleteDialogComponent } from './delete-dialog.component';
 
 export enum AccountEditMode {
   CREATE = 'create',
@@ -30,6 +30,7 @@ export enum AccountEditMode {
 })
 export class AccountEditComponent implements OnInit {
   mode: AccountEditMode = AccountEditMode.VIEW;
+  
   accountForm!: FormGroup;
   mainContactForm!: FormGroup;
   mainUserForm!: FormGroup;
@@ -416,7 +417,7 @@ export class AccountEditComponent implements OnInit {
       return;
     }
 
-    const dialogRef = this.dialog.open(AccountDeleteComponent, {
+    const dialogRef = this.dialog.open(AccountDeleteDialogComponent, {
       width: '400px',
       data: { account: this.account }
     });

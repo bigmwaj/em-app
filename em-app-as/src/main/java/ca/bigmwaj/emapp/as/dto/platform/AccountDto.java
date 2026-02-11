@@ -21,5 +21,11 @@ public class AccountDto extends BaseHistDto {
 
     private List<AccountContactDto> accountContacts;
 
+    /*
+     * Use to pass the account username when creating account,
+     * and will be used to create the main user for the account.
+     */
+    private String accountUsername;
+
     private ContactDto mainContact;
 }

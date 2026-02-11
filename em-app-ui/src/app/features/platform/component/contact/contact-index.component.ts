@@ -58,7 +58,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
     this.searchCriteria = createDefaultSearchCriteria();
     
     if (this.searchText && this.searchText.trim()) {
-      this.searchCriteria.filterByItems = [{
+      this.searchCriteria.whereClauses = [{
         name: 'firstName',
         oper: FilterOperator.LIKE,
         values: [this.searchText.trim()]
