@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class PhoneService extends AbstractService {
+public class ContactPhoneService extends AbstractService {
     @Autowired
     private ContactPhoneDao dao;
 

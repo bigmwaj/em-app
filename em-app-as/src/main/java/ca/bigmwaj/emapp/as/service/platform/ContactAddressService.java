@@ -1,10 +1,10 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
+import ca.bigmwaj.emapp.as.dao.platform.ContactAddressDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
-import ca.bigmwaj.emapp.as.dao.platform.ContactEmailDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
-import ca.bigmwaj.emapp.as.dto.platform.ContactEmailDto;
-import ca.bigmwaj.emapp.as.entity.platform.ContactEmailEntity;
+import ca.bigmwaj.emapp.as.dto.platform.ContactAddressDto;
+import ca.bigmwaj.emapp.as.entity.platform.ContactAddressEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,44 +18,45 @@ import java.util.Optional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class EmailService extends AbstractService {
+public class ContactAddressService extends AbstractService {
+
     @Autowired
-    private ContactEmailDao dao;
+    private ContactAddressDao dao;
 
     @Autowired
     private ContactDao contactDao;
 
-    private Example<ContactEmailEntity> getCommonCriteria(Long contactId) {
-        var probe = new ContactEmailEntity();
+    private Example<ContactAddressEntity> getCommonCriteria(Long contactId) {
+        var probe = new ContactAddressEntity();
         probe.setContact(new ContactEntity());
         probe.getContact().setId(contactId);
         return Example.of(probe);
     }
 
-    public List<ContactEmailDto> findAll(Long contactId) {
+    public List<ContactAddressDto> findAll(Long contactId) {
         var example = getCommonCriteria(contactId);
         return dao.findAll(example).stream().map(GlobalMapper.INSTANCE::toDto).toList();
     }
 
-    private Optional<ContactEmailEntity> findEntityById(Long contactId, Long emailId) {
+    private Optional<ContactAddressEntity> findEntityById(Long contactId, Long addressId) {
         var example = getCommonCriteria(contactId);
-        example.getProbe().setId(emailId);
+        example.getProbe().setId(addressId);
         return dao.findAll(example).stream().findFirst();
     }
 
-    public ContactEmailDto findById(Long contactId, Long emailId) {
-        return findEntityById(contactId, emailId)
+    public ContactAddressDto findById(Long contactId, Long addressId) {
+        return findEntityById(contactId, addressId)
                 .map(GlobalMapper.INSTANCE::toDto)
-                .orElseThrow(() -> new NoSuchElementException("Contact email not found with contactId: " + contactId + " and emailId: " + emailId));
+                .orElseThrow(() -> new NoSuchElementException("Contact address not found with contactId: " + contactId + " and addressId: " + addressId));
     }
 
-    public void deleteById(Long contactId, Long emailId) {
-        findEntityById(contactId, emailId).ifPresentOrElse(dao::delete, () -> {
-            throw new NoSuchElementException("Contact email not found with contactId: " + contactId + " and emailId: " + emailId);
+    public void deleteById(Long contactId, Long addressId) {
+        findEntityById(contactId, addressId).ifPresentOrElse(dao::delete, () -> {
+            throw new NoSuchElementException("Contact address not found with contactId: " + contactId + " and addressId: " + addressId);
         });
     }
 
-    public ContactEmailDto create(Long contactId, ContactEmailDto dto) {
+    public ContactAddressDto create(Long contactId, ContactAddressDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeCreateHistEntity(entity);
         var contactEntity = contactDao.findById(contactId)
@@ -64,7 +65,7 @@ public class EmailService extends AbstractService {
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
 
-    public ContactEmailDto update(Long contactId, ContactEmailDto dto) {
+    public ContactAddressDto update(Long contactId, ContactAddressDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
         var contactEntity = contactDao.findById(contactId)
