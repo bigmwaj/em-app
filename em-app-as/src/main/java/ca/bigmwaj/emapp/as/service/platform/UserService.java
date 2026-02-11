@@ -133,4 +133,8 @@ public class UserService extends AbstractService implements UserDetailsService {
             throw new IllegalStateException("User account is not active for email: " + email);
         }
     }
+
+    public boolean isUsernameUnique(String username) {
+        return !dao.existsByUsername(username);
+    }
 }

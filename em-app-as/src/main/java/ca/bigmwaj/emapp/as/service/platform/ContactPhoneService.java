@@ -72,4 +72,8 @@ public class ContactPhoneService extends AbstractService {
         entity.setContact(contactEntity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
+
+    public boolean isPhoneUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String phone) {
+        return !dao.existsByHolderTypeAndPhone(holderType, phone);
+    }
 }

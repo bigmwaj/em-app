@@ -2,6 +2,8 @@ package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,8 +13,11 @@ public class AccountContactDto extends BaseHistDto {
 
     private Long accountId;
 
+    @NotNull(message = "Contact is required")
+    @Valid
     private ContactDto contact;
 
+    @NotNull(message = "Contact role is required")
     private AccountContactRoleLvo role;
 
     public boolean isMain() {

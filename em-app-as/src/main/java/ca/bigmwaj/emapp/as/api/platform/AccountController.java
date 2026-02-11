@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,14 +145,14 @@ public class AccountController extends AbstractBaseAPI {
     @PostMapping
     public ResponseEntity<ResponseMessage<AccountDto>> create(
             @Parameter(description = "The account's payload", required = true)
-            @RequestBody @Validated AccountDto dto) {
+            @RequestBody @Valid AccountDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.create(dto)));
     }
 
     @PatchMapping
     public ResponseEntity<ResponseMessage<AccountDto>> update(
             @Parameter(description = "The account's payload", required = true)
-            @RequestBody @Validated AccountDto dto) {
+            @RequestBody @Valid AccountDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 
