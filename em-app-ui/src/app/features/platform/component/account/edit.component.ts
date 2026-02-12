@@ -5,12 +5,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { 
   AccountDto, 
-  AccountStatusLvo, 
+  AccountStatusLvo,
   HolderTypeLvo,
-  UserStatusLvo,
   EmailTypeLvo,
   PhoneTypeLvo,
-  AddressTypeLvo
+  AddressTypeLvo,
+  UserStatusLvo
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
@@ -37,12 +37,6 @@ export class AccountEditComponent implements OnInit {
 
   // Enums for dropdowns
   AccountEditMode = SharedHelper.AccountEditMode;
-  accountStatuses = Object.values(AccountStatusLvo);
-  holderTypes = Object.values(HolderTypeLvo);
-  userStatuses = Object.values(UserStatusLvo);
-  emailTypes = Object.values(EmailTypeLvo);
-  phoneTypes = Object.values(PhoneTypeLvo);
-  addressTypes = Object.values(AddressTypeLvo);
 
   constructor(
     private fb: FormBuilder,
