@@ -5,12 +5,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { 
   AccountDto, 
-  AccountStatusLvo, 
+  AccountStatusLvo,
   HolderTypeLvo,
-  UserStatusLvo,
   EmailTypeLvo,
   PhoneTypeLvo,
-  AddressTypeLvo
+  AddressTypeLvo,
+  UserStatusLvo
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
@@ -37,12 +37,6 @@ export class AccountEditComponent implements OnInit {
 
   // Enums for dropdowns
   AccountEditMode = SharedHelper.AccountEditMode;
-  accountStatuses = Object.values(AccountStatusLvo);
-  holderTypes = Object.values(HolderTypeLvo);
-  userStatuses = Object.values(UserStatusLvo);
-  emailTypes = Object.values(EmailTypeLvo);
-  phoneTypes = Object.values(PhoneTypeLvo);
-  addressTypes = Object.values(AddressTypeLvo);
 
   constructor(
     private fb: FormBuilder,
@@ -188,6 +182,11 @@ export class AccountEditComponent implements OnInit {
       return;
     }
 
+    if (this.mode === SharedHelper.AccountEditMode.CREATE && this.mainUserForm.invalid) {
+      this.error = 'Please fill in all required fields in Account Main User';
+      return;
+    }
+
     this.loading = true;
     this.error = null;
 
@@ -223,6 +222,7 @@ export class AccountEditComponent implements OnInit {
   private buildAccountDto(): AccountDto {
     const accountFormValue = this.accountForm.value;
     const contactFormValue = this.mainContactForm.value;
+    const userFormValue = this.mainUserForm.value;
 
     const accountDto: AccountDto = {
       name: accountFormValue.name,
@@ -232,6 +232,11 @@ export class AccountEditComponent implements OnInit {
       createdDate: new Date(),
       updatedBy: ''
     };
+
+    // Add accountAdminUsername if in CREATE mode
+    if (this.mode === SharedHelper.AccountEditMode.CREATE && userFormValue.accountAdminUsername) {
+      accountDto.accountAdminUsername = userFormValue.accountAdminUsername;
+    }
 
     // Build main contact if firstName is provided
     if (contactFormValue.firstName && contactFormValue.lastName) {

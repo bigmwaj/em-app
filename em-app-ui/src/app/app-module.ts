@@ -35,6 +35,9 @@ import { AccountIndexComponent } from './features/platform/component/account/ind
 import { AccountEditComponent } from './features/platform/component/account/edit.component';
 import { AccountChangeStatusDialogComponent } from './features/platform/component/account/change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './features/platform/component/account/delete-dialog.component';
+import { EditAccountDetailsComponent } from './features/platform/component/account/edit/account-details.component';
+import { EditPrincipalAccountContactComponent } from './features/platform/component/account/edit/principal-account-contact.component';
+import { EditAccountAdminUserFormComponent } from './features/platform/component/account/edit/account-admin-user.component';
 import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
 import { UserIndexComponent } from './features/platform/component/user/user-index.component';
 
@@ -52,6 +55,9 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     UserIndexComponent,
     AccountIndexComponent,
     AccountEditComponent,
+    EditAccountDetailsComponent,
+    EditPrincipalAccountContactComponent,
+    EditAccountAdminUserFormComponent,
     AccountChangeStatusDialogComponent,
     AccountDeleteDialogComponent,
     ContactIndexComponent
