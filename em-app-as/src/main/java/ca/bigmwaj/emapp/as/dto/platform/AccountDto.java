@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.as.api.platform.validator.UniqueUsername;
-import ca.bigmwaj.emapp.as.api.platform.validator.ValidAccountContacts;
+import ca.bigmwaj.emapp.as.validator.platform.UniqueUsername;
+import ca.bigmwaj.emapp.as.validator.platform.ValidAccountContacts;
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
 import jakarta.validation.Valid;
@@ -41,6 +41,4 @@ public class AccountDto extends BaseHistDto {
     @Size(max = 16, message = "Account username must not exceed 16 characters")
     @UniqueUsername
     private String accountUsername;
-
-    private ContactDto mainContact;
 }

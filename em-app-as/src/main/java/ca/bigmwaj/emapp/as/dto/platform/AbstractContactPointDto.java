@@ -20,5 +20,4 @@ public class AbstractContactPointDto extends BaseHistDto {
 
     private Boolean defaultContactPoint;
 
-
 }

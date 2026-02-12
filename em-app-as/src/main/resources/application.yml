@@ -71,6 +71,8 @@ app:
 
 #https://springdoc.org/
 springdoc:
+  querydsl:
+    enabled: false
   show-actuator: true
   swagger-ui:
     path: swagger-ui

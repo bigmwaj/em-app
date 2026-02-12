@@ -1,6 +1,5 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.as.api.platform.validator.UniqueContactAddress;
 import ca.bigmwaj.emapp.dm.lvo.platform.AddressTypeLvo;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,7 +8,6 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@UniqueContactAddress
 public class ContactAddressDto extends AbstractContactPointDto {
 
     @Size(max = 128, message = "Address must not exceed 128 characters")

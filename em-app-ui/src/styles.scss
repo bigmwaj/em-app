@@ -72,10 +72,11 @@ body {
 }
 
 .search-section {
-  .search-button{
+  .search-button {
     margin: 0 10px;
   }
-  .mat-mdc-form-field-subscript-wrapper{
+
+  .mat-mdc-form-field-subscript-wrapper {
     display: none;
   }
 }
@@ -85,5 +86,68 @@ body {
 
   table {
     background: none;
+  }
+}
+
+.form-section {
+  margin-bottom: 24px;
+
+  mat-card-header {
+    margin-bottom: 16px;
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 20px;
+      font-weight: 500;
+
+      mat-icon {
+        color: #1976d2;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 0 16px 16px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+
+      .half-width {
+        flex: 1;
+        min-width: 300px;
+      }
+    }
+
+    .form-field {
+      width: 100%;
+
+      &.half-width {
+        flex: 1;
+        min-width: 300px;
+      }
+    }
+
+    .subsection-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #424242;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      border-left: 3px solid #1976d2;
+      padding-left: 12px;
+    }
   }
 }

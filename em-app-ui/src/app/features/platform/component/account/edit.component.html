@@ -227,37 +227,12 @@
       <form [formGroup]="mainUserForm" class="user-form">
 
         <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Enter username">
-          @if(mainUserForm.get('username')?.hasError('required')) {
-          <mat-error>Username is required</mat-error>
+          <mat-label>Account Admin Username</mat-label>
+          <input matInput formControlName="accountAdminUsername" placeholder="Enter Account Admin Username">
+          @if(mainUserForm.get('accountAdminUsername')?.hasError('required')) {
+          <mat-error>Account Admin Username is required</mat-error>
           }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" placeholder="Enter password">
-        </mat-form-field>
-
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field half-width">
-            <mat-label>Status *</mat-label>
-            <mat-select formControlName="status">
-              @for (status of userStatuses; track $index) {
-              <mat-option [value]="status">{{ status }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="form-field half-width">
-            <mat-label>Holder Type *</mat-label>
-            <mat-select formControlName="holderType">
-              @for (type of holderTypes; track $index) {
-              <mat-option [value]="type">{{ type }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
+        </mat-form-field>    
 
       </form>
     </mat-card-content>

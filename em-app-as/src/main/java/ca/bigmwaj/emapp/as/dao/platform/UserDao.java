@@ -3,7 +3,6 @@ package ca.bigmwaj.emapp.as.dao.platform;
 import ca.bigmwaj.emapp.as.dao.AbstractDao;
 import ca.bigmwaj.emapp.as.dao.shared.QueryConfig;
 import ca.bigmwaj.emapp.as.entity.platform.*;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -34,13 +33,7 @@ public interface UserDao extends AbstractDao<UserEntity, Long> {
         return String.join(" ", query);
     }
 
-    Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByUsernameIgnoreCase(String email);
 
     boolean existsByUsername(String username);
-
-    @Query("select u from UserEntity u " +
-            "join u.contact c " +
-            "join ContactEmailEntity ce on c = ce.contact " +
-            "where lower(ce.email) = lower(:email)")
-    Optional<UserEntity> findByEmail(String email);
 }

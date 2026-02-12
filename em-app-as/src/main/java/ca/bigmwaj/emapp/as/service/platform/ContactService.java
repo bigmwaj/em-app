@@ -180,26 +180,14 @@ public class ContactService extends AbstractService {
                 .map(GlobalMapper.INSTANCE::toDto)
                 .toList());
 
-        if( dto.getEmails() != null && !dto.getEmails().isEmpty() ){
-            dto.setMainEmail(dto.getEmails().get(0));
-        }
-        
         dto.setPhones(entity.getPhones().stream()
                 .map(GlobalMapper.INSTANCE::toDto)
                 .toList());
 
-        if( dto.getPhones() != null && !dto.getPhones().isEmpty() ){
-            dto.setMainPhone(dto.getPhones().get(0));
-        }
-        
         dto.setAddresses(entity.getAddresses().stream()
                 .map(GlobalMapper.INSTANCE::toDto)
                 .toList());
 
-        if( dto.getAddresses() != null && !dto.getAddresses().isEmpty() ){
-            dto.setMainAddress(dto.getAddresses().get(0));
-        }
-        
         return dto;
     }
 }

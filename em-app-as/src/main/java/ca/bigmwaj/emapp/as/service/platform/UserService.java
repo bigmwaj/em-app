@@ -107,7 +107,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         var msgTpl = "Aucun utilisateur trouvé avant pour nom d'utilisateur %s";
         Supplier<UsernameNotFoundException> ex;
         ex = () -> new UsernameNotFoundException(String.format(msgTpl, username));
-        var user =  dao.findByUsername(username).orElseThrow(ex);
+        var user =  dao.findByUsernameIgnoreCase(username).orElseThrow(ex);
 
         var status = user.getStatus();
 //		var passwordLastChangeDate = user.getPasswordLastChangeDate().getValue();
@@ -123,7 +123,7 @@ public class UserService extends AbstractService implements UserDetailsService {
     }
 
     public void validateAccountHolder(String email) {
-        var optionalUserEntity = dao.findByEmail(email);
+        var optionalUserEntity = dao.findByUsernameIgnoreCase(email);
         if (optionalUserEntity.isEmpty()) {
             throw new NoSuchElementException("No user found with email: " + email);
         }

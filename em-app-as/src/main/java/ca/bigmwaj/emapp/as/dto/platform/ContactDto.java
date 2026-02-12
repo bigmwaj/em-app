@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.as.api.platform.validator.ValidBirthDate;
+import ca.bigmwaj.emapp.as.validator.platform.ValidBirthDate;
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.validation.Valid;
@@ -30,21 +30,16 @@ public class ContactDto extends BaseHistDto {
     @ValidBirthDate
     private LocalDate birthDate;
 
+    @NotBlank(message = "Holder type is required")
     private HolderTypeLvo holderType;
-
-    private ContactEmailDto mainEmail;
 
     @NotEmpty(message = "At least one email is required")
     @Valid
     private List<ContactEmailDto> emails;
 
-    private ContactPhoneDto mainPhone;
-
     @NotEmpty(message = "At least one phone is required")
     @Valid
     private List<ContactPhoneDto> phones;
-
-    private ContactAddressDto mainAddress;
 
     @Valid
     private List<ContactAddressDto> addresses;

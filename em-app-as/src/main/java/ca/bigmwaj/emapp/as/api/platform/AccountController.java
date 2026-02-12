@@ -2,10 +2,10 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.api.shared.validator.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.as.api.shared.validator.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.api.shared.validator.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.api.shared.validator.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
+import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
@@ -25,7 +25,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

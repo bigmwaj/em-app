@@ -19,13 +19,15 @@
             <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter account name">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
-          <button mat-raised-button color="primary" (click)="onSearch()" class="search-button search-button-submit" type="button">
+          <button mat-raised-button color="primary" (click)="onSearch()" class="search-button search-button-submit"
+            type="button">
             <mat-icon>search</mat-icon>Search
           </button>
           <button mat-raised-button (click)="onClearSearch()" type="button" class="search-button search-button-clear">
             <mat-icon>clear</mat-icon>Clear
           </button>
-          <button mat-raised-button (click)="onInitAdvancedASearch()" type="button" class="search-button search-button-advanced">
+          <button mat-raised-button (click)="onInitAdvancedASearch()" type="button"
+            class="search-button search-button-advanced">
             <mat-icon>open_in_new</mat-icon>Advanced Search
           </button>
         </form>
@@ -65,16 +67,17 @@
           <td mat-cell *matCellDef="let element">{{element.status}}</td>
         </ng-container>
         <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef>Main Email</th>
-          <td mat-cell *matCellDef="let element">{{element?.mainContact?.mainEmail?.email}}</td>
+          <th mat-header-cell *matHeaderCellDef>Primary Contact Email</th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactEmail(element)?.email}}</td>
         </ng-container>
         <ng-container matColumnDef="phone">
-          <th mat-header-cell *matHeaderCellDef>Main Phone</th>
-          <td mat-cell *matCellDef="let element">{{element?.mainContact?.mainPhone?.phone}}</td>
+          <th mat-header-cell *matHeaderCellDef>Primary Contact Phone</th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactPhone(element)?.phone}}</td>
         </ng-container>
         <ng-container matColumnDef="address">
-          <th mat-header-cell *matHeaderCellDef>Main Address</th>
-          <td mat-cell *matCellDef="let element">{{element?.mainContact?.mainAddress?.address}}</td>
+          <th mat-header-cell *matHeaderCellDef>Primary Contact Address</th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactAddress(element)?.address}}
+          </td>
         </ng-container>
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>
@@ -89,15 +92,20 @@
             <button mat-button color="primary" (click)="editAccount(element)">
               <mat-icon>edit</mat-icon>Edit
             </button>
-            <button mat-button (click)="duplicateAccount(element)">
-              <mat-icon>content_copy</mat-icon>Duplicate
+            <button mat-icon-button color="primary" class="more-actions" [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button mat-button (click)="changeAccountStatus(element)">
-              <mat-icon>swap_horiz</mat-icon>Change Status
-            </button>
-            <button mat-button color="warn" (click)="deleteAccount(element)">
-              <mat-icon>delete</mat-icon>Delete
-            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="duplicateAccount(element)">
+                <mat-icon>content_copy</mat-icon>Duplicate
+              </button>
+              <button mat-menu-item (click)="changeAccountStatus(element)">
+                <mat-icon>swap_horiz</mat-icon>Change Status
+              </button>
+              <button mat-menu-item color="warn" (click)="deleteAccount(element)">
+                <mat-icon>delete</mat-icon>Delete
+              </button>
+            </mat-menu>
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

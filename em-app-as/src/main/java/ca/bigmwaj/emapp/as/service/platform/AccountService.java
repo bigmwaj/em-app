@@ -109,10 +109,6 @@ public class AccountService extends AbstractService {
                 .map(this::toDtoWithChildren)
                 .toList());
 
-        dto.getAccountContacts().stream().filter(AccountContactDto::isMain).findFirst()
-                .map(AccountContactDto::getContact)
-                .ifPresent(dto::setMainContact);
-
         return dto;
     }
 

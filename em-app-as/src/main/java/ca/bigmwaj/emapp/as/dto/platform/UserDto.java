@@ -1,8 +1,12 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
+import ca.bigmwaj.emapp.as.validator.shared.CustomPayload;
+import ca.bigmwaj.emapp.as.validator.shared.ValidNotNullOnCreate;
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,17 +20,18 @@ public class UserDto extends BaseHistDto {
 
     private String provider;
 
+    @NotNull(message = "Username type is required")
     private String username;
 
-    // SECURITY WARNING: Passwords should never be exposed in DTOs
-    // TODO: Create separate DTOs for password changes (e.g., ChangePasswordDto)
-    //       Remove this field from read operations
-    //       Use @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) at minimum
+    @ValidNotNullOnCreate(payload = CustomPayload.class)
     private String password;
 
+    @NotNull(message = "Contact type is required")
+    @Valid
     private ContactDto contact;
 
     private UserStatusLvo status;
 
+    @NotNull(message = "Holder type is required")
     private HolderTypeLvo holderType;
 }

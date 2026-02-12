@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
-import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
+import { AccountDto, AccountSearchCriteria, ContactEmailDto, createAccountSearchCriteria } from '../../api.platform.model';
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
+import { PlatformHelper } from '../../platform.helper';
 
 @Component({
   selector: 'app-account-index',
@@ -23,6 +24,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
   searchText = '';
+  PlatformHelper = PlatformHelper;
 
   constructor(
     private accountService: AccountService,
@@ -94,7 +96,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   onSearch(): void {
     this.searchCriteria = createAccountSearchCriteria();
     this.searchCriteria.includeMainContact = true;
-    
+
     if (this.searchText && this.searchText.trim()) {
       this.searchCriteria.whereClauses = [{
         name: 'name',
@@ -102,7 +104,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
         values: [this.searchText.trim()]
       }];
     }
-    
+
     this.loadAccounts();
   }
 
@@ -112,32 +114,14 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.searchCriteria.includeMainContact = true;
     this.loadAccounts();
   }
-  
+
 
   onInitAdvancedASearch(): void {
-    
+
   }
 
   duplicateAccount(account: AccountDto): void {
-    // Create a deep copy of the account
-    const duplicatedAccount: AccountDto = JSON.parse(JSON.stringify(account));
-    
-    // Clear identifier fields
-    delete duplicatedAccount.id;
-    
-    // Clear IDs from nested objects
-    if (duplicatedAccount.mainContact) {
-      delete duplicatedAccount.mainContact.id;
-      if (duplicatedAccount.mainContact.mainEmail) {
-        delete duplicatedAccount.mainContact.mainEmail.id;
-      }
-      if (duplicatedAccount.mainContact.mainPhone) {
-        delete duplicatedAccount.mainContact.mainPhone.id;
-      }
-      if (duplicatedAccount.mainContact.mainAddress) {
-        delete duplicatedAccount.mainContact.mainAddress.id;
-      }
-    }
+    const duplicatedAccount = PlatformHelper.duplicateAccount(account);
 
     // Navigate to create mode with duplicated data
     this.router.navigate(['/accounts/edit', 'create'], {
@@ -155,7 +139,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
       if (result) {
         // Update the status in the account
         account.status = result;
-        
+
         // In a real application, you would save this to the server
         // and then reload the accounts list
         // For now, just update the local data

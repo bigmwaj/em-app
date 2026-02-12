@@ -21,7 +21,6 @@ public interface GlobalMapper {
 
     @AnyEntityToAnyDtoMapping
     @Mapping(target = "accountContacts", ignore = true)
-    @Mapping(target = "mainContact", ignore = true)
     AccountDto toDto(AccountEntity entity);
     @AnyDtoToAnyEntityMapping
     AccountEntity toEntity(AccountDto dto);
@@ -54,11 +53,8 @@ public interface GlobalMapper {
     UserEntity toEntity(UserDto dto);
 
     @AnyEntityToAnyDtoMapping
-    @Mapping(target = "mainEmail", ignore = true)
     @Mapping(target = "emails", ignore = true)
-    @Mapping(target = "mainPhone", ignore = true)
     @Mapping(target = "phones", ignore = true)
-    @Mapping(target = "mainAddress", ignore = true)
     @Mapping(target = "addresses", ignore = true)
     ContactDto toDto(ContactEntity entity);
     @AnyDtoToAnyEntityMapping

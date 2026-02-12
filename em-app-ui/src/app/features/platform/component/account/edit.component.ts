@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { 
   AccountDto, 
-  UserDto, 
   AccountStatusLvo, 
   HolderTypeLvo,
   UserStatusLvo,
@@ -15,12 +14,9 @@ import {
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
+import { PlatformHelper } from '../../platform.helper';
+import { SharedHelper } from '../../../shared/shared.helper';
 
-export enum AccountEditMode {
-  CREATE = 'create',
-  EDIT = 'edit',
-  VIEW = 'view'
-}
 
 @Component({
   selector: 'app-account-edit',
@@ -29,7 +25,7 @@ export enum AccountEditMode {
   standalone: false
 })
 export class AccountEditComponent implements OnInit {
-  mode: AccountEditMode = AccountEditMode.VIEW;
+  mode = SharedHelper.AccountEditMode.VIEW;
   
   accountForm!: FormGroup;
   mainContactForm!: FormGroup;
@@ -40,7 +36,7 @@ export class AccountEditComponent implements OnInit {
   error: string | null = null;
 
   // Enums for dropdowns
-  AccountEditMode = AccountEditMode;
+  AccountEditMode = SharedHelper.AccountEditMode;
   accountStatuses = Object.values(AccountStatusLvo);
   holderTypes = Object.values(HolderTypeLvo);
   userStatuses = Object.values(UserStatusLvo);
@@ -85,10 +81,7 @@ export class AccountEditComponent implements OnInit {
 
     // Main User Form
     this.mainUserForm = this.fb.group({
-      username: ['', Validators.required],
-      password: [''],
-      status: [UserStatusLvo.ACTIVE, Validators.required],
-      holderType: [HolderTypeLvo.ACCOUNT, Validators.required]
+      accountAdminUsername: ['', Validators.required],
     });
   }
 
@@ -102,7 +95,7 @@ export class AccountEditComponent implements OnInit {
       const modeParam = params['mode'] || state.mode;
       
       if (modeParam === 'create') {
-        this.mode = AccountEditMode.CREATE;
+        this.mode = SharedHelper.AccountEditMode.CREATE;
         // Check if we have a duplicated account to populate
         if (state.account) {
           this.account = state.account;
@@ -113,13 +106,13 @@ export class AccountEditComponent implements OnInit {
           this.setupCreateMode();
         }
       } else if (modeParam === 'edit' && state.account) {
-        this.mode = AccountEditMode.EDIT;
+        this.mode = SharedHelper.AccountEditMode.EDIT;
         this.account = state.account;
         if (this.account) {
           this.populateForms(this.account);
         }
       } else if (modeParam === 'view' && state.account) {
-        this.mode = AccountEditMode.VIEW;
+        this.mode = SharedHelper.AccountEditMode.VIEW;
         this.account = state.account;
         if (this.account) {
           this.populateForms(this.account);
@@ -181,7 +174,7 @@ export class AccountEditComponent implements OnInit {
   }
 
   onSave(): void {
-    if (this.mode === AccountEditMode.VIEW) {
+    if (this.mode === SharedHelper.AccountEditMode.VIEW) {
       return;
     }
 
@@ -200,7 +193,7 @@ export class AccountEditComponent implements OnInit {
 
     const accountData = this.buildAccountDto();
 
-    if (this.mode === AccountEditMode.CREATE) {
+    if (this.mode === SharedHelper.AccountEditMode.CREATE) {
       this.accountService.createAccount(accountData).subscribe({
         next: () => {
           this.loading = false;
@@ -212,7 +205,7 @@ export class AccountEditComponent implements OnInit {
           this.loading = false;
         }
       });
-    } else if (this.mode === AccountEditMode.EDIT && this.account?.id) {
+    } else if (this.mode === SharedHelper.AccountEditMode.EDIT && this.account?.id) {
       this.accountService.updateAccount(this.account.id, accountData).subscribe({
         next: () => {
           this.loading = false;
@@ -301,23 +294,23 @@ export class AccountEditComponent implements OnInit {
   }
 
   get isCreateMode(): boolean {
-    return this.mode === AccountEditMode.CREATE;
+    return this.mode === SharedHelper.AccountEditMode.CREATE;
   }
 
   get isEditMode(): boolean {
-    return this.mode === AccountEditMode.EDIT;
+    return this.mode === SharedHelper.AccountEditMode.EDIT;
   }
 
   get isViewMode(): boolean {
-    return this.mode === AccountEditMode.VIEW;
+    return this.mode === SharedHelper.AccountEditMode.VIEW;
   }
 
   get showCancelButton(): boolean {
-    return this.mode === AccountEditMode.CREATE || this.mode === AccountEditMode.EDIT;
+    return this.mode === SharedHelper.AccountEditMode.CREATE || this.mode === SharedHelper.AccountEditMode.EDIT;
   }
 
   get showSaveButton(): boolean {
-    return this.mode === AccountEditMode.CREATE || this.mode === AccountEditMode.EDIT;
+    return this.mode === SharedHelper.AccountEditMode.CREATE || this.mode === SharedHelper. AccountEditMode.EDIT;
   }
 
   onDuplicate(): void {
@@ -326,24 +319,7 @@ export class AccountEditComponent implements OnInit {
     }
 
     // Create a deep copy of the account
-    const duplicatedAccount: AccountDto = JSON.parse(JSON.stringify(this.account));
-    
-    // Clear identifier fields
-    delete duplicatedAccount.id;
-    
-    // Clear IDs from nested objects
-    if (duplicatedAccount.mainContact) {
-      delete duplicatedAccount.mainContact.id;
-      if (duplicatedAccount.mainContact.mainEmail) {
-        delete duplicatedAccount.mainContact.mainEmail.id;
-      }
-      if (duplicatedAccount.mainContact.mainPhone) {
-        delete duplicatedAccount.mainContact.mainPhone.id;
-      }
-      if (duplicatedAccount.mainContact.mainAddress) {
-        delete duplicatedAccount.mainContact.mainAddress.id;
-      }
-    }
+    const duplicatedAccount = PlatformHelper.duplicateAccount(this.account);
 
     // Navigate to create mode with duplicated data
     this.router.navigate(['/accounts/edit', 'create'], {
@@ -358,8 +334,8 @@ export class AccountEditComponent implements OnInit {
   }
 
   onEditAccount(): void {
-    if (this.mode === AccountEditMode.VIEW) {
-      this.mode = AccountEditMode.EDIT;
+    if (this.mode === SharedHelper.AccountEditMode.VIEW) {
+      this.mode = SharedHelper.AccountEditMode.EDIT;
       this.enableAllForms();
     }
   }
@@ -393,7 +369,7 @@ export class AccountEditComponent implements OnInit {
   }
 
   get showDuplicateButton(): boolean {
-    return this.mode === AccountEditMode.EDIT || this.mode === AccountEditMode.VIEW;
+    return this.mode === SharedHelper.AccountEditMode.EDIT || this.mode === SharedHelper.AccountEditMode.VIEW;
   }
 
   get showCreateAccountButton(): boolean {
@@ -401,15 +377,15 @@ export class AccountEditComponent implements OnInit {
   }
 
   get showEditAccountButton(): boolean {
-    return this.mode === AccountEditMode.VIEW;
+    return this.mode === SharedHelper.AccountEditMode.VIEW;
   }
 
   get showChangeStatusButton(): boolean {
-    return this.mode === AccountEditMode.EDIT || this.mode === AccountEditMode.VIEW;
+    return this.mode === SharedHelper.AccountEditMode.EDIT || this.mode === SharedHelper.AccountEditMode.VIEW;
   }
 
   get showDeleteButton(): boolean {
-    return this.mode === AccountEditMode.VIEW;
+    return this.mode === SharedHelper.AccountEditMode.VIEW;
   }
 
   onDelete(): void {
