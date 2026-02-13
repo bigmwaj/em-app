@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <!-- Account creation and update validation -->
+    <entry name="account">
+        <!-- ID validation: required for UPDATE and CHANGE_STATUS -->
+        <field name="id">
+            <condition expression="editAction == 'UPDATE'">
+                <rule type="NonNullRule"/>
+            </condition>
+            <condition expression="editAction == 'CHANGE_STATUS'">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+
+        <!-- Name validation: required for CREATE and UPDATE -->
+        <field name="name">
+            <condition expression="editAction == 'CREATE'">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="32"/>
+            </condition>
+            <condition expression="editAction == 'UPDATE'">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="32"/>
+            </condition>
+        </field>
+
+        <!-- Description validation: optional but with max length -->
+        <field name="description">
+            <condition expression="editAction == 'CREATE'">
+                <rule type="MaxLengthRule" maxLength="100"/>
+            </condition>
+            <condition expression="editAction == 'UPDATE'">
+                <rule type="MaxLengthRule" maxLength="100"/>
+            </condition>
+        </field>
+
+        <!-- Status validation: always required -->
+        <field name="status">
+            <condition expression="true">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+    </entry>
+</validation>

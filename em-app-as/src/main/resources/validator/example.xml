@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <!-- Example user validation -->
+    <entry name="user">
+        <!-- ID validation: required for UPDATE and DELETE -->
+        <field name="id">
+            <condition expression="editAction == 'UPDATE'">
+                <rule type="NonNullRule"/>
+            </condition>
+            <condition expression="editAction == 'DELETE'">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+
+        <!-- Username validation: required for CREATE, max length 50 -->
+        <field name="username">
+            <condition expression="editAction == 'CREATE'">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="50"/>
+            </condition>
+            <condition expression="editAction == 'UPDATE'">
+                <rule type="MaxLengthRule" maxLength="50"/>
+            </condition>
+        </field>
+
+        <!-- Email validation: required for CREATE and UPDATE, max length 100 -->
+        <field name="email">
+            <condition expression="editAction == 'CREATE'">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="100"/>
+            </condition>
+            <condition expression="editAction == 'UPDATE'">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="100"/>
+            </condition>
+        </field>
+
+        <!-- Password validation: required for CREATE, max length 255 -->
+        <field name="password">
+            <condition expression="editAction == 'CREATE'">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="255"/>
+            </condition>
+        </field>
+    </entry>
+</validation>
