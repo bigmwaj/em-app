@@ -70,12 +70,7 @@ public class ConditionEvaluator {
             if (actualValue == null) {
                 isEqual = expectedValue.equals("null");
             } else {
-                // Handle enum comparison
-                if (actualValue.getClass().isEnum()) {
-                    isEqual = actualValue.toString().equals(expectedValue);
-                } else {
-                    isEqual = actualValue.toString().equals(expectedValue);
-                }
+                isEqual = actualValue.toString().equals(expectedValue);
             }
 
             return checkEquals ? isEqual : !isEqual;
