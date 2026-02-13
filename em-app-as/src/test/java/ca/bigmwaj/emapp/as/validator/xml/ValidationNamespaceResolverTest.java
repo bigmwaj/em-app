@@ -40,23 +40,4 @@ class ValidationNamespaceResolverTest {
             resolver.resolveNamespace("");
         });
     }
-
-    @Test
-    void testExtractEntryPoint_SlashFormat() {
-        String entryPoint = resolver.extractEntryPoint("platform/account");
-        assertEquals("account", entryPoint);
-    }
-
-    @Test
-    void testExtractEntryPoint_DotFormat() {
-        String entryPoint = resolver.extractEntryPoint("account.create");
-        assertEquals("create", entryPoint);
-    }
-
-    @Test
-    void testExtractEntryPoint_InvalidFormat() {
-        assertThrows(ValidationConfigurationException.class, () -> {
-            resolver.extractEntryPoint("invalid");
-        });
-    }
 }

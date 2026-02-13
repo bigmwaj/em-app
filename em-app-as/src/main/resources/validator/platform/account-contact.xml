@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <field name="role">
+        <condition expression="true">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="contact" type="dto">
+        <condition expression="true">
+            <rule type="NonNullRule"/>
+        </condition>
+        <validationConfig ref="platform/contact"/>
+    </field>
+
+</validation>

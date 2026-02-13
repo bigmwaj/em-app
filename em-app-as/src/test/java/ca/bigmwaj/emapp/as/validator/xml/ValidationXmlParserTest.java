@@ -13,45 +13,37 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class ValidationXmlParserTest {
 
+    private static final String ACCOUNT_XML_PATH = "validator/platform/account.xml";
+    private static final String TEST_XML_PATH = "validator/test.xml";
+
     @Autowired
     private ValidationXmlParser parser;
 
     @Test
-    void testParsePlatformXml() throws Exception {
-        InputStream stream = new ClassPathResource("validator/platform.xml").getInputStream();
-        ValidationConfig config = parser.parse(stream);
+    void testParsePlatformAccountXml() throws Exception {
+        var stream = new ClassPathResource(ACCOUNT_XML_PATH).getInputStream();
+        var config = parser.parse(stream);
 
         assertNotNull(config);
-        assertFalse(config.getEntries().isEmpty());
-
-        // Find account entry
-        ValidationEntry accountEntry = config.getEntries().stream()
-            .filter(e -> "account".equals(e.getName()))
-            .findFirst()
-            .orElse(null);
-
-        assertNotNull(accountEntry);
-        assertFalse(accountEntry.getFields().isEmpty());
+        assertFalse(config.getFields().isEmpty());
 
         // Verify field validations exist
-        assertTrue(accountEntry.getFields().stream()
+        assertTrue(config.getFields().stream()
             .anyMatch(f -> "id".equals(f.getName())));
-        assertTrue(accountEntry.getFields().stream()
+        assertTrue(config.getFields().stream()
             .anyMatch(f -> "name".equals(f.getName())));
-        assertTrue(accountEntry.getFields().stream()
+        assertTrue(config.getFields().stream()
             .anyMatch(f -> "status".equals(f.getName())));
     }
 
     @Test
     void testParseXmlWithConditionsAndRules() throws Exception {
-        InputStream stream = new ClassPathResource("validator/test.xml").getInputStream();
+        InputStream stream = new ClassPathResource(TEST_XML_PATH).getInputStream();
         ValidationConfig config = parser.parse(stream);
 
         assertNotNull(config);
-        ValidationEntry entry = config.getEntries().get(0);
-        assertNotNull(entry);
 
-        FieldValidation field = entry.getFields().get(0);
+        FieldValidation field = config.getFields().get(0);
         assertNotNull(field);
 
         assertFalse(field.getConditions().isEmpty());

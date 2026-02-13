@@ -19,7 +19,7 @@ class RuleFactoryTest {
 
     @Test
     void testCreateNonNullRule() {
-        RuleConfig config = new RuleConfig();
+        var config = new RuleConfig();
         config.setType("NonNullRule");
 
         AbstractRule rule = ruleFactory.createRule(config);
@@ -30,7 +30,7 @@ class RuleFactoryTest {
 
     @Test
     void testCreateNonEmptyRule() {
-        RuleConfig config = new RuleConfig();
+        var config = new RuleConfig();
         config.setType("NonEmptyRule");
 
         AbstractRule rule = ruleFactory.createRule(config);
@@ -41,7 +41,7 @@ class RuleFactoryTest {
 
     @Test
     void testCreateMaxLengthRule() {
-        RuleConfig config = new RuleConfig();
+        var config = new RuleConfig();
         config.setType("MaxLengthRule");
         config.getParameters().put("maxLength", "50");
 
@@ -53,18 +53,8 @@ class RuleFactoryTest {
     }
 
     @Test
-    void testCreateMaxLengthRule_MissingParameter() {
-        RuleConfig config = new RuleConfig();
-        config.setType("MaxLengthRule");
-
-        assertThrows(ValidationConfigurationException.class, () -> {
-            ruleFactory.createRule(config);
-        });
-    }
-
-    @Test
     void testCreateMaxLengthRule_InvalidParameter() {
-        RuleConfig config = new RuleConfig();
+        var config = new RuleConfig();
         config.setType("MaxLengthRule");
         config.getParameters().put("maxLength", "invalid");
 
@@ -75,7 +65,7 @@ class RuleFactoryTest {
 
     @Test
     void testCreateUnknownRule() {
-        RuleConfig config = new RuleConfig();
+        var config = new RuleConfig();
         config.setType("UnknownRule");
 
         assertThrows(ValidationConfigurationException.class, () -> {

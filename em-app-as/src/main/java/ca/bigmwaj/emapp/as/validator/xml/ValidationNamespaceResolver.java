@@ -19,7 +19,7 @@ public class ValidationNamespaceResolver {
     /**
      * Resolves namespace to XML file input stream.
      * 
-     * @param namespace The namespace (e.g., "platform/account" or "account.create")
+     * @param namespace The namespace (e.g., "platform/account")
      * @return InputStream of the XML file
      * @throws ValidationConfigurationException if file not found
      */
@@ -28,14 +28,7 @@ public class ValidationNamespaceResolver {
             throw new ValidationConfigurationException("Namespace cannot be null or empty");
         }
 
-        // Extract the first part before "/" or "."
-        String[] parts = namespace.split("[/.]");
-        if (parts.length == 0) {
-            throw new ValidationConfigurationException("Invalid namespace format: " + namespace);
-        }
-
-        String fileName = parts[0];
-        String resourcePath = VALIDATOR_BASE_PATH + fileName + XML_EXTENSION;
+        var resourcePath = VALIDATOR_BASE_PATH + namespace + XML_EXTENSION;
 
         try {
             Resource resource = new ClassPathResource(resourcePath);
@@ -50,22 +43,5 @@ public class ValidationNamespaceResolver {
                 "Failed to load validation configuration for namespace: " + namespace, e
             );
         }
-    }
-
-    /**
-     * Extracts the entry point from namespace.
-     * Example: "platform/account" → "account", "account.create" → "create"
-     */
-    public String extractEntryPoint(String namespace) {
-        if (namespace == null || namespace.isEmpty()) {
-            throw new ValidationConfigurationException("Namespace cannot be null or empty");
-        }
-
-        String[] parts = namespace.split("[/.]");
-        if (parts.length < 2) {
-            throw new ValidationConfigurationException("Namespace must have at least two parts: " + namespace);
-        }
-
-        return parts[parts.length - 1];
     }
 }

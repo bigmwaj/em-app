@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Represents a condition in the XML configuration.
- * Example: <condition expression="editAction == 'CREATE'">
+ * Example: <condition expression="editAction.toString() == 'CREATE'">
  */
 @Data
 public class ConditionConfig {

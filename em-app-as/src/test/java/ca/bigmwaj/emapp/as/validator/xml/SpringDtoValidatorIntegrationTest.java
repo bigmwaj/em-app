@@ -1,6 +1,9 @@
 package ca.bigmwaj.emapp.as.validator.xml;
 
+import ca.bigmwaj.emapp.as.dto.platform.AccountContactDtoBuilder;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDtoBuilder;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
+import ca.bigmwaj.emapp.as.dto.platform.ContactDtoBuilder;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import jakarta.validation.ConstraintViolation;
@@ -25,11 +28,13 @@ class SpringDtoValidatorIntegrationTest {
 
     @Test
     void testAccountDto_CreateWithValidData() {
-        AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.CREATE);
-        dto.setName("Test Account");
-        dto.setDescription("Test Description");
-        dto.setStatus(AccountStatusLvo.ACTIVE);
+        AccountDto dto = AccountDtoBuilder
+                .builder()
+                .withDefaults()
+                .withAccountContactBuilders(
+                        AccountContactDtoBuilder.builder().withDefaults()
+                                .withContactBuilder(ContactDtoBuilder.builder().withDefaults())
+                ).build();
 
         Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
         
@@ -39,7 +44,7 @@ class SpringDtoValidatorIntegrationTest {
 
     @Test
     void testAccountDto_CreateWithMissingName() {
-        AccountDto dto = new AccountDto();
+        var dto = new AccountDto();
         dto.setEditAction(EditActionLvo.CREATE);
         dto.setName(null); // Missing required field
         dto.setStatus(AccountStatusLvo.ACTIVE);

@@ -1,21 +1,24 @@
 package ca.bigmwaj.emapp.as.validator.rule;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
+@Component("MaxLengthRule")
 public class MaxLengthRule extends AbstractRule {
+
     private int maxLength;
 
     @Override
     public boolean isValid(Object value) {
-        if( value == null ){
+        if (value == null) {
             return true; // Let @NotNull handle this
         }
-        if( value instanceof String ){
+        if (value instanceof String) {
             return ((String) value).length() <= maxLength;
         }
         return false;

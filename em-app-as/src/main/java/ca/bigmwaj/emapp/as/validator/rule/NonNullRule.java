@@ -1,11 +1,9 @@
 package ca.bigmwaj.emapp.as.validator.rule;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import org.springframework.stereotype.Component;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
-public class NonNullRule extends AbstractRule{
+@Component("NonNullRule")
+public class NonNullRule extends AbstractRule {
 
     @Override
     public boolean isValid(Object value) {

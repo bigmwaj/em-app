@@ -1,6 +1,12 @@
 package ca.bigmwaj.emapp.as.validator.xml;
 
-import ca.bigmwaj.emapp.as.validator.xml.model.*;
+import ca.bigmwaj.emapp.as.validator.xml.model.ConditionConfig;
+import ca.bigmwaj.emapp.as.validator.xml.model.FieldValidation;
+import ca.bigmwaj.emapp.as.validator.xml.model.RuleConfig;
+import ca.bigmwaj.emapp.as.validator.xml.model.ValidationConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,9 +23,25 @@ import java.io.InputStream;
 @Component
 public class ValidationXmlParser {
 
+    private static final Logger logger = LoggerFactory.getLogger(ValidationXmlParser.class);
+
+    @Autowired
+    private ValidationNamespaceResolver namespaceResolver;
+
+    public ValidationConfig getValidationConfig(String namespace) {
+        try {
+            logger.debug("Resolve XML stream for namespace: {}", namespace);
+            var xmlStream = namespaceResolver.resolveNamespace(namespace);
+            return parse(xmlStream);
+        } catch (Exception e) {
+            logger.error("Error loading validation configuration for namespace: {}", namespace, e);
+            throw new ValidationConfigurationException("Failed to load validation configuration", e);
+        }
+    }
+
     /**
      * Parses an XML validation configuration file.
-     * 
+     *
      * @param inputStream The XML file input stream
      * @return ValidationConfig object
      * @throws ValidationConfigurationException if parsing fails
@@ -33,52 +55,69 @@ public class ValidationXmlParser {
             factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
             factory.setXIncludeAware(false);
             factory.setExpandEntityReferences(false);
-            
+
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(inputStream);
             document.getDocumentElement().normalize();
 
-            ValidationConfig config = new ValidationConfig();
-            
-            Element root = document.getDocumentElement();
+            var root = document.getDocumentElement();
             if (!"validation".equals(root.getNodeName())) {
                 throw new ValidationConfigurationException("Root element must be 'validation'");
             }
 
-            NodeList entryNodes = root.getElementsByTagName("entry");
-            for (int i = 0; i < entryNodes.getLength(); i++) {
-                Node entryNode = entryNodes.item(i);
-                if (entryNode.getNodeType() == Node.ELEMENT_NODE) {
-                    ValidationEntry entry = parseEntry((Element) entryNode);
-                    config.getEntries().add(entry);
-                }
-            }
-
-            return config;
+            return parseValidator(root);
         } catch (Exception e) {
             throw new ValidationConfigurationException("Failed to parse validation XML", e);
         }
     }
 
-    private ValidationEntry parseEntry(Element entryElement) {
-        ValidationEntry entry = new ValidationEntry();
-        entry.setName(entryElement.getAttribute("name"));
+    private ValidationConfig parseValidator(Element configElement) {
+        var config = new ValidationConfig();
 
-        NodeList fieldNodes = entryElement.getElementsByTagName("field");
+        var fieldNodes = configElement.getElementsByTagName("field");
         for (int i = 0; i < fieldNodes.getLength(); i++) {
             Node fieldNode = fieldNodes.item(i);
-            if (fieldNode.getNodeType() == Node.ELEMENT_NODE && fieldNode.getParentNode().equals(entryElement)) {
+            if (fieldNode.getNodeType() == Node.ELEMENT_NODE && fieldNode.getParentNode().equals(configElement)) {
                 FieldValidation field = parseField((Element) fieldNode);
-                entry.getFields().add(field);
+                config.getFields().add(field);
             }
         }
 
-        return entry;
+        return config;
     }
 
     private FieldValidation parseField(Element fieldElement) {
         FieldValidation field = new FieldValidation();
         field.setName(fieldElement.getAttribute("name"));
+        var typeAttr = fieldElement.getAttribute("type");
+
+        if (!typeAttr.isEmpty()) {
+            try {
+                field.setType(FieldValidation.fieldType.valueOf(typeAttr));
+            } catch (IllegalArgumentException e) {
+                throw new ValidationConfigurationException("Invalid field type: " + typeAttr, e);
+            }
+        } else {
+            field.setType(FieldValidation.fieldType.field); // Default type
+        }
+
+        if (field.getType() == FieldValidation.fieldType.dto || field.getType() == FieldValidation.fieldType.dtos) {
+            NodeList validationNodes = fieldElement.getElementsByTagName("validationConfig");
+            if (validationNodes.getLength() > 0) {
+                Node validationNode = validationNodes.item(0);
+
+                if (validationNode.getNodeType() == Node.ELEMENT_NODE && validationNode.getParentNode().equals(fieldElement)) {
+                    var ref = ((Element)validationNode).getAttribute("ref");
+                    if (!ref.isEmpty()) {
+                        var refConfig = getValidationConfig(ref);
+                        field.setValidationConfig(refConfig);
+                    } else {
+                        var config = parseValidator((Element) validationNode);
+                        field.setValidationConfig(config);
+                    }
+                }
+            }
+        }
 
         NodeList conditionNodes = fieldElement.getElementsByTagName("condition");
         for (int i = 0; i < conditionNodes.getLength(); i++) {
@@ -88,7 +127,6 @@ public class ValidationXmlParser {
                 field.getConditions().add(condition);
             }
         }
-
         return field;
     }
 

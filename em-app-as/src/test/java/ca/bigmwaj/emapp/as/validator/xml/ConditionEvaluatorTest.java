@@ -40,7 +40,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setEditAction(EditActionLvo.CREATE);
 
-        boolean result = evaluator.evaluate("editAction == 'CREATE'", dto);
+        boolean result = evaluator.evaluate("editAction.toString() == 'CREATE'", dto);
         assertTrue(result);
     }
 
@@ -67,7 +67,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setEditAction(EditActionLvo.CREATE);
 
-        boolean result = evaluator.evaluate("editAction != 'CREATE'", dto);
+        boolean result = evaluator.evaluate("editAction.toString() != 'CREATE'", dto);
         assertFalse(result);
     }
 
@@ -76,7 +76,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setName(null);
 
-        boolean result = evaluator.evaluate("name == 'null'", dto);
+        boolean result = evaluator.evaluate("name == null", dto);
         assertTrue(result);
     }
 
@@ -84,7 +84,7 @@ class ConditionEvaluatorTest {
     void testEvaluate_EmptyExpression() {
         TestDto dto = new TestDto();
         boolean result = evaluator.evaluate("", dto);
-        assertTrue(result);
+        assertFalse(result);
     }
 
     @Test

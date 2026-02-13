@@ -11,6 +11,17 @@ import java.util.List;
  */
 @Data
 public class FieldValidation {
+
+    public enum fieldType{ field, dto, dtos};
+
+    private fieldType type = fieldType.field;
+
     private String name;
+
     private List<ConditionConfig> conditions = new ArrayList<>();
+
+    /**
+     * This is used when the validation type is dto or dtos, to specify which validator to use for validating the fields of the dto or dtos.
+      */
+    private ValidationConfig validationConfig;
 }

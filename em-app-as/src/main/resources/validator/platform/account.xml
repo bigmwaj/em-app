@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <field name="id">
+        <condition expression="editAction.toString() == 'UPDATE'">
+            <rule type="NonNullRule"/>
+        </condition>
+        <condition expression="editAction.toString() == 'CHANGE_STATUS'">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="name">
+        <condition expression="editAction.toString() == 'CREATE'">
+            <rule type="NonNullRule"/>
+            <rule type="MaxLengthRule" maxLength="32"/>
+        </condition>
+        <condition expression="editAction.toString() == 'UPDATE'">
+            <rule type="NonNullRule"/>
+            <rule type="MaxLengthRule" maxLength="32"/>
+        </condition>
+    </field>
+
+    <field name="description">
+        <condition expression="editAction.toString() == 'CREATE'">
+            <rule type="MaxLengthRule" maxLength="100"/>
+        </condition>
+        <condition expression="editAction.toString() == 'UPDATE'">
+            <rule type="MaxLengthRule" maxLength="100"/>
+        </condition>
+    </field>
+
+    <field name="status">
+        <condition expression="true">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="adminUsername">
+        <condition expression="editAction.toString() == 'CREATE'">
+            <rule type="NonNullRule"/>
+            <rule type="MaxLengthRule" maxLength="16"/>
+        </condition>
+    </field>
+
+    <field name="accountContacts" type="dtos">
+        <condition expression="editAction.toString() == 'CREATE'">
+            <rule type="NonNullRule"/>
+        </condition>
+        <validationConfig ref="platform/account-contact"/>
+    </field>
+</validation>

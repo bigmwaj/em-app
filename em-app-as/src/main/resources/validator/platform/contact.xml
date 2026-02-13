@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <field name="id">
+        <condition expression="editAction.toString() == 'UPDATE'">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="firstName">
+        <condition expression="editAction.toString() == 'CREATE' || editAction.toString() == 'UPDATE'">
+            <rule type="NonNullRule"/>
+            <rule type="MaxLengthRule" maxLength="32"/>
+        </condition>
+    </field>
+
+    <field name="lastName">
+        <condition expression="editAction.toString() == 'CREATE' || editAction.toString() == 'UPDATE'">
+            <rule type="NonNullRule"/>
+            <rule type="MaxLengthRule">
+                <property name="message" value="Last name must not exceed 32 characters."/>
+                <property name="maxLength" value="32"/>
+            </rule>
+        </condition>
+    </field>
+
+    <field name="lastName">
+        <condition expression="editAction.toString() == 'CREATE'">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+</validation>
