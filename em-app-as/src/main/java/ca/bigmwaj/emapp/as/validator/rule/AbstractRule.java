@@ -13,7 +13,7 @@ public abstract class AbstractRule {
     public void validate(ConstraintValidatorContext context, Object dto, String fieldName) {
         BeanWrapper wrapper = new BeanWrapperImpl(dto);
         Object value = wrapper.getPropertyValue(fieldName);
-        if (isValid(value)) {
+        if (!isValid(value)) {
             context.buildConstraintViolationWithTemplate(String.format("The field %s is invalid", fieldName))
                     .addPropertyNode(fieldName)
                     .addConstraintViolation();
