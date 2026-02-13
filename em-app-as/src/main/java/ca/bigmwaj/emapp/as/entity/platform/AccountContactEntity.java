@@ -28,4 +28,8 @@ public class AccountContactEntity extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "ROLE", nullable = false)
     private AccountContactRoleLvo role;
+
+    public Object getDefaultKey() {
+        return new AccountContactPK(account.getId(), contact.getId());
+    }
 }

@@ -75,13 +75,14 @@
   } @else {
 
   <!-- Section 1: Account Details -->
-  <app-edit-account-details [accountForm]="accountForm"></app-edit-account-details>
+  <app-edit-account-details [form]="accountForm"></app-edit-account-details>
 
   <!-- Section 2: Account Main Contact -->
-  <app-edit-principal-account-contact [mainContactForm]="mainContactForm"></app-edit-principal-account-contact>
+  <app-edit-principal-account-contact [form]="mainContactForm"></app-edit-principal-account-contact>
 
   <!-- Section 3: Account Main User -->
-  <app-edit-account-admin-user *ngIf="isCreateMode" [mainUserForm]="mainUserForm"></app-edit-account-admin-user>
-
+  @if(isCreateMode){
+  <app-edit-account-admin-user [form]="mainUserForm"></app-edit-account-admin-user>
+  }
   }
 </div>

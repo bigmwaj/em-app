@@ -45,4 +45,9 @@ public class ContactEntity extends AbstractBaseEntity {
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactAddressEntity> addresses = new ArrayList<>();
+
+    @Override
+    public Object getDefaultKey() {
+        return id;
+    }
 }

@@ -5,32 +5,35 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <form [formGroup]="accountForm" class="account-form">
+    <form [formGroup]="form" class="account-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="form-field half-width">
+          <mat-label>Account Name</mat-label>
+          <input matInput formControlName="name" placeholder="Enter account name" />
+          @if(form.get('name')?.hasError('required')) {
+          <mat-error>Account name is required</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field half-width">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status">
+            @for (status of accountStatuses; track $index) {
+            <mat-option [value]="status">{{ status }}</mat-option>
+            }
+          </mat-select>
+          @if(form.get('status')?.hasError('required')) {
+          <mat-error>Status is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
 
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Account Name</mat-label>
-        <input matInput formControlName="name" placeholder="Enter account name" />
-        @if(accountForm.get('name')?.hasError('required')) {
-        <mat-error>Account name is required</mat-error>
-        }
-      </mat-form-field>
 
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Description</mat-label>
         <textarea matInput formControlName="description" placeholder="Enter account description" rows="3"></textarea>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Status</mat-label>
-        <mat-select formControlName="status">
-          @for (status of accountStatuses; track $index) {
-          <mat-option [value]="status">{{ status }}</mat-option>
-          }
-        </mat-select>
-        @if(accountForm.get('status')?.hasError('required')) {
-        <mat-error>Status is required</mat-error>
-        }
-      </mat-form-field>
+
     </form>
   </mat-card-content>
 </mat-card>

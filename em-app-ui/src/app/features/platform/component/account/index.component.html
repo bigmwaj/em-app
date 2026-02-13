@@ -9,7 +9,7 @@
       <mat-icon>add</mat-icon>Add Account
     </button>
   </div>
-
+  
   <div class="search-section">
     <mat-card>
       <mat-card-content>
@@ -35,18 +35,18 @@
     </mat-card>
   </div>
 
-  @if (error && !loading) {
+  @if (pageData.error && !pageData.loading) {
 
   <div class="info-message">
     <mat-card>
       <mat-icon>info</mat-icon>
-      <p>{{ error }}</p>
+      <p>{{ pageData.error }}</p>
     </mat-card>
   </div>
 
   }
 
-  @if (loading) {
+  @if (pageData.loading) {
 
   <div class="loading-section">
     <mat-spinner></mat-spinner>
@@ -113,16 +113,6 @@
       </table>
     </mat-card-content>
   </mat-card>
-
-
-
-
-
-
-
-
-
-
 
   }
 </div>

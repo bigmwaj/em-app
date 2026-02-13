@@ -66,7 +66,7 @@ export class PlatformHelper extends SharedHelper {
             name: accountFormValue.name,
             description: accountFormValue.description,
             status: AccountStatusLvo.ACTIVE,
-            accountAdminUsername: adminUserForm.value.username
+            adminUsername: adminUserForm.value.adminUsername
         };
 
         // Primary contact
@@ -103,7 +103,14 @@ export class PlatformHelper extends SharedHelper {
 
         primaryContact.emails = [defaultEmail];
         primaryContact.phones = [defaultPhone];
-        primaryContact.addresses = [defaultAddress];            
+        primaryContact.addresses = [defaultAddress];  
+        
+        const accountContact: AccountContactDto = {
+            contact: primaryContact,
+            role: AccountContactRoleLvo.PRINCIPAL
+        };
+
+        accountDto.accountContacts = [accountContact];
 
         return accountDto;
     }

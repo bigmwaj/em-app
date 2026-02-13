@@ -1,8 +1,8 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,7 +36,17 @@ public class UserEntity extends AbstractBaseEntity {
     @Column(name = "STATUS", nullable = false)
     private UserStatusLvo status;
 
+    @Column(name = "STATUS_DATE")
+    private String statusDate;
+
+    @Column(name = "STATUS_REASON")
+    private String statusReason;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
     private HolderTypeLvo holderType;
+
+    public Object getDefaultKey() {
+        return id;
+    }
 }

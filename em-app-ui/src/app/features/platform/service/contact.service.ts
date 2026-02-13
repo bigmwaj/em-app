@@ -43,8 +43,8 @@ export class ContactService {
   /**
    * Updates an existing contact
    */
-  updateContact(id: number, contact: ContactDto): Observable<ContactDto> {
-    return this.http.put<ContactDto>(`${this.apiUrl}/${id}`, contact);
+  updateContact(contact: ContactDto): Observable<ContactDto> {
+    return this.http.patch<ContactDto>(`${this.apiUrl}`, contact);
   }
 
   /**

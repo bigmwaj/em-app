@@ -43,8 +43,8 @@ export class UserService {
   /**
    * Updates an existing user
    */
-  updateUser(id: number, user: UserDto): Observable<UserDto> {
-    return this.http.put<UserDto>(`${this.apiUrl}/${id}`, user);
+  updateUser(user: UserDto): Observable<UserDto> {
+    return this.http.patch<UserDto>(`${this.apiUrl}`, user);
   }
 
   /**

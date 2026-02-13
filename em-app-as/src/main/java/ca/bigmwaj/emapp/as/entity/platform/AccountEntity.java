@@ -33,6 +33,16 @@ public class AccountEntity extends AbstractBaseEntity {
     @Column(name = "STATUS", nullable = false)
     private AccountStatusLvo status;
 
+    @Column(name = "STATUS_DATE")
+    private String statusDate;
+
+    @Column(name = "STATUS_REASON")
+    private String statusReason;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountContactEntity> accountContacts = new ArrayList<>();
+
+    public Object getDefaultKey() {
+        return id;
+    }
 }

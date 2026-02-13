@@ -7,7 +7,8 @@ public enum EditActionLvo {
     NONE("None"),
     CREATE("Create"),
     UPDATE("Update"),
-    DELETE("Delete");
+    DELETE("Delete"),
+    CHANGE_STATUS("Change Status");
 
     @Getter
     private final String description;

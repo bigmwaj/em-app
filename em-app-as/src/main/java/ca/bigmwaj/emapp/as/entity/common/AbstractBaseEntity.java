@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.entity.common;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -21,5 +22,10 @@ public abstract class AbstractBaseEntity {
 
     @Column(name = "UPDATED_DATE", updatable = false)
     private LocalDateTime updatedDate;
+
+    @Transient
+    private Object key;
+
+    public abstract Object getDefaultKey();
 
 }

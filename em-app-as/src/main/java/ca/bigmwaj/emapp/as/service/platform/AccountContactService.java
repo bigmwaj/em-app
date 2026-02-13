@@ -4,6 +4,7 @@ import ca.bigmwaj.emapp.as.dao.platform.AccountContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
+import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +30,14 @@ public class AccountContactService extends AbstractService {
         entity.setContact(contactEntity);
         beforeCreateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+    }
+
+    public void beforeCreate(AccountContactEntity entity, AccountContactDto dto) {
+        beforeCreateHistEntity(entity);
+        var contactToCreate = entity.getContact();
+        if (contactToCreate == null) {
+            return;
+        }
+        contactService.beforeCreate(contactToCreate, null);
     }
 }

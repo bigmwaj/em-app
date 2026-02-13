@@ -65,7 +65,12 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
     }
 
     default Long countAllByCriteria(EntityManager em, AbstractSearchCriteria sc) {
-        var builder = QueryConfig.builder().withBaseQuery(getCountAllQuery());
+        var whereClauseJoinOp = WhereClauseJoinOp.AND;
+        if( sc.getWhereClauseJoinOp() != null ){
+            whereClauseJoinOp = sc.getWhereClauseJoinOp();
+        }
+        var builder = QueryConfig.builder().withBaseQuery(getCountAllQuery())
+                .withWhereClauseJoinOp(whereClauseJoinOp);
         return prepareQuery(em, Long.class, builder, sc).getSingleResult();
     }
 }

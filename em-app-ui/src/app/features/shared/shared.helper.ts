@@ -6,3 +6,9 @@ export class SharedHelper {
     }
 
 }
+
+export class PageData {
+    error?: string| null;
+    loading: boolean = true;
+    message?: string | null;
+}

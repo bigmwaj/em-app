@@ -76,4 +76,8 @@ public class ContactEmailService extends AbstractService {
     public boolean isEmailUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String email) {
         return !dao.existsByHolderTypeAndEmail(holderType, email);
     }
+
+    public void beforeCreate(ContactEmailEntity entity, ContactEmailDto dto) {
+        beforeCreateHistEntity(entity);
+    }
 }

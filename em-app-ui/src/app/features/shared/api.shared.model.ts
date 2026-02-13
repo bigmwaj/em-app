@@ -9,7 +9,8 @@ export enum EditActionLvo {
   NONE = 'NONE',
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
-  DELETE = 'DELETE'
+  DELETE = 'DELETE',
+  CHANGE_STATUS = 'CHANGE_STATUS'
 }
 
 export enum FilterOperator {
@@ -32,7 +33,8 @@ export enum SortType {
 
 // Base DTOs
 export interface BaseDto {
-
+  key?: any;
+  editAction?: EditActionLvo;
 }
 
 export interface BaseHistDto extends BaseDto {

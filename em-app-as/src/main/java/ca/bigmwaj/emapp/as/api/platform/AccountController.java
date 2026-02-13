@@ -94,7 +94,6 @@ public class AccountController extends AbstractBaseAPI {
                     "<li><b>status</b></li>" +
                     "<li><b>firstName</b></li>" +
                     "<li><b>lastName</b></li>" +
-                    "<li><b>lastName</b></li>" +
                     "<li><b>phone</b></li>" +
                     "<li><b>email</b></li>" +
                     "<li><b>address</b></li>" +
@@ -134,7 +133,7 @@ public class AccountController extends AbstractBaseAPI {
             description = "",
             tags = {"account"}
     )
-    @GetMapping("/account-id/{accountId}")
+    @GetMapping("/{accountId}")
     public ResponseEntity<ResponseMessage<AccountDto>> findById(
             @Parameter(description = "The account's ID", required = true)
             @Positive @PathVariable Long accountId) {
@@ -155,7 +154,7 @@ public class AccountController extends AbstractBaseAPI {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 
-    @DeleteMapping("/account-id/{accountId}")
+    @DeleteMapping("/{accountId}")
     public ResponseEntity<Message> delete(
             @Parameter(description = "The account's ID", required = true)
             @Positive @PathVariable Long accountId) {

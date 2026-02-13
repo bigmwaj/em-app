@@ -43,8 +43,8 @@ export class AccountService {
   /**
    * Updates an existing account
    */
-  updateAccount(id: number, account: AccountDto): Observable<AccountDto> {
-    return this.http.put<AccountDto>(`${this.apiUrl}/${id}`, account);
+  updateAccount(account: AccountDto): Observable<AccountDto> {
+    return this.http.patch<AccountDto>(`${this.apiUrl}`, account);
   }
 
   /**

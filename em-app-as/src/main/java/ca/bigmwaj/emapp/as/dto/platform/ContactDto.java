@@ -6,6 +6,7 @@ import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,7 +31,7 @@ public class ContactDto extends BaseHistDto {
     @ValidBirthDate
     private LocalDate birthDate;
 
-    @NotBlank(message = "Holder type is required")
+    @NotNull(message = "Holder type is required")
     private HolderTypeLvo holderType;
 
     @NotEmpty(message = "At least one email is required")

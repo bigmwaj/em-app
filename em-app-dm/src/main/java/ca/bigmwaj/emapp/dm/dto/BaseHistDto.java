@@ -17,4 +17,6 @@ public class BaseHistDto extends BaseDto {
 
     private LocalDateTime updatedDate;
 
+    private Object key;
+
 }

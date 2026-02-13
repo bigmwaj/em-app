@@ -10,12 +10,12 @@ import {
   EmailTypeLvo,
   PhoneTypeLvo,
   AddressTypeLvo,
-  UserStatusLvo
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { SharedHelper } from '../../../shared/shared.helper';
+import { P } from '@angular/cdk/keycodes';
 
 
 @Component({
@@ -75,7 +75,7 @@ export class AccountEditComponent implements OnInit {
 
     // Main User Form
     this.mainUserForm = this.fb.group({
-      accountAdminUsername: ['', Validators.required],
+      adminUsername: ['', Validators.required],
     });
   }
 
@@ -131,8 +131,7 @@ export class AccountEditComponent implements OnInit {
       mainAddressType: AddressTypeLvo.WORK
     });
     this.mainUserForm.patchValue({
-      status: UserStatusLvo.ACTIVE,
-      holderType: HolderTypeLvo.ACCOUNT
+      adminUsername: ''
     });
   }
 
@@ -141,22 +140,30 @@ export class AccountEditComponent implements OnInit {
     this.accountForm.patchValue({
       name: account.name,
       description: account.description,
-      status: account.status
+      status: account.status,
+      adminUsername: account.adminUsername
     });
 
+    const primaryContact = PlatformHelper.getPrimaryAccountContact(account);
+
     // Populate main contact
-    if (account.mainContact) {
+    if (primaryContact) {
+
+      const defaultEmail = PlatformHelper.getDefaultContactEmail(primaryContact);
+      const defaultPhone = PlatformHelper.getDefaultContactPhone(primaryContact);
+      const defaultAddress = PlatformHelper.getDefaultContactAddress(primaryContact);
+
       this.mainContactForm.patchValue({
-        firstName: account.mainContact.firstName,
-        lastName: account.mainContact.lastName,
-        birthDate: account.mainContact.birthDate,
-        holderType: account.mainContact.holderType,
-        mainEmail: account.mainContact.mainEmail?.email,
-        mainEmailType: account.mainContact.mainEmail?.type || EmailTypeLvo.WORK,
-        mainPhone: account.mainContact.mainPhone?.phone,
-        mainPhoneType: account.mainContact.mainPhone?.type || PhoneTypeLvo.WORK,
-        mainAddress: account.mainContact.mainAddress?.address,
-        mainAddressType: account.mainContact.mainAddress?.type || AddressTypeLvo.WORK
+        firstName: primaryContact.firstName,
+        lastName: primaryContact.lastName,
+        birthDate: primaryContact.birthDate,
+        holderType: primaryContact.holderType,
+        mainEmail: defaultEmail?.email,
+        mainEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
+        mainPhone: defaultPhone?.phone,
+        mainPhoneType: defaultPhone?.type || PhoneTypeLvo.WORK,
+        mainAddress: defaultAddress?.address,
+        mainAddressType: defaultAddress?.type || AddressTypeLvo.WORK
       });
     }
   }
@@ -183,14 +190,14 @@ export class AccountEditComponent implements OnInit {
     }
 
     if (this.mode === SharedHelper.AccountEditMode.CREATE && this.mainUserForm.invalid) {
-      this.error = 'Please fill in all required fields in Account Main User';
+      this.error = 'Please fill in all required fields in Account Admin User';
       return;
     }
 
     this.loading = true;
     this.error = null;
 
-    const accountData = this.buildAccountDto();
+    const accountData = PlatformHelper.buildAccountDto(this.accountForm, this.mainContactForm, this.mainUserForm);
 
     if (this.mode === SharedHelper.AccountEditMode.CREATE) {
       this.accountService.createAccount(accountData).subscribe({
@@ -205,7 +212,7 @@ export class AccountEditComponent implements OnInit {
         }
       });
     } else if (this.mode === SharedHelper.AccountEditMode.EDIT && this.account?.id) {
-      this.accountService.updateAccount(this.account.id, accountData).subscribe({
+      this.accountService.updateAccount(accountData).subscribe({
         next: () => {
           this.loading = false;
           this.router.navigate(['/accounts']);
@@ -217,77 +224,6 @@ export class AccountEditComponent implements OnInit {
         }
       });
     }
-  }
-
-  private buildAccountDto(): AccountDto {
-    const accountFormValue = this.accountForm.value;
-    const contactFormValue = this.mainContactForm.value;
-    const userFormValue = this.mainUserForm.value;
-
-    const accountDto: AccountDto = {
-      name: accountFormValue.name,
-      description: accountFormValue.description,
-      status: accountFormValue.status,
-      createdBy: '',
-      createdDate: new Date(),
-      updatedBy: ''
-    };
-
-    // Add accountAdminUsername if in CREATE mode
-    if (this.mode === SharedHelper.AccountEditMode.CREATE && userFormValue.accountAdminUsername) {
-      accountDto.accountAdminUsername = userFormValue.accountAdminUsername;
-    }
-
-    // Build main contact if firstName is provided
-    if (contactFormValue.firstName && contactFormValue.lastName) {
-      accountDto.mainContact = {
-        firstName: contactFormValue.firstName,
-        lastName: contactFormValue.lastName,
-        birthDate: contactFormValue.birthDate,
-        holderType: contactFormValue.holderType,
-        createdBy: '',
-        createdDate: new Date(),
-        updatedBy: ''
-      };
-
-      // Add main email if provided
-      if (contactFormValue.mainEmail) {
-        accountDto.mainContact.mainEmail = {
-          email: contactFormValue.mainEmail,
-          type: contactFormValue.mainEmailType,
-          holderType: contactFormValue.holderType,
-          createdBy: '',
-          createdDate: new Date(),
-          updatedBy: ''
-        } as any;
-      }
-
-      // Add main phone if provided
-      if (contactFormValue.mainPhone) {
-        accountDto.mainContact.mainPhone = {
-          phone: contactFormValue.mainPhone,
-          type: contactFormValue.mainPhoneType,
-          holderType: contactFormValue.holderType,
-          createdBy: '',
-          createdDate: new Date(),
-          updatedBy: ''
-        } as any;
-      }
-
-      // Add main address if provided
-      if (contactFormValue.mainAddress) {
-        accountDto.mainContact.mainAddress = {
-          address: contactFormValue.mainAddress,
-          type: contactFormValue.mainAddressType,
-          holderType: contactFormValue.holderType,
-          createdBy: '',
-          createdDate: new Date(),
-          updatedBy: ''
-        } as any;
-      }
-    }
-
-    return accountDto;
   }
 
   onCancel(): void {

@@ -29,4 +29,8 @@ public abstract class AbstractContactPointEntity extends AbstractBaseEntity {
     @Column(name = "DEFAULT_CONTACT_POINT")
     private Boolean defaultContactPoint;
 
+    public Object getDefaultKey() {
+        return id;
+    }
+
 }

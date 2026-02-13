@@ -120,7 +120,7 @@ public class ContactController extends AbstractBaseAPI {
             description = "",
             tags = {"contact"}
     )
-    @GetMapping("/contact-id/{contactId}")
+    @GetMapping("/{contactId}")
     public ResponseEntity<ResponseMessage<ContactDto>> findById(
             @Parameter(description = "The contact's ID", required = true)
             @Positive @PathVariable Long contactId) {
@@ -141,7 +141,7 @@ public class ContactController extends AbstractBaseAPI {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 
-    @DeleteMapping("/contact-id/{contactId}")
+    @DeleteMapping("/{contactId}")
     public ResponseEntity<Message> delete(
             @Parameter(description = "The contact's ID", required = true)
             @Positive @PathVariable Long contactId) {

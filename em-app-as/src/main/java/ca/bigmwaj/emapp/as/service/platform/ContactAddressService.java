@@ -4,6 +4,7 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactAddressDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.platform.ContactAddressDto;
+import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.entity.platform.ContactAddressEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
@@ -76,5 +77,9 @@ public class ContactAddressService extends AbstractService {
 
     public boolean isAddressUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String address) {
         return !dao.existsByHolderTypeAndAddress(holderType, address);
+    }
+
+    public void prepareCreation(ContactAddressEntity entity, ContactAddressDto dto) {
+        beforeCreateHistEntity(entity);
     }
 }

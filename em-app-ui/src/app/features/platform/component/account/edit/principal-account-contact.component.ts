@@ -5,11 +5,10 @@ import { HolderTypeLvo, EmailTypeLvo, PhoneTypeLvo, AddressTypeLvo } from '../..
 @Component({
   selector: 'app-edit-principal-account-contact',
   templateUrl: './principal-account-contact.component.html',
-  styleUrls: ['./principal-account-contact.component.scss'],
   standalone: false
 })
 export class EditPrincipalAccountContactComponent {
-  @Input() mainContactForm!: FormGroup;
+  @Input() form!: FormGroup;
   
   holderTypes = Object.values(HolderTypeLvo);
   emailTypes = Object.values(EmailTypeLvo);

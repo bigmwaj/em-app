@@ -1,7 +1,6 @@
 import { HttpParams } from "@angular/common/http";
 import { BaseHistDto, AbstractSearchCriteria, createDefaultSearchCriteria, mapDefaultSearchCriteriaToHttpParams } from "../shared/api.shared.model";
 
-// Enums from ca.bigmwaj.emapp.dm.lvo.platform
 export enum AccountContactRoleLvo {
   PRINCIPAL = 'PRINCIPAL',
   AGENT = 'AGENT'
@@ -38,15 +37,15 @@ export enum UserStatusLvo {
   BLOCKED = 'BLOCKED'
 }
 
-// DTOs from ca.bigmwaj.emapp.as.dto.platform
 export interface AccountDto extends BaseHistDto {
   id?: number;
   name: string;
   description?: string;
   status: AccountStatusLvo;
+  statusDate?: Date;
+  statusReason?: string;
   accountContacts?: AccountContactDto[];
-  mainContact?: ContactDto;
-  accountAdminUsername?: string;
+  adminUsername?: string;
 }
 
 export interface ContactDto extends BaseHistDto {
@@ -101,7 +100,9 @@ export interface UserDto extends BaseHistDto {
   username: string;
   password?: string;
   contact?: ContactDto;
-  status: UserStatusLvo;
+  status: UserStatusLvo;  
+  statusDate?: Date;
+  statusReason?: string;
   holderType: HolderTypeLvo;
 }
 

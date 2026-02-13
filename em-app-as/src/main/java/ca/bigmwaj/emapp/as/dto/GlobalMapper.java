@@ -13,17 +13,18 @@ public interface GlobalMapper {
     GlobalMapper INSTANCE = Mappers.getMapper(GlobalMapper.class);
 
     @AnyEntityToAnyDtoMapping
+    @Mapping(target = "accountContacts", ignore = true)
+    @Mapping(target = "adminUsername", ignore = true)
+    AccountDto toDto(AccountEntity entity);
+    @AnyDtoToAnyEntityMapping
+    AccountEntity toEntity(AccountDto dto);
+
+    @AnyEntityToAnyDtoMapping
     @Mapping(target = "accountId", source = "account", qualifiedByName = "mapAccount")
     AccountContactDto toDto(AccountContactEntity entity);
     @Mapping(target = "account", source = "accountId", qualifiedByName = "mapAccountId")
     @AnyDtoToAnyEntityMapping
     AccountContactEntity toEntity(AccountContactDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    @Mapping(target = "accountContacts", ignore = true)
-    AccountDto toDto(AccountEntity entity);
-    @AnyDtoToAnyEntityMapping
-    AccountEntity toEntity(AccountDto dto);
 
     @AnyEntityToAnyDtoMapping
     @Mapping(target = "contactId", source = "contact", qualifiedByName = "mapContact")

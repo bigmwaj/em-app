@@ -130,7 +130,7 @@ public class UserController extends AbstractBaseAPI {
             description = "",
             tags = {"user"}
     )
-    @GetMapping("/user-id/{userId}")
+    @GetMapping("/id/{userId}")
     public ResponseEntity<ResponseMessage<UserDto>> findById(
             @Parameter(description = "The user's ID", required = true)
             @Positive @PathVariable Long userId) {
@@ -151,7 +151,7 @@ public class UserController extends AbstractBaseAPI {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 
-    @DeleteMapping("/user-id/{userId}")
+    @DeleteMapping("/{userId}")
     public ResponseEntity<Message> delete(
             @Parameter(description = "The user's ID", required = true)
             @Positive @PathVariable Long userId) {

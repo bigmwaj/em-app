@@ -8,15 +8,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = NotEmptyOnCreateValidator.class)
-@Target({ElementType.FIELD})
+@Constraint(validatedBy = SpringDtoValidator.class)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidNotEmptyOnCreate {
-    String message() default "This collection should be not empty when creating a new entity!";
+public @interface ValidDto {
+    String message() default "This DTO is not valid!";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-    
-    int minAge() default 18;
+
+    /**
+     * The namespace of the Spring validator to be used for validating a given DTO.
+     */
+    String value();
 }

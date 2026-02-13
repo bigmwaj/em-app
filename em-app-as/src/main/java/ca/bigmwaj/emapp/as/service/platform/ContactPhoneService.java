@@ -76,4 +76,8 @@ public class ContactPhoneService extends AbstractService {
     public boolean isPhoneUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String phone) {
         return !dao.existsByHolderTypeAndPhone(holderType, phone);
     }
+
+    public void beforeCreate(ContactPhoneEntity entity, ContactPhoneDto dto) {
+        beforeCreateHistEntity(entity);
+    }
 }

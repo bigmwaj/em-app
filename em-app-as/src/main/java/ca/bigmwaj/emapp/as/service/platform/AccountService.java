@@ -76,25 +76,36 @@ public class AccountService extends AbstractService {
 
     public AccountDto create(AccountDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
-        beforeCreateHistEntity(entity);
+        beforeCreate(entity, dto);
         entity = dao.save(entity);
-        createAccountContact(entity, dto);
         return GlobalMapper.INSTANCE.toDto(entity);
+    }
+
+    public void beforeCreate(AccountEntity entity, AccountDto dto) {
+        beforeCreateHistEntity(entity);
+
+        var accountContacts = entity.getAccountContacts();
+        if( accountContacts == null || accountContacts.isEmpty()){
+            return;
+        }
+
+        for(var accountContact : accountContacts) {
+            if( accountContact.getAccount() != entity ){ // instance check
+                accountContact.setAccount(entity);
+            }
+            beforeCreateHistEntity(accountContact);
+
+            var contactToCreate = accountContact.getContact();
+            if (contactToCreate != null) {
+                accountContactService.beforeCreate(accountContact, null);
+            }
+        }
     }
 
     public AccountDto update(AccountDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    private void createAccountContact(AccountEntity entity, AccountDto dto) {
-        if (dto.getAccountContacts() != null) {
-            for (var acDto : dto.getAccountContacts()) {
-                acDto.setAccountId(entity.getId());
-                accountContactService.create(acDto);
-            }
-        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package ca.bigmwaj.emapp.as.validator.shared;
+package ca.bigmwaj.emapp.as.validator.platform;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -8,15 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = NotNullOnCreateValidator.class)
-@Target({ElementType.FIELD})
+@Constraint(validatedBy = AccountValidator.class)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidNotNullOnCreate {
-    String message() default "This field should be not null when creating a new entity!";
+public @interface ValidAccount {
+    String message() default "Invalid account";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-    
-    int minAge() default 18;
 }

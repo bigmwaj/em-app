@@ -2,17 +2,51 @@
 
 <mat-dialog-content>
   <p>Change status for account: <strong>{{ data.account.name }}</strong></p>
+  @if (error && !loading) {
+  <div class="error-message">
+    <mat-card>
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+  }
 
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Select New Status</mat-label>
-    <mat-select [(ngModel)]="selectedStatus">
-      @for (status of accountStatuses; track $index) {
-      <mat-option [value]="status">
-        {{ status }}
-      </mat-option>
+  @if (loading) {
+  <div class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Changing account status...</p>
+  </div>
+  }@else {
+  <form [formGroup]="form" class="account-change-status-form">
+
+    <mat-form-field appearance="outline" class="form-field full-width">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        @for (status of accountStatuses; track $index) {
+        <mat-option [value]="status">{{ status }}</mat-option>
+        }
+      </mat-select>
+      @if(form.get('status')?.hasError('required')) {
+      <mat-error>Status is required</mat-error>
       }
-    </mat-select>
-  </mat-form-field>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field full-width">
+      <mat-label>Change Date</mat-label>
+      <input matInput formControlName="statusDate" placeholder="Enter change date" />
+      @if(form.get('statusDate')?.hasError('required')) {
+      <mat-error>Change date is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field full-width">
+      <mat-label>Reason</mat-label>
+      <textarea matInput formControlName="statusReason" placeholder="Enter reason for status change"
+        rows="3"></textarea>
+    </mat-form-field>
+  </form>
+  }
+
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
-import { AccountDto, AccountSearchCriteria, ContactEmailDto, createAccountSearchCriteria } from '../../api.platform.model';
+import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
+import { PageData } from '../../../shared/shared.helper';
 
 @Component({
   selector: 'app-account-index',
@@ -18,9 +19,7 @@ import { PlatformHelper } from '../../platform.helper';
 export class AccountIndexComponent extends CommonDataSource<AccountDto> implements OnInit {
 
   searchResult: SearchResult<AccountDto> = {} as SearchResult<AccountDto>;
-  loading = true;
-  message = "";
-  error: string | null = null;
+  pageData: PageData = new PageData();
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
   searchText = '';
@@ -44,21 +43,24 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   loadAccounts(): void {
-    this.loading = true;
-    this.error = null;
+    const pageData = this.pageData;
+    pageData.loading = true;
+    pageData.error = null;
 
     this.accountService.getAccounts(this.searchCriteria).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
-        this.loading = false;
+        pageData.loading = false;
         this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load accounts:', err);
-        this.error = 'Failed to load accounts. Please try again.';
-        this.loading = false;
-      }
-    });
+        pageData.error = 'Failed to load accounts. Please try again.';
+        pageData.loading = false;
+      },complete() {
+        console.log('Account loading completed ', pageData);
+      },
+    })
   }
 
   createAccount(): void {
@@ -98,11 +100,14 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.searchCriteria.includeMainContact = true;
 
     if (this.searchText && this.searchText.trim()) {
-      this.searchCriteria.whereClauses = [{
-        name: 'name',
-        oper: FilterOperator.LIKE,
-        values: [this.searchText.trim()]
-      }];
+      this.searchCriteria.whereClauses = ["name", "firstName",  "lastName",  "phone",  "email", "address"]
+      .map(field => {
+        return {
+          name: field,
+          oper: FilterOperator.LIKE,
+          values: [this.searchText.trim()]
+        };
+      });
     }
 
     this.loadAccounts();
@@ -114,7 +119,6 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.searchCriteria.includeMainContact = true;
     this.loadAccounts();
   }
-
 
   onInitAdvancedASearch(): void {
 
@@ -137,12 +141,6 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Update the status in the account
-        account.status = result;
-
-        // In a real application, you would save this to the server
-        // and then reload the accounts list
-        // For now, just update the local data
         this.loadAccounts();
       }
     });

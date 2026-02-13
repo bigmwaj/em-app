@@ -2,7 +2,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@a
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Angular Material Modules
 import { MatButtonModule } from '@angular/material/button';
@@ -64,7 +64,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
   ],
   imports: [
     BrowserModule,
-    //BrowserAnimationsModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,

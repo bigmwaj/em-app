@@ -6,10 +6,11 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactEmailDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactPhoneDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.*;
+import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
-import ca.bigmwaj.emapp.as.entity.platform.*;
+import ca.bigmwaj.emapp.as.entity.platform.AbstractContactPointEntity;
+import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -37,10 +37,19 @@ public class ContactService extends AbstractService {
     private ContactEmailDao emailDao;
 
     @Autowired
+    private ContactEmailService emailService;
+
+    @Autowired
     private ContactPhoneDao phoneDao;
 
     @Autowired
+    private ContactPhoneService phoneService;
+
+    @Autowired
     private ContactAddressDao addressDao;
+
+    @Autowired
+    private ContactAddressService addressService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -83,10 +92,7 @@ public class ContactService extends AbstractService {
 
     public ContactDto create(ContactDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
-        beforeCreateHistEntity(entity);
-        initCreateContactPoints(entity, entity.getEmails());
-        initCreateContactPoints(entity, entity.getPhones());
-        initCreateContactPoints(entity, entity.getAddresses());
+        beforeCreate(entity, dto);
         entity = dao.save(entity);
         return findById(entity.getId());
     }
@@ -101,26 +107,13 @@ public class ContactService extends AbstractService {
         return findById(entity.getId());
     }
 
-    private <T extends AbstractContactPointEntity>
-    void initCreateContactPoints(ContactEntity entity, List<T> contactPoints) {
-        if (contactPoints != null) {
-            UnaryOperator<T> setContact = e -> {
-                e.setContact(entity);
-                return e;
-            };
-            contactPoints.stream()
-                    .map(setContact)
-                    .forEach(this::beforeCreateHistEntity);
-        }
-    }
-
-    private<D extends AbstractContactPointDto, T extends AbstractContactPointEntity>
+    private <D extends AbstractContactPointDto, T extends AbstractContactPointEntity>
     void initUpdateContactPoints(ContactEntity entity, List<T> contactPoints, List<D> contactPointDtos, Consumer<D> deleteFunction) {
         if (contactPoints != null) {
             final List<Long> toDelete;
             // Review this method and exclude deleted contact points that do not have an ID
             // (i.e. new contact points that are added and marked for deletion in the same update)
-            if( contactPointDtos != null ){
+            if (contactPointDtos != null) {
                 toDelete = contactPointDtos.stream()
                         .filter(AbstractContactPointDto::isToDelete)
                         .peek(deleteFunction)
@@ -174,7 +167,7 @@ public class ContactService extends AbstractService {
      */
     protected ContactDto toDtoWithChildren(ContactEntity entity) {
         var dto = GlobalMapper.INSTANCE.toDto(entity);
-        
+
         // Map child collections directly from the entity's pre-loaded collections
         dto.setEmails(entity.getEmails().stream()
                 .map(GlobalMapper.INSTANCE::toDto)
@@ -189,5 +182,38 @@ public class ContactService extends AbstractService {
                 .toList());
 
         return dto;
+    }
+
+    public void beforeCreate(ContactEntity entity, ContactDto dto) {
+        beforeCreateHistEntity(entity);
+        var emails = entity.getEmails();
+        if (emails != null && !emails.isEmpty()) {
+            for (var email : emails) {
+                if( email.getContact() != entity ){ // instance check
+                    email.setContact(entity);
+                }
+                emailService.beforeCreate(email, null);
+            }
+        }
+
+        var phones = entity.getPhones();
+        if (phones != null && !phones.isEmpty()) {
+            for (var phone : phones) {
+                if( phone.getContact() != entity ){ // instance check
+                    phone.setContact(entity);
+                }
+                phoneService.beforeCreate(phone, null);
+            }
+        }
+
+        var addresses = entity.getAddresses();
+        if (addresses != null && !addresses.isEmpty()) {
+            for (var address : addresses) {
+                if( address.getContact() != entity ) { // instance check
+                    address.setContact(entity);
+                }
+                addressService.prepareCreation(address, null);
+            }
+        }
     }
 }
