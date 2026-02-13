@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <entry name="test">
+        <field name="testField">
+            <condition expression="true">
+                <rule type="NonNullRule"/>
+                <rule type="MaxLengthRule" maxLength="100"/>
+            </condition>
+        </field>
+    </entry>
+</validation>
