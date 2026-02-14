@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,9 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     @Autowired
     private ContactService contactService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -101,6 +105,12 @@ public class UserService extends AbstractService implements UserDetailsService {
     public UserDto create(UserDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         entity.setContact(getContact(dto));
+        
+        // Hash password if provided
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+        
         beforeCreateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
@@ -126,6 +136,16 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     public UserDto update(UserDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        
+        // Hash password if provided and changed
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            // Preserve existing password if not provided
+            var existingUser = dao.findById(dto.getId());
+            existingUser.ifPresent(user -> entity.setPassword(user.getPassword()));
+        }
+        
         beforeUpdateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }

@@ -5,6 +5,7 @@ import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,6 +26,11 @@ public class UserDto extends BaseHistDto {
 
     private UsernameTypeLvo usernameType;
 
+    /**
+     * Password field is write-only to prevent exposure in API responses.
+     * Used only for creating/updating users with password authentication.
+     */
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     private ContactDto contact;

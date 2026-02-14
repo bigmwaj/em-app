@@ -3,10 +3,14 @@ package ca.bigmwaj.emapp.as.api.auth.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,6 +30,7 @@ import java.util.Arrays;
  * </ul>
  * 
  * <h2>Authentication Flow:</h2>
+ * <h3>OAuth2 Flow:</h3>
  * <ol>
  *   <li>User initiates OAuth login via /oauth2/authorization/{provider}</li>
  *   <li>OAuth provider authenticates the user</li>
@@ -33,6 +38,15 @@ import java.util.Arrays;
  *   <li>OAuth2AuthenticationSuccessHandler generates a JWT token</li>
  *   <li>Frontend receives the JWT and includes it in subsequent requests</li>
  *   <li>AuthenticationFilter validates the JWT on each protected request</li>
+ * </ol>
+ * 
+ * <h3>Username/Password Flow:</h3>
+ * <ol>
+ *   <li>User posts credentials to /auth/login</li>
+ *   <li>UserService validates username and password (BCrypt)</li>
+ *   <li>JwtTokenProvider generates JWT token</li>
+ *   <li>Token returned to client in response body</li>
+ *   <li>Client includes token in Authorization header for subsequent requests</li>
  * </ol>
  * 
  * <h2>Security Features:</h2>
@@ -112,6 +126,30 @@ public class SecurityConfig {
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    /**
+     * Password encoder bean for hashing and validating passwords.
+     * Uses BCrypt with default strength (10 rounds).
+     * 
+     * @return BCryptPasswordEncoder instance
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    
+    /**
+     * Authentication manager bean for processing authentication requests.
+     * Required for username/password authentication.
+     * 
+     * @param authConfig the authentication configuration
+     * @return AuthenticationManager instance
+     * @throws Exception if configuration fails
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     /**
