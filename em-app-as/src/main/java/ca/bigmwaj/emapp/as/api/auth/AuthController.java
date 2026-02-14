@@ -40,10 +40,10 @@ public class AuthController {
      * Returns JWT token on successful authentication.
      * 
      * @param loginRequest the login credentials
-     * @return JWT token and user information
+     * @return JWT token and user information or error response
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             logger.info("Login attempt for username: {}", loginRequest.getUsername());
             
@@ -81,12 +81,20 @@ public class AuthController {
             
         } catch (BadCredentialsException e) {
             logger.warn("Failed login attempt for username: {}", loginRequest.getUsername());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(null);
+            ca.bigmwaj.emapp.as.dto.auth.ErrorResponse errorResponse = 
+                new ca.bigmwaj.emapp.as.dto.auth.ErrorResponse(
+                    HttpStatus.UNAUTHORIZED.value(),
+                    "Invalid username or password"
+                );
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         } catch (Exception e) {
             logger.error("Error during login for username: {}", loginRequest.getUsername(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(null);
+            ca.bigmwaj.emapp.as.dto.auth.ErrorResponse errorResponse = 
+                new ca.bigmwaj.emapp.as.dto.auth.ErrorResponse(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "An error occurred during authentication. Please try again later."
+                );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
 

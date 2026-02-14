@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthUserInfo } from '../model/user.model';
 import { SessionStorageService } from './session-storage.service';
@@ -59,7 +59,7 @@ export class AuthService {
       tap(response => {
         this.setToken(response.token);
       }),
-      tap(() => this.loadUserInfo().subscribe()),
+      switchMap(() => this.loadUserInfo()),
       catchError(error => {
         return throwError(() => error);
       })
