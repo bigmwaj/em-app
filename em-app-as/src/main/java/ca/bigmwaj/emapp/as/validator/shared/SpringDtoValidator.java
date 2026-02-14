@@ -1,7 +1,13 @@
 package ca.bigmwaj.emapp.as.validator.shared;
 
-import ca.bigmwaj.emapp.as.validator.xml.*;
+import ca.bigmwaj.emapp.as.validator.ValidationException;
+import ca.bigmwaj.emapp.as.validator.rule.common.AbstractRule;
+import ca.bigmwaj.emapp.as.validator.xml.ConditionEvaluator;
+import ca.bigmwaj.emapp.as.validator.xml.RuleFactory;
+import ca.bigmwaj.emapp.as.validator.xml.ValidationConfigurationException;
+import ca.bigmwaj.emapp.as.validator.xml.ValidationXmlParser;
 import ca.bigmwaj.emapp.as.validator.xml.model.FieldValidation;
+import ca.bigmwaj.emapp.as.validator.xml.model.RuleConfig;
 import ca.bigmwaj.emapp.as.validator.xml.model.ValidationConfig;
 import ca.bigmwaj.emapp.dm.dto.BaseDto;
 import jakarta.validation.ConstraintValidator;
@@ -32,15 +38,6 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
 
     private String namespace;
 
-    private ValidationConfig getValidationConfig() {
-        try {
-            return xmlParser.getValidationConfig(this.namespace);
-        } catch (Exception e) {
-            logger.error("Error loading validation configuration for namespace: {}", namespace, e);
-            throw new ValidationConfigurationException("Failed to load validation configuration", e);
-        }
-    }
-
     @Override
     public void initialize(ValidDto constraintAnnotation) {
         this.namespace = constraintAnnotation.value();
@@ -52,21 +49,27 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
             return true; // Let @NotNull handle null checks
         }
 
+        if (!(dto instanceof BaseDto baseDto)) {
+            throw new ValidationException("DTO must extend BaseDto for validation");
+        }
+
+        if (baseDto.getEditAction() == null) {
+            throw new ValidationException("DTO must have an edit action specified for validation");
+        }
+
         try {
             var config = getValidationConfig();
 
             // Disable default constraint violation
-            context.disableDefaultConstraintViolation();
+            //context.disableDefaultConstraintViolation();
 
             // Execute validation for each field
+
             var isValid = true;
             for (var fieldValidation : config.getFields()) {
-                boolean fieldValid = validateField(dto, fieldValidation, context);
-                if (!fieldValid) {
-                    isValid = false;
-                }
+                boolean validField = validateField(dto, fieldValidation, context);
+                isValid = isValid && validField;
             }
-
             return isValid;
 
         } catch (ValidationConfigurationException e) {
@@ -79,34 +82,41 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
         }
     }
 
+    private ValidationConfig getValidationConfig() {
+        try {
+            return xmlParser.getValidationConfig(this.namespace);
+        } catch (Exception e) {
+            logger.error("Error loading validation configuration for namespace: {}", namespace, e);
+            throw new ValidationConfigurationException("Failed to load validation configuration", e);
+        }
+    }
+
     private boolean validateField(Object dto, FieldValidation fieldValidation, ConstraintValidatorContext context) {
         boolean isValid = true;
 
         for (var conditionConfig : fieldValidation.getConditions()) {
-            logger.debug("Le type du dto est : {}", dto.getClass());
-            logger.debug("Le nom du champ est : {}", fieldValidation.getName());
             // Evaluate condition
             var conditionMet = conditionEvaluator.evaluate(conditionConfig.getExpression(), dto);
             if (conditionMet) {
                 isValid = conditionConfig.getRules().stream()
-                        .map(ruleFactory::createRule)
-                        .allMatch(r -> r.validate(context, dto, fieldValidation.getName()));
+                        .allMatch(rc -> validate(rc, context, dto, fieldValidation.getName()));
             }
         }
 
-        if( isValid && fieldValidation.getValidationConfig() != null){
+        if (isValid && fieldValidation.getValidationConfig() != null) {
             var nestedConfig = fieldValidation.getValidationConfig();
             var wrapper = new BeanWrapperImpl(dto);
             var nestedObject = wrapper.getPropertyValue(fieldValidation.getName());
-            if( nestedObject != null ){
-                if( nestedObject instanceof BaseDto ){
+            if (nestedObject != null) {
+                if (nestedObject instanceof BaseDto) {
                     isValid = nestedConfig.getFields().stream()
                             .allMatch(fv -> validateField(nestedObject, fv, context));
-                }else{
-                    for(var nestedObjectItem : (Iterable<?>) nestedObject){
+                } else {
+                    for (var nestedObjectItem : (Iterable<?>) nestedObject) {
                         isValid = nestedConfig.getFields().stream()
                                 .allMatch(fv -> validateField(nestedObjectItem, fv, context));
-                        if( !isValid ){
+
+                        if (!isValid) {
                             break;
                         }
                     }
@@ -114,5 +124,10 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
             }
         }
         return isValid;
+    }
+
+    public boolean validate(RuleConfig ruleConfig, ConstraintValidatorContext context, Object dto, String fieldName) {
+        AbstractRule rule = ruleFactory.createRule(ruleConfig);
+        return rule.validate(context, dto, fieldName, ruleConfig.getParameters());
     }
 }

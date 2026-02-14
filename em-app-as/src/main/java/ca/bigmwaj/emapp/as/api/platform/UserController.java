@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,14 +141,14 @@ public class UserController extends AbstractBaseAPI {
     @PostMapping
     public ResponseEntity<ResponseMessage<UserDto>> create(
             @Parameter(description = "The user's payload", required = true)
-            @RequestBody @Validated UserDto dto) {
+            @RequestBody @Valid UserDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.create(dto)));
     }
 
     @PatchMapping
     public ResponseEntity<ResponseMessage<UserDto>> update(
             @Parameter(description = "The user's payload", required = true)
-            @RequestBody @Validated UserDto dto) {
+            @RequestBody @Valid UserDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 

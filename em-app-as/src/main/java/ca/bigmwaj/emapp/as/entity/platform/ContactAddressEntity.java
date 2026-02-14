@@ -7,15 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(
-        name = "PLATFORM_CONTACT_ADDRESS",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        columnNames = {"ADDRESS", "HOLDER_TYPE"},
-                        name = "PLATFORM_CONTACT_ADDRESS_UK_ADDRESS_HOLDER_TYPE"
-                )
-        }
-)
+@Table(name = "PLATFORM_CONTACT_ADDRESS")
 @Data
 public class ContactAddressEntity extends AbstractContactPointEntity {
 

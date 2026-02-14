@@ -1,14 +1,11 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
-import ca.bigmwaj.emapp.as.dao.platform.AccountContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.AccountDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
-import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
-import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import jakarta.persistence.EntityManager;
@@ -27,13 +24,10 @@ public class AccountService extends AbstractService {
     private AccountDao dao;
 
     @Autowired
-    private AccountContactDao accountContactDao;
-
-    @Autowired
     private AccountContactService accountContactService;
 
     @Autowired
-    private ContactService contactService;
+    private UserService userService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -78,6 +72,7 @@ public class AccountService extends AbstractService {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         beforeCreate(entity, dto);
         entity = dao.save(entity);
+        userService.create(entity, dto.getAdminUsername(), dto.getAdminUsernameType());
         return GlobalMapper.INSTANCE.toDto(entity);
     }
 
@@ -108,24 +103,13 @@ public class AccountService extends AbstractService {
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
 
-    /**
-     * Performance optimization: Maps entity to DTO and includes account contacts.
-     * The AccountEntity now has @OneToMany relationship with SUBSELECT fetch mode,
-     * which loads all account contacts efficiently. This eliminates the N+1 query problem.
-     */
     private AccountDto toDtoWithChildren(AccountEntity entity) {
         var dto = GlobalMapper.INSTANCE.toDto(entity);
 
         dto.setAccountContacts(entity.getAccountContacts().stream()
-                .map(this::toDtoWithChildren)
+                .map(accountContactService::toDtoWithChildren)
                 .toList());
 
-        return dto;
-    }
-
-    private AccountContactDto toDtoWithChildren(AccountContactEntity entity){
-        var dto = GlobalMapper.INSTANCE.toDto(entity);
-        dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
         return dto;
     }
 }

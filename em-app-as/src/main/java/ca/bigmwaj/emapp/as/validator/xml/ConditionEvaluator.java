@@ -21,7 +21,6 @@ public class ConditionEvaluator {
             ExpressionParser parser = new SpelExpressionParser();
             StandardEvaluationContext context = new StandardEvaluationContext(dto);
             context.setVariable("Status", EditActionLvo.class);
-
             Expression exp = parser.parseExpression(expression);
             return Boolean.TRUE.equals(exp.getValue(context, Boolean.class));
         } catch (ParseException e) {

@@ -37,6 +37,12 @@ export enum UserStatusLvo {
   BLOCKED = 'BLOCKED'
 }
 
+export enum UsernameTypeLvo {
+  BASIC = 'BASIC',
+  PHONE = 'PHONE',
+  EMAIL = 'EMAIL'
+}
+
 export interface AccountDto extends BaseHistDto {
   id?: number;
   name: string;
@@ -46,6 +52,7 @@ export interface AccountDto extends BaseHistDto {
   statusReason?: string;
   accountContacts?: AccountContactDto[];
   adminUsername?: string;
+  adminUsernameType?: UsernameTypeLvo;
 }
 
 export interface ContactDto extends BaseHistDto {
@@ -98,6 +105,7 @@ export interface UserDto extends BaseHistDto {
   picture: string;
   provider: string;
   username: string;
+  usernameType: UsernameTypeLvo;
   password?: string;
   contact?: ContactDto;
   status: UserStatusLvo;  

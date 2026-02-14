@@ -15,6 +15,7 @@ public interface GlobalMapper {
     @AnyEntityToAnyDtoMapping
     @Mapping(target = "accountContacts", ignore = true)
     @Mapping(target = "adminUsername", ignore = true)
+    @Mapping(target = "adminUsernameType", ignore = true)
     AccountDto toDto(AccountEntity entity);
     @AnyDtoToAnyEntityMapping
     AccountEntity toEntity(AccountDto dto);

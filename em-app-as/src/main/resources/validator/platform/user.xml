@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <field name="id">
+        <condition expression="updateAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="holderType">
+        <condition expression="createAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="username">
+        <condition expression="createOrUpdateAction">
+            <rule type="NotBlankRule"/>
+            <rule type="MaxLengthRule" maxLength="32"/>
+            <rule type="UniqueUsernameRule"/>
+        </condition>
+    </field>
+
+    <field name="password">
+        <condition expression="createAction">
+            <rule type="NotBlankRule"/>
+            <rule type="MaxLengthRule" maxLength="32"/>
+        </condition>
+    </field>
+
+    <field name="usernameType">
+        <condition expression="createOrUpdateAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="status">
+        <condition expression="createAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="contact" type="dto">
+        <condition expression="createAction">
+            <rule type="NonNullRule"/>
+        </condition>
+        <validationConfig ref="platform/contact"/>
+    </field>
+</validation>

@@ -3,64 +3,63 @@ import { Component, ViewChild } from "@angular/core";
 import { SelectionModel } from "@angular/cdk/collections";
 
 @Component({
-  standalone: true,
-  template: ''
+    standalone: true,
+    template: ''
 })
 export abstract class CommonDataSource<E> extends MatTableDataSource<E> {
 
-  @ViewChild(MatTable)
-  public table!: MatTable<E>;
+    @ViewChild(MatTable)
+    public table!: MatTable<E>;
+    selection = new SelectionModel<E>(true, []);
 
-  selection = new SelectionModel<E>(true, []);
+    abstract getKeyLabel(bean: E): string | number;
 
-  abstract getKeyLabel(bean: E): string | number;
-
-  constructor() {
-    super();
-  }
-  
-  appendItem(bean: E) {
-    this.data.push(bean);
-
-    if (this.table) {
-      this.table.renderRows();
+    constructor() {
+        super();
     }
-  }
 
-  prependItem(bean: E) {
-    this.data.unshift(bean);
-
-    if (this.table) {
-      this.table.renderRows();
-    }
-  }
-
-  removeItem(bean: E) {
-        const tmp = this.data.filter(b => b != bean);
-        this.data.length = 0
-
-        this.data.push(... tmp)
+    appendItem(bean: E) {
+        this.data.push(bean);
 
         if (this.table) {
             this.table.renderRows();
         }
     }
-    
+
+    prependItem(bean: E) {
+        this.data.unshift(bean);
+
+        if (this.table) {
+            this.table.renderRows();
+        }
+    }
+
+    removeItem(bean: E) {
+        const tmp = this.data.filter(b => b != bean);
+        this.data.length = 0
+
+        this.data.push(...tmp)
+
+        if (this.table) {
+            this.table.renderRows();
+        }
+    }
+
     replaceItemWith(bean: E, _with: E) {
-        const index = this.data.findIndex(b => b == bean );
-        const tmp:Array<E> = [];
-        if( index > 0 ){
+        const index = this.data.findIndex(b => b == bean);
+        const tmp: Array<E> = [];
+        if (index > 0) {
             tmp.push(...this.data.slice(0, index))
         }
 
         tmp.push(_with);
 
-        if( index < this.data.length - 1 ){
+        if (index < this.data.length - 1) {
             tmp.push(...this.data.slice(index + 1))
         }
-        
+
         this.data.length = 0;
-        this.data.push(... tmp)
+        this.data.push(...tmp)
         if (this.table) {
             this.table.renderRows();
         }

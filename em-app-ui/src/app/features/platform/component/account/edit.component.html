@@ -78,11 +78,11 @@
   <app-edit-account-details [form]="accountForm"></app-edit-account-details>
 
   <!-- Section 2: Account Main Contact -->
-  <app-edit-principal-account-contact [form]="mainContactForm"></app-edit-principal-account-contact>
+  <app-edit-principal-account-contact [form]="primaryAccountContactForm"></app-edit-principal-account-contact>
 
   <!-- Section 3: Account Main User -->
   @if(isCreateMode){
-  <app-edit-account-admin-user [form]="mainUserForm"></app-edit-account-admin-user>
+  <app-edit-account-admin-user [form]="adminUserForm"></app-edit-account-admin-user>
   }
   }
 </div>

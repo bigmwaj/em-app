@@ -15,7 +15,6 @@ public class AbstractContactPointDto extends BaseHistDto {
 
     private Long contactId;
 
-    @NotNull(message = "Holder type is required")
     private HolderTypeLvo holderType;
 
     private Boolean defaultContactPoint;

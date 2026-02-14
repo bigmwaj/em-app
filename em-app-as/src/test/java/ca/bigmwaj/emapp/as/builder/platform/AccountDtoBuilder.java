@@ -1,12 +1,16 @@
-package ca.bigmwaj.emapp.as.dto.platform;
+package ca.bigmwaj.emapp.as.builder.platform;
 
+import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountDtoBuilder{
+public class AccountDtoBuilder {
 
     public static Builder builder() {
         return new Builder();
@@ -19,21 +23,22 @@ public class AccountDtoBuilder{
         private List<AccountContactDtoBuilder.Builder> accountContactBuilders;
 
         public AccountDto build() {
-            if(accountContactBuilders != null && !accountContactBuilders.isEmpty()) {
+            if (accountContactBuilders != null && !accountContactBuilders.isEmpty()) {
                 dto.setAccountContacts(new ArrayList<>());
                 accountContactBuilders.stream()
                         .map(AccountContactDtoBuilder.Builder::build)
-                .forEach(dto.getAccountContacts()::add);
+                        .forEach(dto.getAccountContacts()::add);
             }
             return dto;
         }
 
-        public Builder withDefaults(){
+        public Builder withDefaults() {
             dto.setEditAction(EditActionLvo.CREATE);
             dto.setName("Test Account");
             dto.setDescription("Test Description");
             dto.setStatus(AccountStatusLvo.ACTIVE);
             dto.setAdminUsername("test");
+            dto.setAdminUsernameType(UsernameTypeLvo.BASIC);
             return this;
         }
 
@@ -41,10 +46,17 @@ public class AccountDtoBuilder{
             return withAccountContactBuilders(AccountContactDtoBuilder.builder().withDefaults());
         }
 
-        public Builder withAccountContactBuilders(AccountContactDtoBuilder.Builder ... accountContactBuilders) {
+        public Builder withAccountContactBuilders(AccountContactDtoBuilder.Builder... accountContactBuilders) {
             this.accountContactBuilders = List.of(accountContactBuilders);
             return this;
         }
+    }
+
+    public static AccountDtoBuilder.Builder builderWithAllDefaults() {
+        return AccountDtoBuilder
+                .builder()
+                .withDefaults()
+                .withAccountContactBuilders(AccountContactDtoBuilder.builderWithAllDefaults());
     }
 }
 

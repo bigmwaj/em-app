@@ -10,12 +10,12 @@ import {
   EmailTypeLvo,
   PhoneTypeLvo,
   AddressTypeLvo,
+  UsernameTypeLvo,
 } from '../../api.platform.model';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { SharedHelper } from '../../../shared/shared.helper';
-import { P } from '@angular/cdk/keycodes';
 
 
 @Component({
@@ -28,8 +28,8 @@ export class AccountEditComponent implements OnInit {
   mode = SharedHelper.AccountEditMode.VIEW;
   
   accountForm!: FormGroup;
-  mainContactForm!: FormGroup;
-  mainUserForm!: FormGroup;
+  primaryAccountContactForm!: FormGroup;
+  adminUserForm!: FormGroup;
   
   account?: AccountDto;
   loading = false;
@@ -60,7 +60,7 @@ export class AccountEditComponent implements OnInit {
     });
 
     // Main Contact Form
-    this.mainContactForm = this.fb.group({
+    this.primaryAccountContactForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       birthDate: [''],
@@ -74,8 +74,9 @@ export class AccountEditComponent implements OnInit {
     });
 
     // Main User Form
-    this.mainUserForm = this.fb.group({
+    this.adminUserForm = this.fb.group({
       adminUsername: ['', Validators.required],
+      usernameType: [UsernameTypeLvo.EMAIL, Validators.required]
     });
   }
 
@@ -124,13 +125,13 @@ export class AccountEditComponent implements OnInit {
     this.accountForm.patchValue({
       status: AccountStatusLvo.ACTIVE
     });
-    this.mainContactForm.patchValue({
+    this.primaryAccountContactForm.patchValue({
       holderType: HolderTypeLvo.ACCOUNT,
       mainEmailType: EmailTypeLvo.WORK,
       mainPhoneType: PhoneTypeLvo.WORK,
       mainAddressType: AddressTypeLvo.WORK
     });
-    this.mainUserForm.patchValue({
+    this.adminUserForm.patchValue({
       adminUsername: ''
     });
   }
@@ -153,7 +154,7 @@ export class AccountEditComponent implements OnInit {
       const defaultPhone = PlatformHelper.getDefaultContactPhone(primaryContact);
       const defaultAddress = PlatformHelper.getDefaultContactAddress(primaryContact);
 
-      this.mainContactForm.patchValue({
+      this.primaryAccountContactForm.patchValue({
         firstName: primaryContact.firstName,
         lastName: primaryContact.lastName,
         birthDate: primaryContact.birthDate,
@@ -170,8 +171,8 @@ export class AccountEditComponent implements OnInit {
 
   private disableAllForms(): void {
     this.accountForm.disable();
-    this.mainContactForm.disable();
-    this.mainUserForm.disable();
+    this.primaryAccountContactForm.disable();
+    this.adminUserForm.disable();
   }
 
   onSave(): void {
@@ -184,12 +185,12 @@ export class AccountEditComponent implements OnInit {
       return;
     }
 
-    if (this.mainContactForm.get('firstName')?.value && this.mainContactForm.invalid) {
+    if (this.primaryAccountContactForm.get('firstName')?.value && this.primaryAccountContactForm.invalid) {
       this.error = 'Please fill in all required fields in Account Main Contact';
       return;
     }
 
-    if (this.mode === SharedHelper.AccountEditMode.CREATE && this.mainUserForm.invalid) {
+    if (this.mode === SharedHelper.AccountEditMode.CREATE && this.adminUserForm.invalid) {
       this.error = 'Please fill in all required fields in Account Admin User';
       return;
     }
@@ -197,7 +198,7 @@ export class AccountEditComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    const accountData = PlatformHelper.buildAccountDto(this.accountForm, this.mainContactForm, this.mainUserForm);
+    const accountData = PlatformHelper.buildAccountDto(this.accountForm, this.primaryAccountContactForm, this.adminUserForm);
 
     if (this.mode === SharedHelper.AccountEditMode.CREATE) {
       this.accountService.createAccount(accountData).subscribe({
@@ -305,8 +306,8 @@ export class AccountEditComponent implements OnInit {
 
   private enableAllForms(): void {
     this.accountForm.enable();
-    this.mainContactForm.enable();
-    this.mainUserForm.enable();
+    this.primaryAccountContactForm.enable();
+    this.adminUserForm.enable();
   }
 
   get showDuplicateButton(): boolean {

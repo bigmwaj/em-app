@@ -1,32 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="editAction.toString() == 'UPDATE'">
+        <condition expression="updateAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="holderType">
+        <condition expression="createAction">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="firstName">
-        <condition expression="editAction.toString() == 'CREATE' || editAction.toString() == 'UPDATE'">
-            <rule type="NonNullRule"/>
+        <condition expression="createOrUpdateAction">
+            <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
     <field name="lastName">
-        <condition expression="editAction.toString() == 'CREATE' || editAction.toString() == 'UPDATE'">
-            <rule type="NonNullRule"/>
-            <rule type="MaxLengthRule">
-                <property name="message" value="Last name must not exceed 32 characters."/>
-                <property name="maxLength" value="32"/>
-            </rule>
+        <condition expression="createOrUpdateAction">
+            <rule type="NotBlankRule"/>
+            <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
-    <field name="lastName">
-        <condition expression="editAction.toString() == 'CREATE'">
-            <rule type="NonNullRule"/>
+    <field name="birthDate">
+        <condition expression="createOrUpdateAction">
+            <rule type="BirthDateRule" minAge="18"/>
         </condition>
     </field>
 
+    <field name="emails" type="dtoList">
+        <condition expression="createAction">
+            <rule type="NonEmptyRule"/>
+        </condition>
+        <validationConfig>
+            <field name="id">
+                <condition expression="updateAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="holderType">
+                <condition expression="createAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="type">
+                <condition expression="createOrUpdateAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="email">
+                <condition expression="createOrUpdateAction">
+                    <rule type="NotBlankRule"/>
+                </condition>
+            </field>
+        </validationConfig>
+    </field>
+
+    <field name="phones" type="dtoList">
+        <condition expression="createAction">
+            <rule type="NonEmptyRule"/>
+        </condition>
+        <validationConfig>
+            <field name="id">
+                <condition expression="updateAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="holderType">
+                <condition expression="createAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="type">
+                <condition expression="createOrUpdateAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="phone">
+                <condition expression="createOrUpdateAction">
+                    <rule type="NotBlankRule"/>
+                </condition>
+            </field>
+        </validationConfig>
+    </field>
+
+    <field name="addresses" type="dtoList">
+        <condition expression="createAction">
+            <rule type="NonEmptyRule"/>
+        </condition>
+        <validationConfig>
+            <field name="id">
+                <condition expression="updateAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="holderType">
+                <condition expression="createAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="type">
+                <condition expression="createOrUpdateAction">
+                    <rule type="NonNullRule"/>
+                </condition>
+            </field>
+            <field name="address">
+                <condition expression="createOrUpdateAction">
+                    <rule type="NotBlankRule"/>
+                </condition>
+            </field>
+        </validationConfig>
+    </field>
 </validation>

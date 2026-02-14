@@ -3,6 +3,8 @@ import { ContactService } from '../../service/contact.service';
 import { ContactDto } from '../../api.platform.model';
 import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
+import { PlatformHelper } from '../../platform.helper';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-contact-index',
@@ -15,16 +17,25 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   loading = true;
   error: string | null = null;
   searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
+  displayedColumns: string[] = ['holderType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
+  PlatformHelper = PlatformHelper;
 
-  constructor(private contactService: ContactService) { super(); }
+  constructor(private contactService: ContactService) { super();
+    this.searchCriteria.pageSize = 5;
+   }
 
   override getKeyLabel(bean: ContactDto): string | number {
     throw new Error('Method not implemented.');
   }
 
   ngOnInit(): void {
+    this.loadContacts();
+  }
+  
+  handlePageEvent(e: PageEvent) {
+    this.searchCriteria.pageIndex = e.pageIndex;
+    this.searchCriteria.pageSize = e.pageSize;  
     this.loadContacts();
   }
 
@@ -56,7 +67,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
 
   onSearch(): void {
     this.searchCriteria = createDefaultSearchCriteria();
-    
+
     if (this.searchText && this.searchText.trim()) {
       this.searchCriteria.whereClauses = [{
         name: 'firstName',
@@ -64,7 +75,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
         values: [this.searchText.trim()]
       }];
     }
-    
+
     this.loadContacts();
   }
 

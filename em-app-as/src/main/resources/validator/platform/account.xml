@@ -1,30 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="editAction.toString() == 'UPDATE'">
-            <rule type="NonNullRule"/>
-        </condition>
-        <condition expression="editAction.toString() == 'CHANGE_STATUS'">
+        <condition expression="updateOrChangeStatusAction">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="name">
-        <condition expression="editAction.toString() == 'CREATE'">
-            <rule type="NonNullRule"/>
-            <rule type="MaxLengthRule" maxLength="32"/>
-        </condition>
-        <condition expression="editAction.toString() == 'UPDATE'">
-            <rule type="NonNullRule"/>
+        <condition expression="createOrUpdateAction">
+            <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
     <field name="description">
-        <condition expression="editAction.toString() == 'CREATE'">
-            <rule type="MaxLengthRule" maxLength="100"/>
-        </condition>
-        <condition expression="editAction.toString() == 'UPDATE'">
+        <condition expression="createOrUpdateAction">
             <rule type="MaxLengthRule" maxLength="100"/>
         </condition>
     </field>
@@ -36,15 +26,22 @@
     </field>
 
     <field name="adminUsername">
-        <condition expression="editAction.toString() == 'CREATE'">
-            <rule type="NonNullRule"/>
+        <condition expression="createAction">
+            <rule type="NotBlankRule"/>
+            <rule type="UniqueUsernameRule"/>
             <rule type="MaxLengthRule" maxLength="16"/>
         </condition>
     </field>
 
-    <field name="accountContacts" type="dtos">
-        <condition expression="editAction.toString() == 'CREATE'">
+    <field name="adminUsernameType">
+        <condition expression="createAction">
             <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="accountContacts" type="dtoList">
+        <condition expression="createAction">
+            <rule type="NonEmptyRule"/>
         </condition>
         <validationConfig ref="platform/account-contact"/>
     </field>

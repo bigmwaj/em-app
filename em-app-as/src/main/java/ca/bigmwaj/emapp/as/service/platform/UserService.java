@@ -4,14 +4,21 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUserGrantedAuthority;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
+import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
+import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
+import ca.bigmwaj.emapp.as.entity.platform.UserEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
+import ca.bigmwaj.emapp.as.service.ServiceException;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,28 +28,30 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
 public class UserService extends AbstractService implements UserDetailsService {
 
-    private final UserDao dao;
-    private final ContactDao contactDao;
+    @Autowired
+    private UserDao dao;
+
+    @Autowired
+    private ContactDao contactDao;
+
+    @Autowired
+    private ContactService contactService;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    public UserService(UserDao dao, ContactDao contactDao) {
-        this.dao = dao;
-        this.contactDao = contactDao;
-    }
-
     protected SearchResultDto<UserDto> searchAll() {
-        var r = dao.findAll().stream().map(GlobalMapper.INSTANCE::toDto).toList();
+        var r = dao.findAll().stream().map(this::toDtoWithChildren).toList();
         return new SearchResultDto<>(r);
     }
 
@@ -59,7 +68,7 @@ public class UserService extends AbstractService implements UserDetailsService {
         }
         var r = dao.findAllByCriteria(entityManager, sc)
                 .stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(this::toDtoWithChildren)
                 .toList();
 
         return new SearchResultDto<>(searchStats, r);
@@ -68,7 +77,7 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     public UserDto findById(Long userId) {
         return dao.findById(userId)
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(this::toDtoWithChildren)
                 .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
     }
 
@@ -92,6 +101,25 @@ public class UserService extends AbstractService implements UserDetailsService {
     public UserDto create(UserDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         entity.setContact(getContact(dto));
+        beforeCreateHistEntity(entity);
+        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+    }
+
+    public UserDto create(AccountEntity accountEntity, String username, UsernameTypeLvo usernameType) {
+        Objects.requireNonNull(accountEntity, "Account entity must not be null");
+        Objects.requireNonNull(accountEntity.getAccountContacts(), "Account entity must have account contacts");
+
+        UserEntity entity = new UserEntity();
+        ContactEntity primaryContact = accountEntity.getAccountContacts()
+                .stream().findFirst()
+                .map(AccountContactEntity::getContact).orElseThrow(() -> new ServiceException("Account must have at least one contact"));
+        entity.setContact(primaryContact);
+        entity.setUsername(username);
+        entity.setPassword("to-be-updated");
+        entity.setUsernameType(usernameType);
+        entity.setHolderType(HolderTypeLvo.ACCOUNT);
+        entity.setStatus(UserStatusLvo.ACTIVE);
+        entity.setStatusDate(LocalDateTime.now());
         beforeCreateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
@@ -136,5 +164,11 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     public boolean isUsernameUnique(String username) {
         return !dao.existsByUsername(username);
+    }
+
+    protected UserDto toDtoWithChildren(UserEntity entity) {
+        var dto = GlobalMapper.INSTANCE.toDto(entity);
+        dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
+        return dto;
     }
 }

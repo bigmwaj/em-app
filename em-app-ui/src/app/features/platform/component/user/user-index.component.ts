@@ -3,6 +3,8 @@ import { UserService } from '../../service/user.service';
 import { UserDto } from '../../api.platform.model';
 import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
+import { PlatformHelper } from '../../platform.helper';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-user-index',
@@ -15,10 +17,13 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   loading = true;
   error: string | null = null;
   searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['firstName', 'lastName', 'mainEmail', 'mainPhone', 'mainAddress', 'actions'];
+  displayedColumns: string[] = ['holderType', 'username', 'usernameType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
+  PlatformHelper = PlatformHelper;
 
-  constructor(private userService: UserService) { super(); }
+  constructor(private userService: UserService) { super();
+    this.searchCriteria.pageSize = 5;
+   }
 
 
   override getKeyLabel(bean: UserDto): string | number {
@@ -29,6 +34,11 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
     this.loadUsers();
   }
 
+  handlePageEvent(e: PageEvent) {
+    this.searchCriteria.pageIndex = e.pageIndex;
+    this.searchCriteria.pageSize = e.pageSize;  
+    this.loadUsers();
+  }
   /**
    * Loads users from the API
    */
@@ -68,7 +78,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
 
   onSearch(): void {
     this.searchCriteria = createDefaultSearchCriteria();
-    
+
     if (this.searchText && this.searchText.trim()) {
       this.searchCriteria.whereClauses = [{
         name: 'firstName',
@@ -76,7 +86,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
         values: [this.searchText.trim()]
       }];
     }
-    
+
     this.loadUsers();
   }
 

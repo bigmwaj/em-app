@@ -9,7 +9,7 @@
       <mat-icon>add</mat-icon>Add Account
     </button>
   </div>
-  
+
   <div class="search-section">
     <mat-card>
       <mat-card-content>
@@ -112,6 +112,16 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </mat-card-content>
+    <mat-card-footer>
+      <mat-paginator style="background-color: transparent;" 
+        [pageSizeOptions]="[5, 10, 20]"        
+        (page)="handlePageEvent($event)"
+        [length]="searchResult.searchInfos.total"
+        [pageIndex]="searchCriteria.pageIndex"
+        [pageSize]="searchCriteria.pageSize"
+        showFirstLastButtons aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </mat-card-footer>
   </mat-card>
 
   }

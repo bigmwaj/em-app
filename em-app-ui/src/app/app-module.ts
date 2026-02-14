@@ -20,6 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -83,7 +84,9 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

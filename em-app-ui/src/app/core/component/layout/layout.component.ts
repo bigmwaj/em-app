@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AuthUserInfo } from '../../model/user.model';
 import { Subscription } from 'rxjs';
+import { SessionStorageService } from '../../services/session-storage.service';
 
 @Component({
   selector: 'app-layout',
@@ -17,7 +18,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private sessionStorageService: SessionStorageService
   ) {}
 
   ngOnInit(): void {
@@ -25,6 +26,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.userSubscription = this.authService.currentUser.subscribe(user => {
       this.user = user;
     });
+
+    // Initialize sidenav state from session storage
+    const storedSidenavState = this.sessionStorageService.sidenavOpened;
+    if (storedSidenavState !== null) {
+      this.sidenavOpened = storedSidenavState === 'true';
+    }
   }
 
   ngOnDestroy(): void {
@@ -46,5 +53,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
    */
   toggleSidenav(): void {
     this.sidenavOpened = !this.sidenavOpened;
+    this.sessionStorageService.sidenavOpened = this.sidenavOpened.toString();
   }
 }

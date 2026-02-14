@@ -20,11 +20,12 @@
             <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter first name">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
-          <button mat-raised-button color="primary" (click)="onSearch()" type="button">
+          <button mat-raised-button color="primary" (click)="onSearch()" type="button"
+            class="search-button search-button-submit">
             <mat-icon>search</mat-icon>
             Search
           </button>
-          <button mat-raised-button (click)="onClearSearch()" type="button">
+          <button mat-raised-button (click)="onClearSearch()" type="button" class="search-button search-button-clear">
             <mat-icon>clear</mat-icon>
             Clear
           </button>
@@ -52,55 +53,87 @@
   </div>
 
   } @else {
+  <mat-card class="main-table">
+    <mat-card-content>
+      <table mat-table [dataSource]="data" class="mat-elevation-z8 users-table">
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef>Username</th>
+          <td mat-cell *matCellDef="let element">{{element?.username}}</td>
+        </ng-container>
 
-  <table mat-table [dataSource]="data" class="mat-elevation-z8 users-table">
-    <!-- First Name Column -->
-    <ng-container matColumnDef="firstName">
-      <th mat-header-cell *matHeaderCellDef>First Name</th>
-      <td mat-cell *matCellDef="let element">{{element?.contact?.firstName}}</td>
-    </ng-container>
-    <!-- Last Name Column -->
-    <ng-container matColumnDef="lastName">
-      <th mat-header-cell *matHeaderCellDef>Last Name</th>
-      <td mat-cell *matCellDef="let element">{{element?.contact?.lastName}}</td>
-    </ng-container>
-    <!-- Email Column -->
-    <ng-container matColumnDef="mainEmail">
-      <th mat-header-cell *matHeaderCellDef>Main Email</th>
-      <td mat-cell *matCellDef="let element">{{element?.contact?.mainEmail?.email}}</td>
-    </ng-container>
-    <!-- Phone Column -->
-    <ng-container matColumnDef="mainPhone">
-      <th mat-header-cell *matHeaderCellDef>Main Phone</th>
-      <td mat-cell *matCellDef="let element">{{element?.contact?.mainPhone?.phone}}</td>
-    </ng-container>
-    <!-- Address Column -->
-    <ng-container matColumnDef="mainAddress">
-      <th mat-header-cell *matHeaderCellDef>Main Address</th>
-      <td mat-cell *matCellDef="let element">{{element?.contact?.mainAddress?.address}}</td>
-    </ng-container>
-    <!-- Actions Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>
-        <button mat-button color="primary">
-          <mat-icon>add</mat-icon>
-          Create
-        </button>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-button color="primary" (click)="editUser(element)">
-          <mat-icon>edit</mat-icon>
-          Edit
-        </button>
-        <button mat-button color="warn" (click)="deleteUser(element)">
-          <mat-icon>delete</mat-icon>
-          Delete
-        </button>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+        <!-- Username Type Column -->
+        <ng-container matColumnDef="usernameType">
+          <th mat-header-cell *matHeaderCellDef>Username Type</th>
+          <td mat-cell *matCellDef="let element">{{element?.usernameType}}</td>
+        </ng-container>
+        
+        <!-- Holder Type Column -->
+        <ng-container matColumnDef="holderType">
+          <th mat-header-cell *matHeaderCellDef>Holder Type</th>
+          <td mat-cell *matCellDef="let element">{{element?.holderType}}</td>
+        </ng-container>
+        <!-- First Name Column -->
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef>First Name</th>
+          <td mat-cell *matCellDef="let element">{{element?.contact?.firstName}}</td>
+        </ng-container>
+        <!-- Last Name Column -->
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef>Last Name</th>
+          <td mat-cell *matCellDef="let element">{{element?.contact?.lastName}}</td>
+        </ng-container>
+        <!-- Email Column -->
+        <ng-container matColumnDef="defaultEmail">
+          <th mat-header-cell *matHeaderCellDef>Default Email</th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getDefaultContactEmail(element?.contact)?.email}}</td>
+        </ng-container>
+        <!-- Phone Column -->
+        <ng-container matColumnDef="defaultPhone">
+          <th mat-header-cell *matHeaderCellDef>Default Phone</th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getDefaultContactPhone(element?.contact)?.phone}}</td>
+        </ng-container>
+        <!-- Address Column -->
+        <ng-container matColumnDef="defaultAddress">
+          <th mat-header-cell *matHeaderCellDef>Default Address</th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getDefaultContactAddress(element?.contact)?.address}}
+          </td>
+        </ng-container>
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>
+            <button mat-button color="primary">
+              <mat-icon>add</mat-icon>
+              Create
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="editUser(element)">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            <button mat-button color="warn" (click)="deleteUser(element)">
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+    
+    <mat-card-footer>
+      <mat-paginator style="background-color: transparent;" 
+        [pageSizeOptions]="[5, 10, 20]"        
+        (page)="handlePageEvent($event)"
+        [length]="searchResult.searchInfos.total"
+        [pageIndex]="searchCriteria.pageIndex"
+        [pageSize]="searchCriteria.pageSize"
+        showFirstLastButtons aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </mat-card-footer>
+  </mat-card>
 
   }
 </div>

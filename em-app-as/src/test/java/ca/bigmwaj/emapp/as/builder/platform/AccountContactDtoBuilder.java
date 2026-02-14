@@ -1,6 +1,8 @@
-package ca.bigmwaj.emapp.as.dto.platform;
+package ca.bigmwaj.emapp.as.builder.platform;
 
+import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 
 public class AccountContactDtoBuilder {
@@ -35,5 +37,12 @@ public class AccountContactDtoBuilder {
             this.contactBuilder = contactBuilder;
             return this;
         }
+    }
+
+    public static AccountContactDtoBuilder.Builder builderWithAllDefaults() {
+        return AccountContactDtoBuilder
+                .builder()
+                .withDefaults()
+                .withContactBuilder(ContactDtoBuilder.builder().withDefaults());
     }
 }

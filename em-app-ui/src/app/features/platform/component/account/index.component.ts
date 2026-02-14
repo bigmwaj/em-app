@@ -9,6 +9,7 @@ import { AccountChangeStatusDialogComponent } from './change-status-dialog.compo
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { PageData } from '../../../shared/shared.helper';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-account-index',
@@ -32,6 +33,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   ) {
     super();
     this.searchCriteria.includeMainContact = true;
+    this.searchCriteria.pageSize = 5;
   }
 
   override getKeyLabel(bean: AccountDto): string | number {
@@ -39,6 +41,12 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   ngOnInit(): void {
+    this.loadAccounts();
+  }
+
+  handlePageEvent(e: PageEvent) {
+    this.searchCriteria.pageIndex = e.pageIndex;
+    this.searchCriteria.pageSize = e.pageSize;  
     this.loadAccounts();
   }
 

@@ -3,9 +3,12 @@ package ca.bigmwaj.emapp.as.entity.platform;
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -19,8 +22,12 @@ public class UserEntity extends AbstractBaseEntity {
     @EqualsAndHashCode.Include()
     private Long id;
 
-    @Column(name = "USER_NAME", nullable = false, unique = true)
+    @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "USERNAME_TYPE", nullable = false)
+    private UsernameTypeLvo usernameType;
 
     @Column(name = "PASSWORD")
     private String password;
@@ -37,7 +44,7 @@ public class UserEntity extends AbstractBaseEntity {
     private UserStatusLvo status;
 
     @Column(name = "STATUS_DATE")
-    private String statusDate;
+    private LocalDateTime statusDate;
 
     @Column(name = "STATUS_REASON")
     private String statusReason;

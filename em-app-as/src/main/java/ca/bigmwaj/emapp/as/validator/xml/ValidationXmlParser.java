@@ -30,7 +30,6 @@ public class ValidationXmlParser {
 
     public ValidationConfig getValidationConfig(String namespace) {
         try {
-            logger.debug("Resolve XML stream for namespace: {}", namespace);
             var xmlStream = namespaceResolver.resolveNamespace(namespace);
             return parse(xmlStream);
         } catch (Exception e) {
@@ -76,9 +75,9 @@ public class ValidationXmlParser {
 
         var fieldNodes = configElement.getElementsByTagName("field");
         for (int i = 0; i < fieldNodes.getLength(); i++) {
-            Node fieldNode = fieldNodes.item(i);
+            var fieldNode = fieldNodes.item(i);
             if (fieldNode.getNodeType() == Node.ELEMENT_NODE && fieldNode.getParentNode().equals(configElement)) {
-                FieldValidation field = parseField((Element) fieldNode);
+                var field = parseField((Element) fieldNode);
                 config.getFields().add(field);
             }
         }
@@ -87,7 +86,7 @@ public class ValidationXmlParser {
     }
 
     private FieldValidation parseField(Element fieldElement) {
-        FieldValidation field = new FieldValidation();
+        var field = new FieldValidation();
         field.setName(fieldElement.getAttribute("name"));
         var typeAttr = fieldElement.getAttribute("type");
 
@@ -101,13 +100,13 @@ public class ValidationXmlParser {
             field.setType(FieldValidation.fieldType.field); // Default type
         }
 
-        if (field.getType() == FieldValidation.fieldType.dto || field.getType() == FieldValidation.fieldType.dtos) {
-            NodeList validationNodes = fieldElement.getElementsByTagName("validationConfig");
+        if (field.getType() == FieldValidation.fieldType.dto || field.getType() == FieldValidation.fieldType.dtoList) {
+            var validationNodes = fieldElement.getElementsByTagName("validationConfig");
             if (validationNodes.getLength() > 0) {
-                Node validationNode = validationNodes.item(0);
+                var validationNode = validationNodes.item(0);
 
                 if (validationNode.getNodeType() == Node.ELEMENT_NODE && validationNode.getParentNode().equals(fieldElement)) {
-                    var ref = ((Element)validationNode).getAttribute("ref");
+                    var ref = ((Element) validationNode).getAttribute("ref");
                     if (!ref.isEmpty()) {
                         var refConfig = getValidationConfig(ref);
                         field.setValidationConfig(refConfig);

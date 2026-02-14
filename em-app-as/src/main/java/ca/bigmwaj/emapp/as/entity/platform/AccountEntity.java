@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class AccountEntity extends AbstractBaseEntity {
     private AccountStatusLvo status;
 
     @Column(name = "STATUS_DATE")
-    private String statusDate;
+    private LocalDateTime statusDate;
 
     @Column(name = "STATUS_REASON")
     private String statusReason;

@@ -9,26 +9,26 @@ export class PlatformHelper extends SharedHelper {
     }
 
     static getPrimaryAccountContactEmail(account: AccountDto): ContactEmailDto | null {
-        return PlatformHelper.getPrimaryAccountContact(account)?.emails?.[0] || null;
+        return PlatformHelper.getDefaultContactEmail(PlatformHelper.getPrimaryAccountContact(account)) || null;
     }
 
     static getPrimaryAccountContactPhone(account: AccountDto): ContactPhoneDto | null {
-        return PlatformHelper.getPrimaryAccountContact(account)?.phones?.[0] || null;
+        return PlatformHelper.getDefaultContactPhone(PlatformHelper.getPrimaryAccountContact(account)) || null;
     }
 
     static getPrimaryAccountContactAddress(account: AccountDto): ContactAddressDto | null {
-        return PlatformHelper.getPrimaryAccountContact(account)?.addresses?.[0] || null;
+        return PlatformHelper.getDefaultContactAddress(PlatformHelper.getPrimaryAccountContact(account)) || null;
     }
 
-    static getDefaultContactEmail(contact: ContactDto): ContactEmailDto | null {
+    static getDefaultContactEmail(contact: ContactDto | null): ContactEmailDto | null {
         return contact?.emails?.[0] || null;
     }
 
-    static getDefaultContactPhone(contact: ContactDto): ContactPhoneDto | null {
+    static getDefaultContactPhone(contact: ContactDto | null): ContactPhoneDto | null {
         return contact?.phones?.[0] || null;
     }
 
-    static getDefaultContactAddress(contact: ContactDto): ContactAddressDto | null {
+    static getDefaultContactAddress(contact: ContactDto | null): ContactAddressDto | null {
         return contact?.addresses?.[0] || null;
     }
 

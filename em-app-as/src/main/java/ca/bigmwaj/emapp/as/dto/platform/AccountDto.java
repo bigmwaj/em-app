@@ -3,10 +3,9 @@ package ca.bigmwaj.emapp.as.dto.platform;
 import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,4 +30,6 @@ public class AccountDto extends BaseHistDto {
     private List<AccountContactDto> accountContacts;
 
     private String adminUsername;
+
+    private UsernameTypeLvo adminUsernameType;
 }
