@@ -92,6 +92,32 @@ export class PlatformHelper extends SharedHelper {
         return duplicatedUser;
     }
 
+    static duplicateContact(contact: ContactDto): ContactDto {
+        // Create a deep copy of the contact
+        const duplicatedContact: ContactDto = JSON.parse(JSON.stringify(contact));
+
+        // Clear identifier fields
+        delete duplicatedContact.id;
+
+        // Clear IDs from nested objects
+        const defaultEmail = PlatformHelper.getDefaultContactEmail(duplicatedContact);
+        if (defaultEmail) {
+            delete defaultEmail.id;
+        }
+
+        const defaultPhone = PlatformHelper.getDefaultContactPhone(duplicatedContact);
+        if (defaultPhone) {
+            delete defaultPhone.id;
+        }
+        
+        const defaultAddress = PlatformHelper.getDefaultContactAddress(duplicatedContact);
+        if (defaultAddress) {
+            delete defaultAddress.id;
+        }
+
+        return duplicatedContact;
+    }
+
     static buildAccountDto(detailForm: FormGroup, primaryContactForm: FormGroup,  adminUserForm: FormGroup): AccountDto {
         
         const accountFormValue = detailForm.value;

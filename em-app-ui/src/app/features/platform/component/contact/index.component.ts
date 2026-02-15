@@ -1,4 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { ContactService } from '../../service/contact.service';
 import { ContactDto } from '../../api.platform.model';
 import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
@@ -6,6 +8,7 @@ import { CommonDataSource } from '../../../shared/common.datasource';
 import { PlatformHelper } from '../../platform.helper';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
+import { ContactDeleteDialogComponent } from './delete-dialog.component';
 
 @Component({
   selector: 'app-contact-index',
@@ -21,11 +24,16 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   displayedColumns: string[] = ['holderType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
-    private destroy$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
-  constructor(private contactService: ContactService) { super();
+  constructor(
+    private contactService: ContactService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {
+    super();
     this.searchCriteria.pageSize = 5;
-   }
+  }
 
   override getKeyLabel(bean: ContactDto): string | number {
     throw new Error('Method not implemented.');
@@ -58,18 +66,64 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
       },
       error: (err) => {
         console.error('Failed to load contacts:', err);
-        this.error = 'Failed to load contacts. Using sample data.';
+        this.error = 'Failed to load contacts. Please try again.';
         this.loading = false;
       }
     });
   }
 
-  editContact(contact: ContactDto): void {
-    console.log('Edit contact:', contact);
+  /**
+   * Navigate to create contact page
+   */
+  createContact(): void {
+    this.router.navigate(['/contacts/edit', 'create'], {
+      state: { mode: 'create' }
+    });
   }
 
+  /**
+   * Navigate to view contact page
+   */
+  viewContact(contact: ContactDto): void {
+    this.router.navigate(['/contacts/edit', 'view'], {
+      state: { mode: 'view', contact: contact }
+    });
+  }
+
+  /**
+   * Navigate to edit contact page
+   */
+  editContact(contact: ContactDto): void {
+    this.router.navigate(['/contacts/edit', 'edit'], {
+      state: { mode: 'edit', contact: contact }
+    });
+  }
+
+  /**
+   * Duplicate contact and navigate to create mode
+   */
+  duplicateContact(contact: ContactDto): void {
+    const duplicatedContact = PlatformHelper.duplicateContact(contact);
+    this.router.navigate(['/contacts/edit', 'create'], {
+      state: { mode: 'create', contact: duplicatedContact }
+    });
+  }
+
+  /**
+   * Open delete confirmation dialog
+   */
   deleteContact(contact: ContactDto): void {
-    console.log('Delete contact:', contact);
+    const dialogRef = this.dialog.open(ContactDeleteDialogComponent, {
+      width: '400px',
+      data: { contact: contact }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Reload the contacts list after successful deletion
+        this.loadContacts();
+      }
+    });
   }
 
   onSearch(): void {

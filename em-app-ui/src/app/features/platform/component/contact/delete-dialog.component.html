@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>Delete Contact</h2>
+
+<mat-dialog-content>
+  <p>Are you sure you want to delete the following contact?</p>
+  <p><strong>{{ data.contact.firstName }} {{ data.contact.lastName }}</strong></p>
+  <p class="warning-text">This action cannot be undone.</p>
+  
+  @if (error && !loading) {
+    <div class="error-message">
+      <mat-icon color="warn">error</mat-icon>
+      <span>{{ error }}</span>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading-section">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Deleting contact...</p>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button (click)="onCancel()" [disabled]="loading">
+    <mat-icon>cancel</mat-icon> Cancel
+  </button>
+  <button mat-raised-button color="warn" (click)="onConfirmDelete()" [disabled]="loading">
+    <mat-icon>delete</mat-icon> Delete
+  </button>
+</mat-dialog-actions>
