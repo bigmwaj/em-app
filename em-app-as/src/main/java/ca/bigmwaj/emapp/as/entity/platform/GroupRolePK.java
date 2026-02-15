@@ -12,15 +12,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode
-public class AccountContactPK implements Serializable {
+public class GroupRolePK implements Serializable {
 
-    private Short account;
+    private Short group;
 
-    private Long contact;
+    private Short role;
 
-    public AccountContactPK(@Nonnull AccountContactEntity entity) {
+    public GroupRolePK(@Nonnull GroupRoleEntity entity) {
         super();
-        this.contact = entity.getContact().getId();
-        this.account = entity.getAccount().getId();
+        this.role = entity.getRole().getId();
+        this.group = entity.getGroup().getId();
     }
 }

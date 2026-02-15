@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
@@ -10,6 +10,7 @@ import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { PageData } from '../../../shared/shared.helper';
 import { PageEvent } from '@angular/material/paginator';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-account-index',
@@ -17,14 +18,14 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./index.component.scss'],
   standalone: false
 })
-export class AccountIndexComponent extends CommonDataSource<AccountDto> implements OnInit {
-
+export class AccountIndexComponent extends CommonDataSource<AccountDto> implements OnInit, OnDestroy {
   searchResult: SearchResult<AccountDto> = {} as SearchResult<AccountDto>;
   pageData: PageData = new PageData();
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
   displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private accountService: AccountService,
@@ -44,6 +45,12 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     this.loadAccounts();
   }
 
+  ngOnDestroy(): void {
+    //this.destroy$.next();
+    //this.destroy$.complete();
+    this.destroy$.unsubscribe();
+  }
+
   handlePageEvent(e: PageEvent) {
     this.searchCriteria.pageIndex = e.pageIndex;
     this.searchCriteria.pageSize = e.pageSize;  
@@ -55,7 +62,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
     pageData.loading = true;
     pageData.error = null;
 
-    this.accountService.getAccounts(this.searchCriteria).subscribe({
+    this.accountService.getAccounts(this.searchCriteria).pipe(takeUntil(this.destroy$)).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         pageData.loading = false;
@@ -65,8 +72,9 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
         console.error('Failed to load accounts:', err);
         pageData.error = 'Failed to load accounts. Please try again.';
         pageData.loading = false;
-      },complete() {
-        console.log('Account loading completed ', pageData);
+      },
+      complete:() =>{        
+        pageData.loading = false;
       },
     })
   }

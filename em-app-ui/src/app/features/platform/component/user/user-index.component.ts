@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from '../../service/user.service';
 import { UserDto } from '../../api.platform.model';
 import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { PlatformHelper } from '../../platform.helper';
 import { PageEvent } from '@angular/material/paginator';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-user-index',
@@ -12,7 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./user-index.component.scss'],
   standalone: false
 })
-export class UserIndexComponent extends CommonDataSource<UserDto> implements OnInit {
+export class UserIndexComponent extends CommonDataSource<UserDto> implements OnInit, OnDestroy {
   searchResult: SearchResult<UserDto> = {} as SearchResult<UserDto>;
   loading = true;
   error: string | null = null;
@@ -20,11 +21,12 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   displayedColumns: string[] = ['holderType', 'username', 'usernameType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
+  private destroy$ = new Subject<void>();
 
-  constructor(private userService: UserService) { super();
+  constructor(private userService: UserService) {
+    super();
     this.searchCriteria.pageSize = 5;
-   }
-
+  }
 
   override getKeyLabel(bean: UserDto): string | number {
     throw new Error('Method not implemented.');
@@ -34,9 +36,14 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
     this.loadUsers();
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   handlePageEvent(e: PageEvent) {
     this.searchCriteria.pageIndex = e.pageIndex;
-    this.searchCriteria.pageSize = e.pageSize;  
+    this.searchCriteria.pageSize = e.pageSize;
     this.loadUsers();
   }
   /**
@@ -46,7 +53,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
     this.loading = true;
     this.error = null;
 
-    this.userService.getUsers(this.searchCriteria).subscribe({
+    this.userService.getUsers(this.searchCriteria).pipe(takeUntil(this.destroy$)).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;

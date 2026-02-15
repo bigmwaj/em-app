@@ -1,5 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.auth;
 
+import ca.bigmwaj.emapp.dm.lvo.platform.EmailTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,24 +30,9 @@ public class LoginResponse {
      */
     private Long expiresIn;
     
-    /**
-     * Authenticated user information
-     */
-    private UserInfo user;
-    
-    public LoginResponse(String token, Long expiresIn, UserInfo user) {
+    public LoginResponse(String token, Long expiresIn) {
         this.token = token;
         this.tokenType = "Bearer";
         this.expiresIn = expiresIn;
-        this.user = user;
-    }
-    
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UserInfo {
-        private String username;
-        private String email;
-        private String name;
     }
 }

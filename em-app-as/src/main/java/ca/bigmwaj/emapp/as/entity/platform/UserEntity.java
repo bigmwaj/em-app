@@ -20,7 +20,7 @@ public class UserEntity extends AbstractBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", updatable = false)
     @EqualsAndHashCode.Include()
-    private Long id;
+    private Short id;
 
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;

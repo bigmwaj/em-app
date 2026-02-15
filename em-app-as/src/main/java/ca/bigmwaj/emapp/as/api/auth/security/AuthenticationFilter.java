@@ -71,8 +71,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             var authentication = new OAuth2AuthenticationToken(oAuth2User, Collections.emptyList(), authorizedClientRegistrationId);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }else{
-            logger.warn("Invalid JWT token:" + jwt);
         }
         filterChain.doFilter(request, response);
     }

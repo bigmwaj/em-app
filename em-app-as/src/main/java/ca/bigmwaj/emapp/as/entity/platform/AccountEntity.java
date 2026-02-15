@@ -22,9 +22,9 @@ public class AccountEntity extends AbstractBaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", updatable = false)
     @EqualsAndHashCode.Include()
-    private Long id;
+    private Short id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "NAME", nullable = false, unique = true)
     private String name;
 
     @Column(name = "DESCRIPTION")

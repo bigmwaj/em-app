@@ -7,20 +7,21 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode
-public class AccountContactPK implements Serializable {
+public class GroupUserPK implements Serializable {
 
-    private Short account;
+    private Short group;
 
-    private Long contact;
+    private Short user;
 
-    public AccountContactPK(@Nonnull AccountContactEntity entity) {
+    public GroupUserPK(@Nonnull GroupUserEntity entity) {
         super();
-        this.contact = entity.getContact().getId();
-        this.account = entity.getAccount().getId();
+        this.user = entity.getUser().getId();
+        this.group = entity.getGroup().getId();
     }
 }

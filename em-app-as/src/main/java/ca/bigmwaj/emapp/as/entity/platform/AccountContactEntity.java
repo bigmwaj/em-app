@@ -30,6 +30,6 @@ public class AccountContactEntity extends AbstractBaseEntity {
     private AccountContactRoleLvo role;
 
     public Object getDefaultKey() {
-        return new AccountContactPK(account.getId(), contact.getId());
+        return new AccountContactPK(this);
     }
 }

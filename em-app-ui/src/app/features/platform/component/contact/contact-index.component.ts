@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ContactService } from '../../service/contact.service';
 import { ContactDto } from '../../api.platform.model';
 import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { PlatformHelper } from '../../platform.helper';
 import { PageEvent } from '@angular/material/paginator';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-contact-index',
@@ -12,7 +13,7 @@ import { PageEvent } from '@angular/material/paginator';
   styleUrls: ['./contact-index.component.scss'],
   standalone: false
 })
-export class ContactIndexComponent extends CommonDataSource<ContactDto> implements OnInit {
+export class ContactIndexComponent extends CommonDataSource<ContactDto> implements OnInit, OnDestroy {
   searchResult: SearchResult<ContactDto> = {} as SearchResult<ContactDto>;
   loading = true;
   error: string | null = null;
@@ -20,6 +21,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   displayedColumns: string[] = ['holderType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
+    private destroy$ = new Subject<void>();
 
   constructor(private contactService: ContactService) { super();
     this.searchCriteria.pageSize = 5;
@@ -33,6 +35,11 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
     this.loadContacts();
   }
   
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+  
   handlePageEvent(e: PageEvent) {
     this.searchCriteria.pageIndex = e.pageIndex;
     this.searchCriteria.pageSize = e.pageSize;  
@@ -43,7 +50,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
     this.loading = true;
     this.error = null;
 
-    this.contactService.getContacts(this.searchCriteria).subscribe({
+    this.contactService.getContacts(this.searchCriteria).pipe(takeUntil(this.destroy$)).subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.loading = false;

@@ -9,7 +9,7 @@ import { SessionStorageService } from '../services/session-storage.service';
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
   constructor(
-    private sessionStorage: SessionStorageService) {}
+    private sessionStorage: SessionStorageService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Get the auth token from the service

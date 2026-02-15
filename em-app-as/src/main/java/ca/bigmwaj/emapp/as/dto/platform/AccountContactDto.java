@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class AccountContactDto extends BaseHistDto {
 
-    private Long accountId;
+    private Short accountId;
 
     @NotNull(message = "Contact is required")
     @Valid

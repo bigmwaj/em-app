@@ -1,7 +1,8 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountDto } from '../../api.platform.model';
 import { AccountService } from '../../service/account.service';
+import { Subject, takeUntil } from 'rxjs';
 
 export interface AccountDeleteDialogData {
   account: AccountDto;
@@ -13,15 +14,21 @@ export interface AccountDeleteDialogData {
   styleUrls: ['./delete-dialog.component.scss'],
   standalone: false
 })
-export class AccountDeleteDialogComponent {
+export class AccountDeleteDialogComponent implements OnDestroy {
   loading = false;
   error: string | null = null;
+  private destroy$ = new Subject<void>();
 
   constructor(
     public dialogRef: MatDialogRef<AccountDeleteDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AccountDeleteDialogData,
     private accountService: AccountService
   ) {}
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   onCancel(): void {
     this.dialogRef.close();
@@ -36,7 +43,7 @@ export class AccountDeleteDialogComponent {
     this.loading = true;
     this.error = null;
 
-    this.accountService.deleteAccount(this.data.account.id).subscribe({
+    this.accountService.deleteAccount(this.data.account.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.loading = false;
         this.dialogRef.close(true); // Return success

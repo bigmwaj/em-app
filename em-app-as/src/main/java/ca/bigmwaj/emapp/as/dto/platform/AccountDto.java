@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 public class AccountDto extends BaseHistDto {
 
-    private Long id;
+    private Short id;
 
     private String name;
 

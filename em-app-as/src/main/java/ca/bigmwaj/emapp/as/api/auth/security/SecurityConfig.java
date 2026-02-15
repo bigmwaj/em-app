@@ -1,9 +1,11 @@
 package ca.bigmwaj.emapp.as.api.auth.security;
 
+import ca.bigmwaj.emapp.as.service.platform.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -83,6 +85,9 @@ public class SecurityConfig {
     @Autowired
     private OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+    @Autowired
+    private UserService authMngr;
+
     /**
      * Configures the security filter chain for HTTP requests.
      * 
@@ -147,10 +152,18 @@ public class SecurityConfig {
      * @return AuthenticationManager instance
      * @throws Exception if configuration fails
      */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+//        //return authConfig.getAuthenticationManager();
+//        return authMngr;
+//    }
+//
+//    @Bean
+//    public AuthenticationManager configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        var encoder = passwordEncoder();
+//        auth.userDetailsService(authMngr).passwordEncoder(encoder);
+//        return auth.build();
+//    }
 
     /**
      * Configures CORS (Cross-Origin Resource Sharing) settings.

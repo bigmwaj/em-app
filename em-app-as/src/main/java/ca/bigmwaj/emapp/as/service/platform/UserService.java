@@ -4,11 +4,10 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
 import ca.bigmwaj.emapp.as.dto.GlobalMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
+import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUserGrantedAuthority;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
@@ -21,10 +20,14 @@ import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +36,12 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class UserService extends AbstractService implements UserDetailsService {
+public class UserService extends AbstractService implements AuthenticationManager {
+
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserDao dao;
@@ -47,9 +51,9 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     @Autowired
     private ContactService contactService;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    //    @Autowired
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -89,13 +93,13 @@ public class UserService extends AbstractService implements UserDetailsService {
         dao.deleteById(userId);
     }
 
-    private ContactEntity getContact(UserDto dto){
+    private ContactEntity getContact(UserDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto.getContact());
-        if( entity.getId() == null ){
+        if (entity.getId() == null) {
 
             beforeCreateHistEntity(entity);
             entity = contactDao.save(entity);
-        }else{
+        } else {
             entity = contactDao.getReferenceById(entity.getId());
         }
 
@@ -105,12 +109,12 @@ public class UserService extends AbstractService implements UserDetailsService {
     public UserDto create(UserDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
         entity.setContact(getContact(dto));
-        
+
         // Hash password if provided
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-        
+
         beforeCreateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
@@ -136,7 +140,7 @@ public class UserService extends AbstractService implements UserDetailsService {
 
     public UserDto update(UserDto dto) {
         var entity = GlobalMapper.INSTANCE.toEntity(dto);
-        
+
         // Hash password if provided and changed
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             entity.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -145,29 +149,9 @@ public class UserService extends AbstractService implements UserDetailsService {
             var existingUser = dao.findById(dto.getId());
             existingUser.ifPresent(user -> entity.setPassword(user.getPassword()));
         }
-        
+
         beforeUpdateHistEntity(entity);
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var msgTpl = "Aucun utilisateur trouvé avant pour nom d'utilisateur %s";
-        Supplier<UsernameNotFoundException> ex;
-        ex = () -> new UsernameNotFoundException(String.format(msgTpl, username));
-        var user =  dao.findByUsernameIgnoreCase(username).orElseThrow(ex);
-
-        var status = user.getStatus();
-//		var passwordLastChangeDate = user.getPasswordLastChangeDate().getValue();
-
-//		LocalDateTime.now().minus(passwordLastChangeDate.);
-
-        boolean enabled = UserStatusLvo.ACTIVE.equals(status);
-        boolean accountNonExpired = true;
-        boolean credentialsNonExpired = true;
-        boolean accountNonLocked = true;
-        var authorities = Collections.singleton(new AuthenticatedUserGrantedAuthority("USER"));
-        return new AuthenticatedUser(GlobalMapper.INSTANCE.toDto(user), enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
 
     public void validateAccountHolder(String email) {
@@ -190,5 +174,27 @@ public class UserService extends AbstractService implements UserDetailsService {
         var dto = GlobalMapper.INSTANCE.toDto(entity);
         dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
         return dto;
+    }
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        var username = authentication.getName();
+        var password = authentication.getCredentials().toString();
+        var user = dao.findByUsernameIgnoreCase(username).orElse(null);
+
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+            var status = user.getStatus();
+            boolean enabled = UserStatusLvo.ACTIVE.equals(status);
+            boolean accountNonExpired = true;
+            boolean credentialsNonExpired = true;
+            boolean accountNonLocked = true;
+            var authorities = Collections.singleton(new AuthenticatedUserGrantedAuthority("USER"));
+            var authUser = new AuthenticatedUser(GlobalMapper.INSTANCE.toDto(user), enabled,
+                    accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+            return UsernamePasswordAuthenticationToken.authenticated(authUser, username, authorities);
+
+        }else{
+            throw new BadCredentialsException("Bad credentials");
+        }
     }
 }

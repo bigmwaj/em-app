@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @ValidDto("platform/user")
 public class UserDto extends BaseHistDto {
 
-    private Long id;
+    private Short id;
 
     private String picture;
 

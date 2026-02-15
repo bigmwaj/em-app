@@ -3,8 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
-import { 
-  AccountDto, 
+import {
+  AccountDto,
   AccountStatusLvo,
   HolderTypeLvo,
   EmailTypeLvo,
@@ -26,11 +26,11 @@ import { SharedHelper } from '../../../shared/shared.helper';
 })
 export class AccountEditComponent implements OnInit {
   mode = SharedHelper.AccountEditMode.VIEW;
-  
+
   accountForm!: FormGroup;
   primaryAccountContactForm!: FormGroup;
   adminUserForm!: FormGroup;
-  
+
   account?: AccountDto;
   loading = false;
   error: string | null = null;
@@ -44,7 +44,7 @@ export class AccountEditComponent implements OnInit {
     private route: ActivatedRoute,
     private accountService: AccountService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeForms();
@@ -84,11 +84,11 @@ export class AccountEditComponent implements OnInit {
     // Get navigation state data
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state || history.state;
-    
+
     // Get mode from route params or state
     this.route.params.subscribe(params => {
       const modeParam = params['mode'] || state.mode;
-      
+
       if (modeParam === 'create') {
         this.mode = SharedHelper.AccountEditMode.CREATE;
         // Check if we have a duplicated account to populate
@@ -252,7 +252,7 @@ export class AccountEditComponent implements OnInit {
   }
 
   get showSaveButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.CREATE || this.mode === SharedHelper. AccountEditMode.EDIT;
+    return this.mode === SharedHelper.AccountEditMode.CREATE || this.mode === SharedHelper.AccountEditMode.EDIT;
   }
 
   onDuplicate(): void {

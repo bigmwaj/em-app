@@ -8,27 +8,31 @@
     <!-- Username/Password Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="username" placeholder="Enter your email" />
-        <mat-icon matPrefix>email</mat-icon>
-        <mat-error *ngIf="username?.hasError('required')">Email is required</mat-error>
-        <mat-error *ngIf="username?.hasError('email')">Please enter a valid email</mat-error>
+        <mat-label>Username</mat-label>
+        <input matInput type="text" formControlName="username" placeholder="Enter username" />
+        <mat-icon matPrefix>person</mat-icon>
+        @if(username?.hasError('required')) {
+        <mat-error>Username is required</mat-error>
+        }
+        @if(username?.hasError('username')) {
+        <mat-error>Please enter a valid username</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Password</mat-label>
-        <input 
-          matInput 
-          [type]="hidePassword ? 'password' : 'text'" 
-          formControlName="password" 
-          placeholder="Enter your password" 
-        />
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"
+          placeholder="Enter your password" />
         <mat-icon matPrefix>lock</mat-icon>
         <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
           <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
-        <mat-error *ngIf="password?.hasError('required')">Password is required</mat-error>
-        <mat-error *ngIf="password?.hasError('minlength')">Password must be at least 6 characters</mat-error>
+        @if(password?.hasError('required')) {
+        <mat-error>Password is required</mat-error>
+        }
+        @if(password?.hasError('minlength')) {
+        <mat-error>Password must be at least 6 characters</mat-error>
+        }
       </mat-form-field>
 
       <div class="error-message" *ngIf="errorMessage">
@@ -36,15 +40,12 @@
         <span>{{ errorMessage }}</span>
       </div>
 
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="submit" 
-        class="login-button"
-        [disabled]="isLoading"
-      >
-        <span *ngIf="!isLoading">Sign In</span>
-        <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      <button mat-raised-button color="primary" type="submit" class="login-button" [disabled]="isLoading">
+        @if(!isLoading) {
+        <span>Sign In</span>
+        }@else {
+        <mat-spinner diameter="20"></mat-spinner>
+        }
       </button>
     </form>
 
