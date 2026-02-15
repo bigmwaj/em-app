@@ -1,16 +1,14 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@ValidDto("platform/user-role")
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UserRoleDto extends BaseHistDto {
 
     private Short userId;
 
-    private Short roleId;
+    private RoleDto role;
 }

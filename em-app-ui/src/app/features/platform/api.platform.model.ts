@@ -61,11 +61,8 @@ export interface ContactDto extends BaseHistDto {
   lastName: string;
   birthDate?: Date;
   holderType: HolderTypeLvo;
-  mainEmail?: ContactEmailDto;
   emails?: ContactEmailDto[];
-  mainPhone?: ContactPhoneDto;
   phones?: ContactPhoneDto[];
-  mainAddress?: ContactAddressDto;
   addresses?: ContactAddressDto[];
 }
 
@@ -108,7 +105,7 @@ export interface UserDto extends BaseHistDto {
   usernameType: UsernameTypeLvo;
   password?: string;
   contact?: ContactDto;
-  status: UserStatusLvo;  
+  status: UserStatusLvo;
   statusDate?: Date;
   statusReason?: string;
   holderType: HolderTypeLvo;

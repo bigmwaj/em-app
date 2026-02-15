@@ -62,6 +62,49 @@ public interface GlobalMapper {
     @AnyDtoToAnyEntityMapping
     ContactEntity toEntity(ContactDto dto);
 
+    @AnyEntityToAnyDtoMapping
+    GroupDto toDto(GroupEntity entity);
+    @AnyDtoToAnyEntityMapping
+    GroupEntity toEntity(GroupDto dto);
+
+    @AnyEntityToAnyDtoMapping
+    PrivilegeDto toDto(PrivilegeEntity entity);
+    @AnyDtoToAnyEntityMapping
+    PrivilegeEntity toEntity(PrivilegeDto dto);
+
+    @AnyEntityToAnyDtoMapping
+    RoleDto toDto(RoleEntity entity);
+    @AnyDtoToAnyEntityMapping
+    RoleEntity toEntity(RoleDto dto);
+
+    @AnyEntityToAnyDtoMapping
+    @Mapping(target = "groupId", source = "group", qualifiedByName = "mapGroup")
+    GroupRoleDto toDto(GroupRoleEntity entity);
+    @AnyDtoToAnyEntityMapping
+    @Mapping(target = "group", source = "groupId", qualifiedByName = "mapGroupId")
+    GroupRoleEntity toEntity(GroupRoleDto dto);
+
+    @AnyEntityToAnyDtoMapping
+    @Mapping(target = "groupId", source = "group", qualifiedByName = "mapGroup")
+    GroupUserDto toDto(GroupUserEntity entity);
+    @AnyDtoToAnyEntityMapping
+    @Mapping(target = "group", source = "groupId", qualifiedByName = "mapGroupId")
+    GroupUserEntity toEntity(GroupUserDto dto);
+
+    @AnyEntityToAnyDtoMapping
+    @Mapping(target = "roleId", source = "role", qualifiedByName = "mapRole")
+    RolePrivilegeDto toDto(RolePrivilegeEntity entity);
+    @AnyDtoToAnyEntityMapping
+    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRoleId")
+    RolePrivilegeEntity toEntity(RolePrivilegeDto dto);
+
+    @AnyEntityToAnyDtoMapping
+    @Mapping(target = "userId", source = "user", qualifiedByName = "mapUser")
+    UserRoleDto toDto(UserRoleEntity entity);
+    @AnyDtoToAnyEntityMapping
+    @Mapping(target = "user", source = "userId", qualifiedByName = "mapUserId")
+    UserRoleEntity toEntity(UserRoleDto dto);
+
     @Named("mapContact")
     default Long mapContact(ContactDto contact) {
         return contact != null ? contact.getId() : null;
@@ -92,57 +135,6 @@ public interface GlobalMapper {
         return account;
     }
 
-    @AnyEntityToAnyDtoMapping
-    GroupDto toDto(GroupEntity entity);
-    @AnyDtoToAnyEntityMapping
-    GroupEntity toEntity(GroupDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    PrivilegeDto toDto(PrivilegeEntity entity);
-    @AnyDtoToAnyEntityMapping
-    PrivilegeEntity toEntity(PrivilegeDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    RoleDto toDto(RoleEntity entity);
-    @AnyDtoToAnyEntityMapping
-    RoleEntity toEntity(RoleDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    @Mapping(target = "groupId", source = "group", qualifiedByName = "mapGroup")
-    @Mapping(target = "roleId", source = "role", qualifiedByName = "mapRole")
-    GroupRoleDto toDto(GroupRoleEntity entity);
-    @AnyDtoToAnyEntityMapping
-    @Mapping(target = "group", source = "groupId", qualifiedByName = "mapGroupId")
-    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRoleId")
-    GroupRoleEntity toEntity(GroupRoleDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    @Mapping(target = "groupId", source = "group", qualifiedByName = "mapGroup")
-    @Mapping(target = "userId", source = "user", qualifiedByName = "mapUser")
-    GroupUserDto toDto(GroupUserEntity entity);
-    @AnyDtoToAnyEntityMapping
-    @Mapping(target = "group", source = "groupId", qualifiedByName = "mapGroupId")
-    @Mapping(target = "user", source = "userId", qualifiedByName = "mapUserId")
-    GroupUserEntity toEntity(GroupUserDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    @Mapping(target = "roleId", source = "role", qualifiedByName = "mapRole")
-    @Mapping(target = "privilegeId", source = "privilege", qualifiedByName = "mapPrivilege")
-    RolePrivilegeDto toDto(RolePrivilegeEntity entity);
-    @AnyDtoToAnyEntityMapping
-    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRoleId")
-    @Mapping(target = "privilege", source = "privilegeId", qualifiedByName = "mapPrivilegeId")
-    RolePrivilegeEntity toEntity(RolePrivilegeDto dto);
-
-    @AnyEntityToAnyDtoMapping
-    @Mapping(target = "userId", source = "user", qualifiedByName = "mapUser")
-    @Mapping(target = "roleId", source = "role", qualifiedByName = "mapRole")
-    UserRoleDto toDto(UserRoleEntity entity);
-    @AnyDtoToAnyEntityMapping
-    @Mapping(target = "user", source = "userId", qualifiedByName = "mapUserId")
-    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRoleId")
-    UserRoleEntity toEntity(UserRoleDto dto);
-
     @Named("mapGroup")
     default Short mapGroup(GroupDto group) {
         return group != null ? group.getId() : null;
@@ -171,21 +163,6 @@ public interface GlobalMapper {
         var role = new RoleEntity();
         role.setId(roleId);
         return role;
-    }
-
-    @Named("mapPrivilege")
-    default Short mapPrivilege(PrivilegeDto privilege) {
-        return privilege != null ? privilege.getId() : null;
-    }
-
-    @Named("mapPrivilegeId")
-    default PrivilegeEntity mapPrivilegeId(Short privilegeId) {
-        if( privilegeId == null) {
-            return null;
-        }
-        var privilege = new PrivilegeEntity();
-        privilege.setId(privilegeId);
-        return privilege;
     }
 
     @Named("mapUser")

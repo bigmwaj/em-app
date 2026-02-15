@@ -5,12 +5,14 @@ import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @SuperBuilder(setterPrefix = "with")
 @Data
+@NoArgsConstructor
 public abstract class AbstractSearchCriteria {
 
     public static final Short DEFAULT_QUERY_LIMIT = 1_000;

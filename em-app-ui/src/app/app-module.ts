@@ -39,8 +39,8 @@ import { AccountDeleteDialogComponent } from './features/platform/component/acco
 import { EditAccountDetailsComponent } from './features/platform/component/account/edit/account-details.component';
 import { EditPrincipalAccountContactComponent } from './features/platform/component/account/edit/principal-account-contact.component';
 import { EditAccountAdminUserFormComponent } from './features/platform/component/account/edit/account-admin-user.component';
-import { ContactIndexComponent } from './features/platform/component/contact/contact-index.component';
-import { UserIndexComponent } from './features/platform/component/user/user-index.component';
+import { ContactIndexComponent } from './features/platform/component/contact/index.component';
+import { UserIndexComponent } from './features/platform/component/user/index.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';

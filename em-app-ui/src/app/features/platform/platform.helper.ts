@@ -44,14 +44,19 @@ export class PlatformHelper extends SharedHelper {
         // Clear IDs from nested objects
         if (primaryAccountContact) {
             delete primaryAccountContact.id;
-            if (primaryAccountContact.mainEmail) {
-                delete primaryAccountContact.mainEmail.id;
+            const defaultEmail = PlatformHelper.getDefaultContactEmail(primaryAccountContact);
+            if (defaultEmail) {
+                delete defaultEmail.id;
             }
-            if (primaryAccountContact.mainPhone) {
-                delete primaryAccountContact.mainPhone.id;
+
+            const defaultPhone = PlatformHelper.getDefaultContactPhone(primaryAccountContact);
+            if (defaultPhone) {
+                delete defaultPhone.id;
             }
-            if (primaryAccountContact.mainAddress) {
-                delete primaryAccountContact.mainAddress.id;
+            
+            const defaultAddress = PlatformHelper.getDefaultContactAddress(primaryAccountContact);
+            if (defaultAddress) {
+                delete defaultAddress.id;
             }
         }
         return duplicatedAccount;
