@@ -136,7 +136,7 @@ public class AccountController extends AbstractBaseAPI {
     @GetMapping("/{accountId}")
     public ResponseEntity<ResponseMessage<AccountDto>> findById(
             @Parameter(description = "The account's ID", required = true)
-            @Positive @PathVariable Long accountId) {
+            @Positive @PathVariable Short accountId) {
         return ResponseEntity.ok(new ResponseMessage<>(service.findById(accountId)));
     }
 
@@ -157,7 +157,7 @@ public class AccountController extends AbstractBaseAPI {
     @DeleteMapping("/{accountId}")
     public ResponseEntity<Message> delete(
             @Parameter(description = "The account's ID", required = true)
-            @Positive @PathVariable Long accountId) {
+            @Positive @PathVariable Short accountId) {
         service.deleteById(accountId);
         return ResponseEntity.ok(_success(MessageConstants.MSG0013));
     }

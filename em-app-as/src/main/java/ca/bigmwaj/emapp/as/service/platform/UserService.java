@@ -83,13 +83,13 @@ public class UserService extends AbstractService implements AuthenticationManage
 
     }
 
-    public UserDto findById(Long userId) {
+    public UserDto findById(Short userId) {
         return dao.findById(userId)
                 .map(this::toDtoWithChildren)
                 .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
     }
 
-    public void deleteById(Long userId) {
+    public void deleteById(Short userId) {
         dao.deleteById(userId);
     }
 

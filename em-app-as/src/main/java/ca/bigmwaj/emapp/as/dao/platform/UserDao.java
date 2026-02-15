@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Repository
-public interface UserDao extends AbstractDao<UserEntity, Long> {
+public interface UserDao extends AbstractDao<UserEntity, Short> {
 
     default Class<UserEntity> getEntityClass() {
         return UserEntity.class;

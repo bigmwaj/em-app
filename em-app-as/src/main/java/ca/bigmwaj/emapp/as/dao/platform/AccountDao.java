@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 
 @Repository
-public interface AccountDao extends AbstractDao<AccountEntity, Long> {
+public interface AccountDao extends AbstractDao<AccountEntity, Short> {
 
     default Class<AccountEntity> getEntityClass() {
         return AccountEntity.class;

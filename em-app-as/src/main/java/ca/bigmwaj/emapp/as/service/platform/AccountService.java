@@ -58,13 +58,13 @@ public class AccountService extends AbstractService {
         return new SearchResultDto<>(searchStats, r);
     }
 
-    public AccountDto findById(Long accountId) {
+    public AccountDto findById(Short accountId) {
         return dao.findById(accountId)
                 .map(this::toDtoWithChildren)
                 .orElseThrow(() -> new NoSuchElementException("Account not found with id: " + accountId));
     }
 
-    public void deleteById(Long accountId) {
+    public void deleteById(Short accountId) {
         dao.deleteById(accountId);
     }
 

@@ -78,12 +78,12 @@ public interface GlobalMapper {
     }
 
     @Named("mapAccount")
-    default Long mapAccount(AccountDto account) {
+    default Short mapAccount(AccountDto account) {
         return account != null ? account.getId() : null;
     }
 
     @Named("mapAccountId")
-    default AccountEntity mapAccountId(Long accountId) {
+    default AccountEntity mapAccountId(Short accountId) {
         if( accountId == null) {
             return null;
         }
