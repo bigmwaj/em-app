@@ -137,3 +137,41 @@ export function mapAccountSearchCriteriaToHttpParams(searchCriteria: AccountSear
   }
   return params;
 }
+
+export interface GroupDto extends BaseHistDto {
+  id?: number;
+  name: string;
+  description?: string;
+}
+
+export interface PrivilegeDto extends BaseHistDto {
+  id?: number;
+  name: string;
+  description?: string;
+}
+
+export interface RoleDto extends BaseHistDto {
+  id?: number;
+  name: string;
+  description?: string;
+}
+
+export interface GroupRoleDto extends BaseHistDto {
+  groupId?: number;
+  roleId?: number;
+}
+
+export interface GroupUserDto extends BaseHistDto {
+  groupId?: number;
+  userId?: number;
+}
+
+export interface RolePrivilegeDto extends BaseHistDto {
+  roleId?: number;
+  privilegeId?: number;
+}
+
+export interface UserRoleDto extends BaseHistDto {
+  userId?: number;
+  roleId?: number;
+}
