@@ -10,6 +10,7 @@ import { UserEditComponent } from './features/platform/component/user/edit.compo
 import { AccountIndexComponent } from './features/platform/component/account/index.component';
 import { AccountEditComponent } from './features/platform/component/account/edit.component';
 import { ContactIndexComponent } from './features/platform/component/contact/index.component';
+import { ContactEditComponent } from './features/platform/component/contact/edit.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
 
@@ -30,7 +31,8 @@ const routes: Routes = [
       { path: 'users/edit/:mode', component: UserEditComponent },
       { path: 'accounts', component: AccountIndexComponent },
       { path: 'accounts/edit/:mode', component: AccountEditComponent },
-      { path: 'contacts', component: ContactIndexComponent }
+      { path: 'contacts', component: ContactIndexComponent },
+      { path: 'contacts/edit/:mode', component: ContactEditComponent }
     ]
   },
   

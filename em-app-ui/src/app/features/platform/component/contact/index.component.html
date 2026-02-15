@@ -5,7 +5,7 @@
       <mat-icon mat-card-avatar>person</mat-icon>
       <span>Contacts Management</span>
     </h1>
-    <button mat-raised-button color="primary">
+    <button mat-raised-button color="primary" (click)="createContact()">
       <mat-icon>add</mat-icon>
       Add Contact
     </button>
@@ -88,16 +88,19 @@
         </ng-container>
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>
-            <button mat-button color="primary">
-              <mat-icon>add</mat-icon>
-              Create
-            </button>
-          </th>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="viewContact(element)">
+              <mat-icon>visibility</mat-icon>
+              View
+            </button>
             <button mat-button color="primary" (click)="editContact(element)">
               <mat-icon>edit</mat-icon>
               Edit
+            </button>
+            <button mat-button color="accent" (click)="duplicateContact(element)">
+              <mat-icon>content_copy</mat-icon>
+              Duplicate
             </button>
             <button mat-button color="warn" (click)="deleteContact(element)">
               <mat-icon>delete</mat-icon>
