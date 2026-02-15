@@ -1,0 +1,230 @@
+<div class="main-container user-edit-container">
+
+  <!-- Header -->
+  <div class="main-header">
+    <h1 class="title">
+      <mat-icon mat-card-avatar>person</mat-icon>
+      @if(isCreateMode){<span>Create User</span>}
+      @if(isEditMode){<span>Edit User</span>}
+      @if(isViewMode){<span>View User</span>}
+    </h1>
+
+    <div class="header-actions">
+      <button mat-raised-button (click)="onBack()" type="button">
+        <mat-icon>arrow_back</mat-icon>Back
+      </button>
+
+      @if(showCancelButton){
+      <button mat-raised-button (click)="onCancel()" type="button" class="cancel-button">
+        <mat-icon>cancel</mat-icon>Cancel
+      </button>
+      }
+
+      @if(showCreateButton){
+      <button mat-raised-button color="primary" (click)="onSave()" type="button" [disabled]="loading">
+        <mat-icon>add</mat-icon>Create
+      </button>
+      }
+
+      @if(showEditButton){
+      <button mat-raised-button color="primary" (click)="onSave()" type="button" [disabled]="loading">
+        <mat-icon>save</mat-icon>Update
+      </button>
+      }
+
+      @if(showDuplicateButton){
+      <button mat-raised-button (click)="onDuplicate()" type="button">
+        <mat-icon>content_copy</mat-icon>Duplicate
+      </button>
+      }
+
+      @if(showDeleteButton){
+      <button mat-raised-button color="warn" (click)="onDelete()" type="button">
+        <mat-icon>delete</mat-icon>Delete
+      </button>
+      }
+
+      @if(showChangeStatusButton){
+      <button mat-raised-button (click)="onChangeStatus()" type="button">
+        <mat-icon>swap_horiz</mat-icon>Change Status
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (error && !loading) {
+  <div class="error-message">
+    <mat-card>
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+  }
+
+  @if (loading) {
+  <div class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Saving user...</p>
+  </div>
+  } @else {
+
+  <!-- Section 1: User Details -->
+  <mat-card class="form-section">
+    <mat-card-header>
+      <mat-card-title>User Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="userForm" class="user-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" placeholder="Enter username">
+            @if(userForm.get('username')?.hasError('required')) {
+            <mat-error>Username is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Username Type</mat-label>
+            <mat-select formControlName="usernameType">
+              <mat-option [value]="UsernameTypeLvo.BASIC">BASIC</mat-option>
+              <mat-option [value]="UsernameTypeLvo.EMAIL">EMAIL</mat-option>
+              <mat-option [value]="UsernameTypeLvo.PHONE">PHONE</mat-option>
+            </mat-select>
+            @if(userForm.get('usernameType')?.hasError('required')) {
+            <mat-error>Username type is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        @if(isCreateMode) {
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" placeholder="Enter password">
+          </mat-form-field>
+        </div>
+        }
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option [value]="UserStatusLvo.ACTIVE">ACTIVE</mat-option>
+              <mat-option [value]="UserStatusLvo.BLOCKED">BLOCKED</mat-option>
+            </mat-select>
+            @if(userForm.get('status')?.hasError('required')) {
+            <mat-error>Status is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Holder Type</mat-label>
+            <mat-select formControlName="holderType">
+              <mat-option [value]="HolderTypeLvo.ACCOUNT">ACCOUNT</mat-option>
+              <mat-option [value]="HolderTypeLvo.CORPORATE">CORPORATE</mat-option>
+            </mat-select>
+            @if(userForm.get('holderType')?.hasError('required')) {
+            <mat-error>Holder type is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Provider</mat-label>
+            <input matInput formControlName="provider" placeholder="Enter provider">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Picture URL</mat-label>
+            <input matInput formControlName="picture" placeholder="Enter picture URL">
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Section 2: Contact Details -->
+  <mat-card class="form-section">
+    <mat-card-header>
+      <mat-card-title>Contact Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="contactForm" class="contact-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Enter first name">
+            @if(contactForm.get('firstName')?.hasError('required')) {
+            <mat-error>First name is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Enter last name">
+            @if(contactForm.get('lastName')?.hasError('required')) {
+            <mat-error>Last name is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>Birth Date</mat-label>
+            <input matInput formControlName="birthDate" type="date" placeholder="Enter birth date">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="mainEmail" placeholder="Enter email">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Email Type</mat-label>
+            <mat-select formControlName="mainEmailType">
+              <mat-option [value]="EmailTypeLvo.PERSONAL">PERSONAL</mat-option>
+              <mat-option [value]="EmailTypeLvo.WORK">WORK</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="mainPhone" placeholder="Enter phone">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Phone Type</mat-label>
+            <mat-select formControlName="mainPhoneType">
+              <mat-option [value]="PhoneTypeLvo.MOBILE">MOBILE</mat-option>
+              <mat-option [value]="PhoneTypeLvo.HOME">HOME</mat-option>
+              <mat-option [value]="PhoneTypeLvo.WORK">WORK</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="mainAddress" placeholder="Enter address">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Address Type</mat-label>
+            <mat-select formControlName="mainAddressType">
+              <mat-option [value]="AddressTypeLvo.HOME">HOME</mat-option>
+              <mat-option [value]="AddressTypeLvo.WORK">WORK</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  }
+</div>

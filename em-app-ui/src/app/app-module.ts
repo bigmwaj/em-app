@@ -41,6 +41,9 @@ import { EditPrincipalAccountContactComponent } from './features/platform/compon
 import { EditAccountAdminUserFormComponent } from './features/platform/component/account/edit/account-admin-user.component';
 import { ContactIndexComponent } from './features/platform/component/contact/index.component';
 import { UserIndexComponent } from './features/platform/component/user/index.component';
+import { UserEditComponent } from './features/platform/component/user/edit.component';
+import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
+import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
@@ -54,6 +57,9 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     OauthCallbackComponent,
     DashboardComponent,
     UserIndexComponent,
+    UserEditComponent,
+    UserChangeStatusDialogComponent,
+    UserDeleteDialogComponent,
     AccountIndexComponent,
     AccountEditComponent,
     EditAccountDetailsComponent,
