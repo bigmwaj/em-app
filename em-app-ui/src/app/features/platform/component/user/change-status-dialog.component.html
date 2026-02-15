@@ -16,7 +16,7 @@
     <mat-spinner></mat-spinner>
     <p>Changing user status...</p>
   </div>
-  }@else {
+  } @else {
   <form [formGroup]="form" class="user-change-status-form">
 
     <mat-form-field appearance="outline" class="form-field full-width">
@@ -33,7 +33,7 @@
 
     <mat-form-field appearance="outline" class="form-field full-width">
       <mat-label>Change Date</mat-label>
-      <input matInput formControlName="statusDate" placeholder="Enter change date" />
+      <input matInput type="date" formControlName="statusDate" placeholder="Enter change date" />
       @if(form.get('statusDate')?.hasError('required')) {
       <mat-error>Change date is required</mat-error>
       }
