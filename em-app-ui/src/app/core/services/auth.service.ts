@@ -1,11 +1,22 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthUserInfo } from '../model/user.model';
 import { SessionStorageService } from './session-storage.service';
+
+interface LoginResponse {
+  token: string;
+  tokenType: string;
+  expiresIn: number;
+  user: {
+    username: string;
+    email: string;
+    name: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +46,27 @@ export class AuthService {
   }
 
   /**
+   * Logs in with username and password
+   * @param username the username (email)
+   * @param password the password
+   * @returns Observable of user info
+   */
+  loginWithCredentials(username: string, password: string): Observable<AuthUserInfo> {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
+      username,
+      password
+    }).pipe(
+      tap(response => {
+        this.setToken(response.token);
+      }),
+      switchMap(() => this.loadUserInfo()),
+      catchError(error => {
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
    * Initiates OAuth login by redirecting to backend OAuth endpoint
    * @param provider OAuth provider name (google, github, facebook, tiktok)
    */
@@ -57,15 +89,14 @@ export class AuthService {
   private loadUserInfo(): Observable<AuthUserInfo> {
     var token = this.getToken();
     if(!token){
-      throw Error("Le token n'existe pas!");
+      return throwError(() => new Error("Token does not exist"));
     }
 
     return this.http.get<AuthUserInfo>(`${environment.apiUrl}/auth/user`).pipe(
       tap(user => this.currentUserSubject.next(user)),
       catchError(error => {
-        console.error('Failed to load user info:', error);
         this.logout();
-        throw error; // Re-throw error for caller to handle
+        return throwError(() => error);
       })
     );
   }
