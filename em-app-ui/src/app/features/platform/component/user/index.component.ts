@@ -1,4 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../../service/user.service';
 import { UserDto } from '../../api.platform.model';
 import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
@@ -6,6 +8,8 @@ import { CommonDataSource } from '../../../shared/common.datasource';
 import { PlatformHelper } from '../../platform.helper';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
+import { UserDeleteDialogComponent } from './delete-dialog.component';
+import { UserChangeStatusDialogComponent } from './change-status-dialog.component';
 
 @Component({
   selector: 'app-user-index',
@@ -23,7 +27,11 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   PlatformHelper = PlatformHelper;
   private destroy$ = new Subject<void>();
 
-  constructor(private userService: UserService) {
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {
     super();
     this.searchCriteria.pageSize = 5;
   }
@@ -68,19 +76,74 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   }
 
   /**
-   * Placeholder for edit functionality
+   * Navigate to create user page
    */
-  editUser(user: UserDto): void {
-    console.log('Edit user:', user);
-    // TODO: Implement edit dialog
+  createUser(): void {
+    this.router.navigate(['/users/edit', 'create'], {
+      state: { mode: 'create' }
+    });
   }
 
   /**
-   * Placeholder for delete functionality
+   * Navigate to view user page
+   */
+  viewUser(user: UserDto): void {
+    this.router.navigate(['/users/edit', 'view'], {
+      state: { mode: 'view', user: user }
+    });
+  }
+
+  /**
+   * Navigate to edit user page
+   */
+  editUser(user: UserDto): void {
+    this.router.navigate(['/users/edit', 'edit'], {
+      state: { mode: 'edit', user: user }
+    });
+  }
+
+  /**
+   * Duplicate user and navigate to create mode
+   */
+  duplicateUser(user: UserDto): void {
+    const duplicatedUser = PlatformHelper.duplicateUser(user);
+    this.router.navigate(['/users/edit', 'create'], {
+      state: { mode: 'create', user: duplicatedUser }
+    });
+  }
+
+  /**
+   * Open delete confirmation dialog
    */
   deleteUser(user: UserDto): void {
-    console.log('Delete user:', user);
-    // TODO: Implement delete confirmation
+    const dialogRef = this.dialog.open(UserDeleteDialogComponent, {
+      width: '400px',
+      data: { user: user }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Reload the users list after successful deletion
+        this.loadUsers();
+      }
+    });
+  }
+
+  /**
+   * Open change status dialog
+   */
+  changeUserStatus(user: UserDto): void {
+    const dialogRef = this.dialog.open(UserChangeStatusDialogComponent, {
+      width: '400px',
+      data: { user: user }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Reload the users list after successful status change
+        this.loadUsers();
+      }
+    });
   }
 
   onSearch(): void {

@@ -1,6 +1,6 @@
 import { FormGroup } from "@angular/forms";
 import { SharedHelper } from "../shared/shared.helper";
-import { AccountContactDto, AccountContactRoleLvo, AccountDto, AccountStatusLvo, ContactAddressDto, ContactDto, ContactEmailDto, ContactPhoneDto, HolderTypeLvo } from "./api.platform.model";
+import { AccountContactDto, AccountContactRoleLvo, AccountDto, AccountStatusLvo, ContactAddressDto, ContactDto, ContactEmailDto, ContactPhoneDto, HolderTypeLvo, UserDto } from "./api.platform.model";
 
 export class PlatformHelper extends SharedHelper {
 
@@ -60,6 +60,36 @@ export class PlatformHelper extends SharedHelper {
             }
         }
         return duplicatedAccount;
+    }
+
+    static duplicateUser(user: UserDto): UserDto {
+        // Create a deep copy of the user
+        const duplicatedUser: UserDto = JSON.parse(JSON.stringify(user));
+
+        // Clear identifier fields
+        delete duplicatedUser.id;
+
+        // Clear IDs from nested contact object
+        if (duplicatedUser.contact) {
+            delete duplicatedUser.contact.id;
+
+            const defaultEmail = PlatformHelper.getDefaultContactEmail(duplicatedUser.contact);
+            if (defaultEmail) {
+                delete defaultEmail.id;
+            }
+
+            const defaultPhone = PlatformHelper.getDefaultContactPhone(duplicatedUser.contact);
+            if (defaultPhone) {
+                delete defaultPhone.id;
+            }
+            
+            const defaultAddress = PlatformHelper.getDefaultContactAddress(duplicatedUser.contact);
+            if (defaultAddress) {
+                delete defaultAddress.id;
+            }
+        }
+
+        return duplicatedUser;
     }
 
     static buildAccountDto(detailForm: FormGroup, primaryContactForm: FormGroup,  adminUserForm: FormGroup): AccountDto {
