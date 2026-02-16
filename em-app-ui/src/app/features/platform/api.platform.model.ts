@@ -114,6 +114,7 @@ export interface GroupDto extends BaseHistDto {
   id?: number;
   name: string;
   description?: string;
+  holderType: HolderTypeLvo;
 }
 
 export interface PrivilegeDto extends BaseHistDto {
@@ -126,6 +127,7 @@ export interface RoleDto extends BaseHistDto {
   id?: number;
   name: string;
   description?: string;
+  holderType: HolderTypeLvo;
 }
 
 export interface GroupRoleDto extends BaseHistDto {

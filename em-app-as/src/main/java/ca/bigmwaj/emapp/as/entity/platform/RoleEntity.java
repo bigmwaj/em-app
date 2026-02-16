@@ -1,6 +1,7 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,10 @@ public class RoleEntity extends AbstractBaseEntity {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
+    private HolderTypeLvo holderType;
 
     public Object getDefaultKey() {
         return id;
