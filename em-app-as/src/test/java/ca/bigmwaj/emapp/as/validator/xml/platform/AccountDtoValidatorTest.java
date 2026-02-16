@@ -34,6 +34,27 @@ class AccountDtoValidatorTest {
     }
 
     @Test
+    void testAccountDto_ChangeStatusWithFullValidData() {
+        AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
+        dto.setEditAction(EditActionLvo.CHANGE_STATUS);
+        dto.setId((short)1);
+        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
+        // Should have no violations for valid data
+        assertTrue(violations.isEmpty(), "Expected no violations for full valid account");
+    }
+
+    @Test
+    void testAccountDto_ChangeStatusWithMinimumValidData() {
+        AccountDto dto = new AccountDto();
+        dto.setEditAction(EditActionLvo.CHANGE_STATUS);
+        dto.setId((short)1);
+        dto.setStatus(AccountStatusLvo.ACTIVE);
+        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
+        // Should have no violations for valid data
+        assertTrue(violations.isEmpty(), "Expected no violations for minimum valid account");
+    }
+
+    @Test
     void testAccountDto_CreateWithMissingName() {
         AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
         dto.setName(null); // Missing required field
@@ -79,7 +100,7 @@ class AccountDtoValidatorTest {
     void testAccountDto_UpdateWithValidData() {
         AccountDto dto = AccountDtoBuilder.builder().withDefaults().build();
         dto.setEditAction(EditActionLvo.UPDATE);
-        dto.setId(1L);
+        dto.setId((short)1);
 
         Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
 

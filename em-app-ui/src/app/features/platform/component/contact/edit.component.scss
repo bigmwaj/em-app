@@ -20,6 +20,15 @@
       width: 2rem;
     }
   }
+
+  .header-actions {
+      display: flex;
+      gap: 12px;
+
+      .cancel-button {
+        margin-left: 8px;
+      }
+    }
 }
 
 .error-section {

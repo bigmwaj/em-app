@@ -21,7 +21,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   loading = true;
   error: string | null = null;
   searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['holderType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
+  displayedColumns: string[] = ['fullName', 'holderType', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
   private destroy$ = new Subject<void>();

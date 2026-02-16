@@ -1,19 +1,21 @@
 package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
-import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.Constants;
+import ca.bigmwaj.emapp.as.api.shared.Message;
+import ca.bigmwaj.emapp.as.api.shared.ResponseMessage;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.AccountService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
+import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +38,7 @@ public class AccountController extends AbstractBaseAPI {
 
     @Autowired
     private AccountService service;
+
     @Operation(
             summary = "Search Accounts by criteria",
             externalDocs = @ExternalDocumentation(
@@ -151,7 +154,17 @@ public class AccountController extends AbstractBaseAPI {
     public ResponseEntity<ResponseMessage<AccountDto>> update(
             @Parameter(description = "The account's payload", required = true)
             @RequestBody @Valid AccountDto dto) {
-        return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
+        switch (dto.getEditAction()) {
+            case UPDATE:
+                dto = service.update(dto);
+                break;
+            case CHANGE_STATUS:
+                dto = service.changeStatus(dto);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported edit action: " + dto.getEditAction());
+        }
+        return ResponseEntity.ok(new ResponseMessage<>(dto));
     }
 
     @DeleteMapping("/{accountId}")

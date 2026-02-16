@@ -83,9 +83,10 @@ export class AccountChangeStatusDialogComponent implements OnInit, OnDestroy {
     const formValue = this.form.value;
     const accountDto = {
       id: this.account.id,
-      key: this.account.key,
       status: formValue.status,
-      editAction: EditActionLvo.CHANGE_STATUS
+      editAction: EditActionLvo.CHANGE_STATUS,
+      statusDate: formValue.statusDate,
+      statusReason: formValue.statusReason
     } as AccountDto;
 
     if (formValue.statusDate) {

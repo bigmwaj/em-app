@@ -6,6 +6,7 @@ import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,8 @@ import java.util.Map;
  */
 @Builder(setterPrefix = "with")
 public class QueryConfig {
+
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(QueryConfig.class);
 
     private WhereClauseJoinOp whereClauseJoinOp;
 
@@ -211,6 +214,8 @@ public class QueryConfig {
         if (sortByClauses != null && !sortByClauses.isEmpty()) {
             query += " order by " + String.join(", ", sortByClauses);
         }
+
+        logger.debug("=================== >>>>>>>>>>>> query: {}", query);
 
         return query;
     }

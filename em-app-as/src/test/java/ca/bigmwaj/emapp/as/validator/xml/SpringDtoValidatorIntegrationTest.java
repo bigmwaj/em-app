@@ -86,7 +86,7 @@ class SpringDtoValidatorIntegrationTest {
     void testAccountDto_UpdateWithValidData() {
         AccountDto dto = new AccountDto();
         dto.setEditAction(EditActionLvo.UPDATE);
-        dto.setId(1L);
+        dto.setId((short)1);
         dto.setName("Updated Account");
         dto.setStatus(AccountStatusLvo.ACTIVE);
 

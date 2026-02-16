@@ -111,7 +111,7 @@ class UserDtoValidatorTest {
     void testUserDto_UpdateWithValidData() {
         UserDto dto = UserDtoBuilder.builder().withDefaults().build();
         dto.setEditAction(EditActionLvo.UPDATE);
-        dto.setId(1L);
+        dto.setId((short)1);
 
         Set<ConstraintViolation<UserDto>> violations = validator.validate(dto);
 

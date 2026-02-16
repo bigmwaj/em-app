@@ -4,8 +4,19 @@ import { AccountContactDto, AccountContactRoleLvo, AccountDto, AccountStatusLvo,
 
 export class PlatformHelper extends SharedHelper {
 
+    static getFullName(contact: ContactDto | null): string | null {
+        if (!contact) {
+            return null;
+        }
+        return `${contact.firstName || ''} ${contact.lastName || ''}`.trim() || null;
+    }
+
     static getPrimaryAccountContact(account: AccountDto): ContactDto | null {
         return account.accountContacts?.[0]?.contact || null;
+    }
+
+    static getPrimaryAccountContactFullName(account: AccountDto): string | null {
+        return PlatformHelper.getFullName(PlatformHelper.getPrimaryAccountContact(account));
     }
 
     static getPrimaryAccountContactEmail(account: AccountDto): ContactEmailDto | null {

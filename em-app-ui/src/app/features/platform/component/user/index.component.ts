@@ -22,7 +22,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   loading = true;
   error: string | null = null;
   searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['holderType', 'status', 'username', 'usernameType', 'firstName', 'lastName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
+  displayedColumns: string[] = ['holderType', 'status', 'username', 'usernameType', 'fullName', 'defaultEmail', 'defaultPhone', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
   private destroy$ = new Subject<void>();

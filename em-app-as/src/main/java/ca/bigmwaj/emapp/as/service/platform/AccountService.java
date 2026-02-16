@@ -103,6 +103,15 @@ public class AccountService extends AbstractService {
         return GlobalMapper.INSTANCE.toDto(dao.save(entity));
     }
 
+    public AccountDto changeStatus(AccountDto dto) {
+        AccountEntity entity = dao.findById(dto.getId()).orElseThrow(() -> new NoSuchElementException("Account not found with id: " + dto.getId()));
+        entity.setStatus(dto.getStatus());
+        entity.setStatusDate(dto.getStatusDate());
+        entity.setStatusReason(dto.getStatusReason());
+        beforeUpdateHistEntity(entity);
+        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+    }
+
     private AccountDto toDtoWithChildren(AccountEntity entity) {
         var dto = GlobalMapper.INSTANCE.toDto(entity);
 

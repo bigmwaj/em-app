@@ -1,38 +1,79 @@
 <div class="main-container contact-edit-container">
-  
+
   <div class="main-header">
     <h1 class="title">
       <mat-icon mat-card-avatar>person</mat-icon>
-      <span *ngIf="isCreateMode">Create Contact</span>
-      <span *ngIf="isEditMode">Edit Contact</span>
-      <span *ngIf="isViewMode">View Contact</span>
+      @if(isCreateMode){<span>Create Contact</span>}
+      @if(isEditMode){<span>Edit Contact</span>}
+      @if(isViewMode){<span>View Contact</span>}
     </h1>
+    <div class="header-actions">
+      <!-- Back button - always visible -->
+      <button mat-raised-button (click)="onBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+
+      <!-- Cancel button - visible in create or edit mode -->
+      <button mat-raised-button (click)="onCancel()" *ngIf="isCreateMode || isEditMode">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+
+      <!-- Create button - visible in create mode -->
+      <button mat-raised-button color="primary" (click)="onCreate()" *ngIf="isCreateMode"
+        [disabled]="loading || contactForm.invalid">
+        <mat-icon>save</mat-icon>
+        Create
+      </button>
+
+      <!-- Edit button - visible in edit mode -->
+      <button mat-raised-button color="primary" (click)="onEdit()" *ngIf="isEditMode"
+        [disabled]="loading || contactForm.invalid">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+
+      <!-- Duplicate button - visible in view mode -->
+      <button mat-raised-button color="accent" (click)="onDuplicate()" *ngIf="isViewMode" [disabled]="loading">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate
+      </button>
+
+      <!-- Delete button - visible in view mode -->
+      <button mat-raised-button color="warn" (click)="onDelete()" *ngIf="isViewMode" [disabled]="loading">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+    </div>
   </div>
 
+
+
   @if (error && !loading) {
-    <div class="error-section">
-      <mat-card>
-        <mat-icon color="warn">error</mat-icon>
-        <p>{{ error }}</p>
-      </mat-card>
-    </div>
+  <div class="error-section">
+    <mat-card>
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
   }
 
   @if (loading) {
-    <div class="loading-section">
-      <mat-spinner></mat-spinner>
-      <p>Processing...</p>
-    </div>
+  <div class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Processing...</p>
+  </div>
   }
 
   <mat-card class="form-card">
     <mat-card-content>
       <form [formGroup]="contactForm">
-        
+
         <!-- Contact Details Section -->
         <div class="form-section">
           <h2 class="section-title">Contact Details</h2>
-          
+
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>First Name</mat-label>
@@ -73,7 +114,7 @@
         <!-- Email Section -->
         <div class="form-section">
           <h2 class="section-title">Email</h2>
-          
+
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Email Address</mat-label>
@@ -94,7 +135,7 @@
         <!-- Phone Section -->
         <div class="form-section">
           <h2 class="section-title">Phone</h2>
-          
+
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Phone Number</mat-label>
@@ -116,7 +157,7 @@
         <!-- Address Section -->
         <div class="form-section">
           <h2 class="section-title">Address</h2>
-          
+
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field-full">
               <mat-label>Address</mat-label>
@@ -138,45 +179,5 @@
 
       </form>
     </mat-card-content>
-
-    <!-- Action Buttons -->
-    <mat-card-actions class="form-actions">
-      <!-- Back button - always visible -->
-      <button mat-raised-button (click)="onBack()">
-        <mat-icon>arrow_back</mat-icon>
-        Back
-      </button>
-
-      <!-- Cancel button - visible in create or edit mode -->
-      <button mat-raised-button (click)="onCancel()" *ngIf="isCreateMode || isEditMode">
-        <mat-icon>cancel</mat-icon>
-        Cancel
-      </button>
-
-      <!-- Create button - visible in create mode -->
-      <button mat-raised-button color="primary" (click)="onCreate()" *ngIf="isCreateMode" [disabled]="loading || contactForm.invalid">
-        <mat-icon>save</mat-icon>
-        Create
-      </button>
-
-      <!-- Edit button - visible in edit mode -->
-      <button mat-raised-button color="primary" (click)="onEdit()" *ngIf="isEditMode" [disabled]="loading || contactForm.invalid">
-        <mat-icon>save</mat-icon>
-        Save
-      </button>
-
-      <!-- Duplicate button - visible in view mode -->
-      <button mat-raised-button color="accent" (click)="onDuplicate()" *ngIf="isViewMode" [disabled]="loading">
-        <mat-icon>content_copy</mat-icon>
-        Duplicate
-      </button>
-
-      <!-- Delete button - visible in view mode -->
-      <button mat-raised-button color="warn" (click)="onDelete()" *ngIf="isViewMode" [disabled]="loading">
-        <mat-icon>delete</mat-icon>
-        Delete
-      </button>
-    </mat-card-actions>
   </mat-card>
-
 </div>

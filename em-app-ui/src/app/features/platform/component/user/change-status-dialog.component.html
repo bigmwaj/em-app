@@ -33,7 +33,9 @@
 
     <mat-form-field appearance="outline" class="form-field full-width">
       <mat-label>Change Date</mat-label>
-      <input matInput type="date" formControlName="statusDate" placeholder="Enter change date" />
+      <input matInput [matDatepicker]="picker" formControlName="statusDate" placeholder="Enter change date" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
       @if(form.get('statusDate')?.hasError('required')) {
       <mat-error>Change date is required</mat-error>
       }

@@ -26,9 +26,12 @@
       </div>
 
       <div class="form-row">
+
         <mat-form-field appearance="outline" class="form-field half-width">
           <mat-label>Birth Date</mat-label>
-          <input matInput type="date" formControlName="birthDate">
+          <input matInput [matDatepicker]="picker" formControlName="birthDate" placeholder="Enter birth date" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="form-field half-width">

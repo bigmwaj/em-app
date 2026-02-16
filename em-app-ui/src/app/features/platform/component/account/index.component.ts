@@ -11,6 +11,7 @@ import { PlatformHelper } from '../../platform.helper';
 import { PageData } from '../../../shared/shared.helper';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
+import { P } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-account-index',
@@ -22,7 +23,15 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   searchResult: SearchResult<AccountDto> = {} as SearchResult<AccountDto>;
   pageData: PageData = new PageData();
   searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
-  displayedColumns: string[] = ['name', 'status', 'email', 'phone', 'address', 'actions'];
+  displayedColumns: string[] = ['name', 'status', 'fullName', 'email', 'phone', 'address', 'actions'];  
+  private sortableColumnMap: Map<string, string> = new Map([
+    ['name', 'name'],
+    ['status', 'status'],
+    //['fullName', 'firstName'],
+    //['email', 'email'],
+    //['phone', 'phone'],
+    //['address', 'address']
+  ]);
   searchText = '';
   PlatformHelper = PlatformHelper;
   private destroy$ = new Subject<void>();
@@ -46,9 +55,28 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   ngOnDestroy(): void {
-    //this.destroy$.next();
-    //this.destroy$.complete();
-    this.destroy$.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  isSortable(fieldName: string): boolean {
+    return this.sortableColumnMap.has(fieldName);
+  }
+
+  private getSortField(fieldName: string): string {
+    if (!this.sortableColumnMap.has(fieldName)) {
+      throw new Error(`Field "${fieldName}" is not defined in sortableColumnMap.`);
+    }
+    return this.sortableColumnMap.get(fieldName) as string;
+  }
+  
+  getFieldSortIcon(fieldName: string): string {
+    return PlatformHelper.getFieldSortIcon(this.searchCriteria, this.getSortField(fieldName));
+  }
+  
+  sortBy(fieldName: string): void {
+    PlatformHelper.setSortBy(this.searchCriteria, this.getSortField(fieldName));
+    this.loadAccounts();
   }
 
   handlePageEvent(e: PageEvent) {

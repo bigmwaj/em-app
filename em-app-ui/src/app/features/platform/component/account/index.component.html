@@ -15,8 +15,8 @@
       <mat-card-content>
         <form class="search-form">
           <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search by Name</mat-label>
-            <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter account name">
+            <mat-label>Search</mat-label>
+            <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter filter">
             <mat-icon matPrefix>search</mat-icon>
           </mat-form-field>
           <button mat-raised-button color="primary" (click)="onSearch()" class="search-button search-button-submit"
@@ -59,43 +59,93 @@
       <table mat-table [dataSource]="data" class="mat-elevation-z8 accounts-table">
         <!-- Position Column -->
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>Name</th>
-          <td mat-cell *matCellDef="let element">{{element.name}}</td>
+          <th mat-header-cell *matHeaderCellDef>
+            <button mat-button (click)="sortBy('name')">
+              <mat-icon>{{getFieldSortIcon('name')}}</mat-icon>Name
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="viewAccount(element)">
+              {{element.name}}
+            </button>
+          </td>
         </ng-container>
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <th mat-header-cell *matHeaderCellDef>
+            @if(isSortable('status')) {
+            <button mat-button (click)="sortBy('status')">
+              <mat-icon>{{getFieldSortIcon('status')}}</mat-icon>Status
+            </button>
+            }@else {
+            Status
+            }
+          </th>
           <td mat-cell *matCellDef="let element">{{element.status}}</td>
         </ng-container>
+        <ng-container matColumnDef="fullName">
+          <th mat-header-cell *matHeaderCellDef>
+            @if(isSortable('fullName')) {
+            <button mat-button (click)="sortBy('fullName')">
+              <mat-icon>{{getFieldSortIcon('fullName')}}</mat-icon>Full Name
+            </button>
+            }@else {
+            Full Name
+            }
+          </th>
+          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactFullName(element)}}</td>
+        </ng-container>
         <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef>Primary Contact Email</th>
+          <th mat-header-cell *matHeaderCellDef>
+            @if(isSortable('email')) {
+            <button mat-button (click)="sortBy('email')">
+              <mat-icon>{{getFieldSortIcon('email')}}</mat-icon>Email
+            </button>
+            }@else {
+            Email
+            }
+          </th>
           <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactEmail(element)?.email}}</td>
         </ng-container>
         <ng-container matColumnDef="phone">
-          <th mat-header-cell *matHeaderCellDef>Primary Contact Phone</th>
+          <th mat-header-cell *matHeaderCellDef>
+            @if(isSortable('phone')) {
+            <button mat-button (click)="sortBy('phone')">
+              <mat-icon>{{getFieldSortIcon('phone')}}</mat-icon>Phone
+            </button>
+            }@else {
+            Phone
+            }
+          </th>
           <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactPhone(element)?.phone}}</td>
         </ng-container>
         <ng-container matColumnDef="address">
-          <th mat-header-cell *matHeaderCellDef>Primary Contact Address</th>
+          <th mat-header-cell *matHeaderCellDef>
+            @if(isSortable('address')) {
+            <button mat-button (click)="sortBy('address')">
+              <mat-icon>{{getFieldSortIcon('address')}}</mat-icon>Address
+            </button>
+            }@else {
+            Address
+            }
+          </th>
           <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactAddress(element)?.address}}
           </td>
         </ng-container>
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>
-            <button mat-button color="primary" (click)="createAccount()">
-              <mat-icon>add</mat-icon>Create
-            </button>
+            Actions
           </th>
           <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary" (click)="viewAccount(element)">
-              <mat-icon>visibility</mat-icon>View
-            </button>
             <button mat-button color="primary" (click)="editAccount(element)">
-              <mat-icon>edit</mat-icon>Edit
+              <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="primary" class="more-actions" [matMenuTriggerFor]="menu">
+            <button mat-button color="primary" [matMenuTriggerFor]="menu">
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
+              <button mat-menu-item color="primary" (click)="viewAccount(element)">
+                <mat-icon>visibility</mat-icon>View Details
+              </button>
               <button mat-menu-item (click)="duplicateAccount(element)">
                 <mat-icon>content_copy</mat-icon>Duplicate
               </button>
@@ -108,18 +158,34 @@
             </mat-menu>
           </td>
         </ng-container>
+
+        <!-- Begin -->
+        <ng-container matColumnDef="first-cols">
+          <th mat-header-cell *matHeaderCellDef colspan="2"></th>
+        </ng-container>
+
+        <!-- Primary Contact Columns -->
+        <ng-container matColumnDef="primary-contact">
+          <th mat-header-cell *matHeaderCellDef style="border-bottom-width: 3px;" colspan="4">Primary Contact</th>
+        </ng-container>
+
+        <!-- Actions columns -->
+        <ng-container matColumnDef="actions-col">
+          <th mat-header-cell *matHeaderCellDef></th>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['first-cols', 'primary-contact', 'actions-col']"></tr>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </mat-card-content>
     <mat-card-footer>
-      <mat-paginator style="background-color: transparent;" 
-        [pageSizeOptions]="[5, 10, 20]"        
-        (page)="handlePageEvent($event)"
-        [length]="searchResult.searchInfos.total"
-        [pageIndex]="searchCriteria.pageIndex"
-        [pageSize]="searchCriteria.pageSize"
-        showFirstLastButtons aria-label="Select page of periodic elements">
+      <mat-paginator style="background-color: transparent;" [pageSizeOptions]="[5, 10, 20]"
+        (page)="handlePageEvent($event)" [length]="searchResult.searchInfos.total"
+        [pageIndex]="searchCriteria.pageIndex" [pageSize]="searchCriteria.pageSize" showFirstLastButtons
+        aria-label="Select page of periodic elements">
       </mat-paginator>
     </mat-card-footer>
   </mat-card>

@@ -3,6 +3,7 @@ import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 // Angular Material Modules
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -46,6 +48,7 @@ import { UserIndexComponent } from './features/platform/component/user/index.com
 import { UserEditComponent } from './features/platform/component/user/edit.component';
 import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
 import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
+
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
@@ -97,10 +100,12 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
+    MatDatepickerModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     provideBrowserGlobalErrorListeners(),
+    provideNativeDateAdapter(),
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
