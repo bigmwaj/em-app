@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormRole, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { RoleService } from '../../service/role.service';
@@ -16,7 +16,7 @@ import { AbstractEditComponent } from '../../../shared/component/abstract-edit.c
 })
 export class RoleEditComponent extends AbstractEditComponent implements OnInit {
 
-  roleForm!: FormRole;
+  roleForm!: FormGroup;
   role?: RoleDto;
   loading = false;
   error: string | null = null;
@@ -45,7 +45,7 @@ export class RoleEditComponent extends AbstractEditComponent implements OnInit {
   }
 
   private initializeForm(): void {
-    this.roleForm = this.fb.role({
+    this.roleForm = this.fb.group({
       id: [null],
       name: ['', Validators.required],
       description: [''],

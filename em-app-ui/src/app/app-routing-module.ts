@@ -11,6 +11,10 @@ import { AccountIndexComponent } from './features/platform/component/account/ind
 import { AccountEditComponent } from './features/platform/component/account/edit.component';
 import { ContactIndexComponent } from './features/platform/component/contact/index.component';
 import { ContactEditComponent } from './features/platform/component/contact/edit.component';
+import { GroupIndexComponent } from './features/platform/component/group/index.component';
+import { GroupEditComponent } from './features/platform/component/group/edit.component';
+import { RoleIndexComponent } from './features/platform/component/role/index.component';
+import { RoleEditComponent } from './features/platform/component/role/edit.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
 
@@ -32,7 +36,11 @@ const routes: Routes = [
       { path: 'accounts', component: AccountIndexComponent },
       { path: 'accounts/edit/:mode', component: AccountEditComponent },
       { path: 'contacts', component: ContactIndexComponent },
-      { path: 'contacts/edit/:mode', component: ContactEditComponent }
+      { path: 'contacts/edit/:mode', component: ContactEditComponent },
+      { path: 'groups', component: GroupIndexComponent },
+      { path: 'groups/edit/:mode', component: GroupEditComponent },
+      { path: 'roles', component: RoleIndexComponent },
+      { path: 'roles/edit/:mode', component: RoleEditComponent }
     ]
   },
   
