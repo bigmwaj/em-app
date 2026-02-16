@@ -20,7 +20,7 @@ import { COUNTRIES } from '../../constants/country.constants';
   selector: 'app-contact-edit',
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class ContactEditComponent implements OnInit, OnDestroy {
   mode = SharedHelper.AccountEditMode.VIEW;
@@ -37,7 +37,7 @@ export class ContactEditComponent implements OnInit, OnDestroy {
   EmailTypeLvo = EmailTypeLvo;
   PhoneTypeLvo = PhoneTypeLvo;
   AddressTypeLvo = AddressTypeLvo;
-  
+
   // Constants
   readonly countries = COUNTRIES;
 
@@ -48,8 +48,8 @@ export class ContactEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private contactService: ContactService,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -75,7 +75,7 @@ export class ContactEditComponent implements OnInit, OnDestroy {
       mainAddressType: [AddressTypeLvo.WORK],
       country: ['', Validators.required],
       region: [''],
-      city: ['']
+      city: [''],
     });
   }
 
@@ -85,7 +85,7 @@ export class ContactEditComponent implements OnInit, OnDestroy {
     const state = navigation?.extras?.state || history.state;
 
     // Get mode from route params or state
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const modeParam = params['mode'] || state.mode;
 
       if (modeParam === 'create') {
@@ -139,7 +139,7 @@ export class ContactEditComponent implements OnInit, OnDestroy {
       mainAddressType: defaultAddress?.type || AddressTypeLvo.WORK,
       country: defaultAddress?.country || '',
       region: defaultAddress?.region || '',
-      city: defaultAddress?.city || ''
+      city: defaultAddress?.city || '',
     });
   }
 
@@ -150,7 +150,7 @@ export class ContactEditComponent implements OnInit, OnDestroy {
       firstName: formValue.firstName,
       lastName: formValue.lastName,
       birthDate: formValue.birthDate,
-      holderType: formValue.holderType
+      holderType: formValue.holderType,
     };
 
     // Add ID if editing
@@ -160,13 +160,15 @@ export class ContactEditComponent implements OnInit, OnDestroy {
 
     // Build emails array
     if (formValue.mainEmail) {
-      contactDto.emails = [{
-        email: formValue.mainEmail,
-        type: formValue.mainEmailType,
-        holderType: formValue.holderType,
-        defaultContactPoint: true
-      }];
-      
+      contactDto.emails = [
+        {
+          email: formValue.mainEmail,
+          type: formValue.mainEmailType,
+          holderType: formValue.holderType,
+          defaultContactPoint: true,
+        },
+      ];
+
       // Preserve ID if editing
       if (this.mode === SharedHelper.AccountEditMode.EDIT) {
         const existingEmail = PlatformHelper.getDefaultContactEmail(this.contact!);
@@ -179,13 +181,15 @@ export class ContactEditComponent implements OnInit, OnDestroy {
 
     // Build phones array
     if (formValue.mainPhone) {
-      contactDto.phones = [{
-        phone: formValue.mainPhone,
-        type: formValue.mainPhoneType,
-        holderType: formValue.holderType,
-        defaultContactPoint: true
-      }];
-      
+      contactDto.phones = [
+        {
+          phone: formValue.mainPhone,
+          type: formValue.mainPhoneType,
+          holderType: formValue.holderType,
+          defaultContactPoint: true,
+        },
+      ];
+
       // Preserve ID if editing
       if (this.mode === SharedHelper.AccountEditMode.EDIT) {
         const existingPhone = PlatformHelper.getDefaultContactPhone(this.contact!);
@@ -198,16 +202,18 @@ export class ContactEditComponent implements OnInit, OnDestroy {
 
     // Build addresses array
     if (formValue.mainAddress) {
-      contactDto.addresses = [{
-        address: formValue.mainAddress,
-        type: formValue.mainAddressType,
-        holderType: formValue.holderType,
-        defaultContactPoint: true,
-        country: formValue.country,
-        region: formValue.region,
-        city: formValue.city
-      }];
-      
+      contactDto.addresses = [
+        {
+          address: formValue.mainAddress,
+          type: formValue.mainAddressType,
+          holderType: formValue.holderType,
+          defaultContactPoint: true,
+          country: formValue.country,
+          region: formValue.region,
+          city: formValue.city,
+        },
+      ];
+
       // Preserve ID if editing
       if (this.mode === SharedHelper.AccountEditMode.EDIT) {
         const existingAddress = PlatformHelper.getDefaultContactAddress(this.contact!);
@@ -242,17 +248,20 @@ export class ContactEditComponent implements OnInit, OnDestroy {
 
     const contactDto = this.buildContactDto();
 
-    this.contactService.createContact(contactDto).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (createdContact) => {
-        this.loading = false;
-        this.router.navigate(['/contacts']);
-      },
-      error: (err) => {
-        console.error('Failed to create contact:', err);
-        this.error = 'Failed to create contact. Please try again.';
-        this.loading = false;
-      }
-    });
+    this.contactService
+      .createContact(contactDto)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (createdContact) => {
+          this.loading = false;
+          this.router.navigate(['/contacts']);
+        },
+        error: (err) => {
+          console.error('Failed to create contact:', err);
+          this.error = 'Failed to create contact. Please try again.';
+          this.loading = false;
+        },
+      });
   }
 
   onEdit(): void {
@@ -266,17 +275,20 @@ export class ContactEditComponent implements OnInit, OnDestroy {
 
     const contactDto = this.buildContactDto();
 
-    this.contactService.updateContact(contactDto).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (updatedContact) => {
-        this.loading = false;
-        this.router.navigate(['/contacts']);
-      },
-      error: (err) => {
-        console.error('Failed to update contact:', err);
-        this.error = 'Failed to update contact. Please try again.';
-        this.loading = false;
-      }
-    });
+    this.contactService
+      .updateContact(contactDto)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (updatedContact) => {
+          this.loading = false;
+          this.router.navigate(['/contacts']);
+        },
+        error: (err) => {
+          console.error('Failed to update contact:', err);
+          this.error = 'Failed to update contact. Please try again.';
+          this.loading = false;
+        },
+      });
   }
 
   // Action handlers
@@ -284,7 +296,7 @@ export class ContactEditComponent implements OnInit, OnDestroy {
     if (this.contact) {
       const duplicatedContact = PlatformHelper.duplicateContact(this.contact);
       this.router.navigate(['/contacts/edit', 'create'], {
-        state: { mode: 'create', contact: duplicatedContact }
+        state: { mode: 'create', contact: duplicatedContact },
       });
     }
   }
@@ -293,10 +305,10 @@ export class ContactEditComponent implements OnInit, OnDestroy {
     if (this.contact) {
       const dialogRef = this.dialog.open(ContactDeleteDialogComponent, {
         width: '400px',
-        data: { contact: this.contact }
+        data: { contact: this.contact },
       });
 
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           // Navigate back to index after successful deletion
           this.router.navigate(['/contacts']);

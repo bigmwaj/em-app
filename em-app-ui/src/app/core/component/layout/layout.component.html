@@ -11,16 +11,18 @@
         <span matListItemTitle>Dashboard</span>
       </a>
 
-      <mat-expansion-panel class="nav-expansion-panel" 
-                           [expanded]="platformMenuExpanded"
-                           (expandedChange)="onPlatformMenuToggle($event)">
+      <mat-expansion-panel
+        class="nav-expansion-panel"
+        [expanded]="platformMenuExpanded"
+        (expandedChange)="onPlatformMenuToggle($event)"
+      >
         <mat-expansion-panel-header>
           <mat-panel-title>
             <mat-icon>folder</mat-icon>
             <span>Platform</span>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        
+
         <mat-nav-list>
           <a mat-list-item routerLink="/users" routerLinkActive="active">
             <mat-icon matListItemIcon>people</mat-icon>
@@ -73,11 +75,9 @@
           </div>
         </div>
         <div class="user-menu-divider">
-           <mat-divider></mat-divider>
+          <mat-divider></mat-divider>
         </div>
-        <div class="row">
-          Global Actions
-        </div>
+        <div class="row">Global Actions</div>
 
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">

@@ -9,7 +9,7 @@ import { SessionStorageService } from '../../services/session-storage.service';
   selector: 'app-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
-  standalone: false
+  standalone: false,
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   user: AuthUserInfo | null = null;
@@ -19,12 +19,12 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private sessionStorageService: SessionStorageService
+    private sessionStorageService: SessionStorageService,
   ) {}
 
   ngOnInit(): void {
     // Subscribe to current user
-    this.userSubscription = this.authService.currentUser.subscribe(user => {
+    this.userSubscription = this.authService.currentUser.subscribe((user) => {
       this.user = user;
     });
 
