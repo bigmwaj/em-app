@@ -1,8 +1,7 @@
-<h2 mat-dialog-title>Delete User</h2>
+<h2 mat-dialog-title>{{ title }}</h2>
 
 <mat-dialog-content>
-  <p>Are you sure you want to delete the following user?</p>
-  <p><strong>{{ data.user.username }}</strong></p>
+  <p>{{ warningMessage }}</p>
   <p class="warning-text">This action cannot be undone.</p>
   
   @if (error && !loading) {
@@ -15,7 +14,7 @@
   @if (loading) {
     <div class="loading-section">
       <mat-spinner diameter="40"></mat-spinner>
-      <p>Deleting user...</p>
+      <p>Deleting ...</p>
     </div>
   }
 </mat-dialog-content>

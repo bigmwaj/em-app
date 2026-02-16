@@ -3,6 +3,7 @@ package ca.bigmwaj.emapp.as.dto.platform;
 import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,7 +21,6 @@ public class ContactDto extends BaseHistDto {
 
     private String lastName;
 
-    //@ValidBirthDate
     private LocalDate birthDate;
 
     private HolderTypeLvo holderType;

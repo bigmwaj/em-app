@@ -120,6 +120,25 @@ body {
     flex-direction: column;
     gap: 16px;
 
+    mat-tab-group {
+      .mat-mdc-tab-labels {
+        .mdc-tab {
+          padding-left: 0;
+          font-size: 20px;
+          font-weight: 500;
+
+          mat-icon {
+            color: #1976d2;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+            margin-right: 5px;
+          }
+        }
+
+      }
+    }
+
     .form-row {
       display: flex;
       gap: 16px;

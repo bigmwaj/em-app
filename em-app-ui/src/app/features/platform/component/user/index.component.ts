@@ -3,13 +3,15 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../../service/user.service';
 import { UserDto } from '../../api.platform.model';
-import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
+import { DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { PlatformHelper } from '../../platform.helper';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
-import { UserDeleteDialogComponent } from './delete-dialog.component';
 import { UserChangeStatusDialogComponent } from './change-status-dialog.component';
+import { SharedHelper } from '../../../shared/shared.helper';
+import { DeleteDialogComponent } from '../../../shared/component/delete-dialog.component';
+import { UserDeleteDialogComponent } from './delete-dialog.component';
 
 @Component({
   selector: 'app-user-index',
@@ -21,8 +23,8 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   searchResult: SearchResult<UserDto> = {} as SearchResult<UserDto>;
   loading = true;
   error: string | null = null;
-  searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['holderType', 'status', 'username', 'usernameType', 'fullName', 'defaultEmail', 'defaultPhone', 'actions'];
+  searchCriteria: DefaultSearchCriteria = SharedHelper.createDefaultSearchCriteria();
+  displayedColumns: string[] = ['fullName', 'status', 'username', 'defaultEmail', 'defaultPhone', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
   private destroy$ = new Subject<void>();
@@ -116,9 +118,19 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
    * Open delete confirmation dialog
    */
   deleteUser(user: UserDto): void {
+    if( user.id === undefined) {
+      this.error = 'User ID is missing. Cannot delete user.';
+      return;
+    }
+
     const dialogRef = this.dialog.open(UserDeleteDialogComponent, {
       width: '400px',
-      data: { user: user }
+      data: {
+        title: 'Confirm User Deletion',
+        warningMessage: `Are you sure you want to delete user "${user.username}"? This action cannot be undone.`,
+        //deleteAction: this.userService.deleteUser(user.id),
+        user: user
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -147,7 +159,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
   }
 
   onSearch(): void {
-    this.searchCriteria = createDefaultSearchCriteria();
+    this.searchCriteria = SharedHelper.createDefaultSearchCriteria();
 
     if (this.searchText && this.searchText.trim()) {
       this.searchCriteria.whereClauses = [{
@@ -162,7 +174,7 @@ export class UserIndexComponent extends CommonDataSource<UserDto> implements OnI
 
   onClearSearch(): void {
     this.searchText = '';
-    this.searchCriteria = createDefaultSearchCriteria();
+    this.searchCriteria = SharedHelper.createDefaultSearchCriteria();
     this.loadUsers();
   }
 }

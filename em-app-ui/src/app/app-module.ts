@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -50,12 +51,14 @@ import { UserEditComponent } from './features/platform/component/user/edit.compo
 import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
 import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
 
-
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { ChangeStatusDialogComponent } from './features/shared/component/change-status-dialog.component';
 import { DeleteDialogComponent } from './features/shared/component/delete-dialog.component';
+import { PhoneListComponent } from './features/platform/component/contact/phone/list.component';
+import { EmailListComponent } from './features/platform/component/contact/email/list.component';
+import { AddressListComponent } from './features/platform/component/contact/address/list.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +82,10 @@ import { DeleteDialogComponent } from './features/shared/component/delete-dialog
     ContactEditComponent,
     ContactDeleteDialogComponent,
     ChangeStatusDialogComponent,
-    DeleteDialogComponent
+    DeleteDialogComponent,
+    PhoneListComponent,
+    EmailListComponent,
+    AddressListComponent
   ],
   imports: [
     BrowserModule,
@@ -107,6 +113,7 @@ import { DeleteDialogComponent } from './features/shared/component/delete-dialog
     MatPaginatorModule,
     MatDatepickerModule,
     MatExpansionModule,
+    MatTabsModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

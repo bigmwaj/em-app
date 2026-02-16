@@ -25,6 +25,9 @@ public class UserEntity extends AbstractBaseEntity {
     @Column(name = "USERNAME", nullable = false, unique = true)
     private String username;
 
+    @Column(name = "USERNAME_VERIFIED")
+    private Boolean usernameVerified;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "USERNAME_TYPE", nullable = false)
     private UsernameTypeLvo usernameType;

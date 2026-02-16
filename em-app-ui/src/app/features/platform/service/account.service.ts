@@ -2,8 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { AccountDto, AccountSearchCriteria, mapAccountSearchCriteriaToHttpParams } from '../api.platform.model';
+import { AccountDto, AccountSearchCriteria } from '../api.platform.model';
 import { SearchResult } from '../../shared/api.shared.model';
+import { PlatformHelper } from '../platform.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class AccountService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = mapAccountSearchCriteriaToHttpParams(searchCriteria);
+      params = PlatformHelper.mapAccountSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<AccountDto>>(this.apiUrl, { params });

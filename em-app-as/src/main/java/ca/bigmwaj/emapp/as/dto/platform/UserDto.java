@@ -24,6 +24,8 @@ public class UserDto extends BaseHistDto {
 
     private String username;
 
+    private Boolean usernameVerified;
+
     private UsernameTypeLvo usernameType;
 
     /**

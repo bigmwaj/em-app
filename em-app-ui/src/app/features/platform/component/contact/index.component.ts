@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ContactService } from '../../service/contact.service';
 import { ContactDto } from '../../api.platform.model';
-import { createDefaultSearchCriteria, DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
+import { DefaultSearchCriteria, SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { PlatformHelper } from '../../platform.helper';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
 import { ContactDeleteDialogComponent } from './delete-dialog.component';
+import { SharedHelper } from '../../../shared/shared.helper';
 
 @Component({
   selector: 'app-contact-index',
@@ -20,8 +21,8 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   searchResult: SearchResult<ContactDto> = {} as SearchResult<ContactDto>;
   loading = true;
   error: string | null = null;
-  searchCriteria: DefaultSearchCriteria = createDefaultSearchCriteria();
-  displayedColumns: string[] = ['fullName', 'holderType', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
+  searchCriteria: DefaultSearchCriteria = SharedHelper.createDefaultSearchCriteria();
+  displayedColumns: string[] = ['fullName', 'defaultEmail', 'defaultPhone', 'defaultAddress', 'actions'];
   searchText = '';
   PlatformHelper = PlatformHelper;
   private destroy$ = new Subject<void>();
@@ -127,7 +128,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
   }
 
   onSearch(): void {
-    this.searchCriteria = createDefaultSearchCriteria();
+    this.searchCriteria = SharedHelper.createDefaultSearchCriteria();
 
     if (this.searchText && this.searchText.trim()) {
       this.searchCriteria.whereClauses = [{
@@ -142,7 +143,7 @@ export class ContactIndexComponent extends CommonDataSource<ContactDto> implemen
 
   onClearSearch(): void {
     this.searchText = '';
-    this.searchCriteria = createDefaultSearchCriteria();
+    this.searchCriteria = SharedHelper.createDefaultSearchCriteria();
     this.loadContacts();
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
-import { AccountDto, AccountSearchCriteria, createAccountSearchCriteria } from '../../api.platform.model';
+import { AccountDto, AccountSearchCriteria } from '../../api.platform.model';
 import { SearchResult, FilterOperator } from '../../../shared/api.shared.model';
 import { CommonDataSource } from '../../../shared/common.datasource';
 import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
@@ -11,7 +11,6 @@ import { PlatformHelper } from '../../platform.helper';
 import { PageData } from '../../../shared/shared.helper';
 import { PageEvent } from '@angular/material/paginator';
 import { Subject, takeUntil } from 'rxjs';
-import { P } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-account-index',
@@ -22,7 +21,7 @@ import { P } from '@angular/cdk/keycodes';
 export class AccountIndexComponent extends CommonDataSource<AccountDto> implements OnInit, OnDestroy {
   searchResult: SearchResult<AccountDto> = {} as SearchResult<AccountDto>;
   pageData: PageData = new PageData();
-  searchCriteria: AccountSearchCriteria = createAccountSearchCriteria();
+  searchCriteria: AccountSearchCriteria = PlatformHelper.createAccountSearchCriteria();
   displayedColumns: string[] = ['name', 'status', 'fullName', 'email', 'phone', 'address', 'actions'];  
   private sortableColumnMap: Map<string, string> = new Map([
     ['name', 'name'],
@@ -140,7 +139,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
   }
 
   onSearch(): void {
-    this.searchCriteria = createAccountSearchCriteria();
+    this.searchCriteria = PlatformHelper.createAccountSearchCriteria();
     this.searchCriteria.includeMainContact = true;
 
     if (this.searchText && this.searchText.trim()) {
@@ -159,7 +158,7 @@ export class AccountIndexComponent extends CommonDataSource<AccountDto> implemen
 
   onClearSearch(): void {
     this.searchText = '';
-    this.searchCriteria = createAccountSearchCriteria();
+    this.searchCriteria = PlatformHelper.createAccountSearchCriteria();
     this.searchCriteria.includeMainContact = true;
     this.loadAccounts();
   }

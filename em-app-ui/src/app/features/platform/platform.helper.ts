@@ -1,8 +1,40 @@
 import { FormGroup } from "@angular/forms";
 import { SharedHelper } from "../shared/shared.helper";
-import { AccountContactDto, AccountContactRoleLvo, AccountDto, AccountStatusLvo, ContactAddressDto, ContactDto, ContactEmailDto, ContactPhoneDto, HolderTypeLvo, UserDto } from "./api.platform.model";
+import {
+    AccountContactDto,
+    AccountContactRoleLvo,
+    AccountDto,
+    AccountSearchCriteria,
+    AccountStatusLvo,
+    ContactAddressDto,
+    ContactDto,
+    ContactEmailDto,
+    ContactPhoneDto,
+    HolderTypeLvo,
+    UserDto
+} from "./api.platform.model";
+import { HttpParams } from "@angular/common/http";
 
 export class PlatformHelper extends SharedHelper {
+
+    static createAccountSearchCriteria(): AccountSearchCriteria {
+        return {
+            ...SharedHelper.createDefaultSearchCriteria(),
+            includeMainContact: true,
+            includeContactRoles: false
+        };
+    }
+
+    static mapAccountSearchCriteriaToHttpParams(searchCriteria: AccountSearchCriteria): HttpParams {
+        let params = SharedHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+        if (searchCriteria.includeMainContact !== undefined) {
+            params = params.set('includeMainContact', searchCriteria.includeMainContact.toString());
+        }
+        if (searchCriteria.includeContactRoles !== undefined) {
+            params = params.set('includeContactRoles', searchCriteria.includeContactRoles.toString());
+        }
+        return params;
+    }
 
     static getFullName(contact: ContactDto | null): string | null {
         if (!contact) {
@@ -64,7 +96,7 @@ export class PlatformHelper extends SharedHelper {
             if (defaultPhone) {
                 delete defaultPhone.id;
             }
-            
+
             const defaultAddress = PlatformHelper.getDefaultContactAddress(primaryAccountContact);
             if (defaultAddress) {
                 delete defaultAddress.id;
@@ -93,7 +125,7 @@ export class PlatformHelper extends SharedHelper {
             if (defaultPhone) {
                 delete defaultPhone.id;
             }
-            
+
             const defaultAddress = PlatformHelper.getDefaultContactAddress(duplicatedUser.contact);
             if (defaultAddress) {
                 delete defaultAddress.id;
@@ -120,7 +152,7 @@ export class PlatformHelper extends SharedHelper {
         if (defaultPhone) {
             delete defaultPhone.id;
         }
-        
+
         const defaultAddress = PlatformHelper.getDefaultContactAddress(duplicatedContact);
         if (defaultAddress) {
             delete defaultAddress.id;
@@ -129,8 +161,8 @@ export class PlatformHelper extends SharedHelper {
         return duplicatedContact;
     }
 
-    static buildAccountDto(detailForm: FormGroup, primaryContactForm: FormGroup,  adminUserForm: FormGroup): AccountDto {
-        
+    static buildAccountDto(detailForm: FormGroup, primaryContactForm: FormGroup, adminUserForm: FormGroup): AccountDto {
+
         const accountFormValue = detailForm.value;
         const contactFormValue = primaryContactForm.value;
 
@@ -151,32 +183,32 @@ export class PlatformHelper extends SharedHelper {
 
         // Defaut email
         const defaultEmail: ContactEmailDto = {
-            email: contactFormValue.mainEmail,
-            type: contactFormValue.mainEmailType,             
+            email: contactFormValue.defaultEmail,
+            type: contactFormValue.defaultEmailType,
             holderType: HolderTypeLvo.ACCOUNT,
             defaultContactPoint: true
         }
 
         // Defaut phone
         const defaultPhone: ContactPhoneDto = {
-            phone: contactFormValue.mainPhone,
-            type: contactFormValue.mainPhoneType,
+            phone: contactFormValue.defaultPhone,
+            type: contactFormValue.defaultPhoneType,
             holderType: HolderTypeLvo.ACCOUNT,
             defaultContactPoint: true
         }
 
         // Defaut address
         const defaultAddress: ContactAddressDto = {
-            address: contactFormValue.mainAddress,
-            type: contactFormValue.mainAddressType,
+            address: contactFormValue.defaultAddress,
+            type: contactFormValue.defaultAddressType,
             holderType: HolderTypeLvo.ACCOUNT,
-            defaultContactPoint: true            
+            defaultContactPoint: true
         }
 
         primaryContact.emails = [defaultEmail];
         primaryContact.phones = [defaultPhone];
-        primaryContact.addresses = [defaultAddress];  
-        
+        primaryContact.addresses = [defaultAddress];
+
         const accountContact: AccountContactDto = {
             contact: primaryContact,
             role: AccountContactRoleLvo.PRINCIPAL

@@ -14,21 +14,45 @@
         <mat-icon>arrow_back</mat-icon>Back
       </button>
 
-      @if(showCreateAccountButton){
-      <button mat-raised-button color="accent" (click)="onCreateAccount()" type="button">
-        <mat-icon>add</mat-icon>Create
+      @if(showCancelButton){
+      <button mat-raised-button (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      }
+      
+      @if(showSaveButton){
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading || isInvalidForm">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      }
+      
+      @if(showCreateButton){
+      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="loading">
+        <mat-icon>add</mat-icon>
+        Create
+      </button>
+      }
+
+      @if(showEditButton){
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="loading">
+        <mat-icon>edit</mat-icon>
+        Edit
       </button>
       }
 
       @if(showDuplicateButton){
-      <button mat-raised-button (click)="onDuplicate()" type="button">
-        <mat-icon>content_copy</mat-icon>Duplicate
+      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="loading">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate
       </button>
       }
 
-      @if(showEditAccountButton){
-      <button mat-raised-button color="accent" (click)="onEditAccount()" type="button">
-        <mat-icon>edit</mat-icon>Edit
+      @if(showDeleteButton){
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="loading">
+        <mat-icon>delete</mat-icon>
+        Delete
       </button>
       }
 
@@ -37,24 +61,7 @@
         <mat-icon>swap_horiz</mat-icon>Change Status
       </button>
       }
-
-      @if(showDeleteButton){
-      <button mat-raised-button color="warn" (click)="onDelete()" type="button">
-        <mat-icon>delete</mat-icon>Delete
-      </button>
-      }
-
-      @if(showCancelButton){
-      <button mat-raised-button (click)="onCancel()" type="button" class="cancel-button">
-        <mat-icon>cancel</mat-icon>Cancel
-      </button>
-      }
-
-      @if(showSaveButton){
-      <button mat-raised-button color="primary" (click)="onSave()" type="button" [disabled]="loading">
-        <mat-icon>save</mat-icon>Save
-      </button>
-      }
+      
     </div>
   </div>
 
@@ -73,16 +80,18 @@
     <p>Saving account...</p>
   </div>
   } @else {
+  <mat-tab-group>
+    <mat-tab label="Account Details">
+      <app-edit-account-details [form]="accountForm"></app-edit-account-details>
+      <app-edit-principal-account-contact [form]="primaryAccountContactForm"></app-edit-principal-account-contact>
+      @if(isCreateMode){
+      <app-edit-account-admin-user [form]="adminUserForm"></app-edit-account-admin-user>
+      }
+    </mat-tab>
+    <mat-tab label="Other Account Contacts">
+      To DO
+    </mat-tab>
+  </mat-tab-group>
 
-  <!-- Section 1: Account Details -->
-  <app-edit-account-details [form]="accountForm"></app-edit-account-details>
-
-  <!-- Section 2: Account Main Contact -->
-  <app-edit-principal-account-contact [form]="primaryAccountContactForm"></app-edit-principal-account-contact>
-
-  <!-- Section 3: Account Main User -->
-  @if(isCreateMode){
-  <app-edit-account-admin-user [form]="adminUserForm"></app-edit-account-admin-user>
-  }
   }
 </div>

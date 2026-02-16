@@ -13,34 +13,46 @@
       <button mat-raised-button (click)="onBack()" type="button">
         <mat-icon>arrow_back</mat-icon>Back
       </button>
-
+      
       @if(showCancelButton){
-      <button mat-raised-button (click)="onCancel()" type="button" class="cancel-button">
-        <mat-icon>cancel</mat-icon>Cancel
+      <button mat-raised-button color="primary" (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+        Cancel
       </button>
       }
 
+      @if(showSaveButton){
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading || isInvalidForm">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      }
+      
       @if(showCreateButton){
-      <button mat-raised-button color="primary" (click)="onSave()" type="button" [disabled]="loading">
-        <mat-icon>add</mat-icon>Create
+      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="loading">
+        <mat-icon>add</mat-icon>
+        Create
       </button>
       }
 
       @if(showEditButton){
-      <button mat-raised-button color="primary" (click)="onSave()" type="button" [disabled]="loading">
-        <mat-icon>save</mat-icon>Update
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="loading">
+        <mat-icon>edit</mat-icon>
+        Edit
       </button>
       }
 
       @if(showDuplicateButton){
-      <button mat-raised-button (click)="onDuplicate()" type="button">
-        <mat-icon>content_copy</mat-icon>Duplicate
+      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="loading">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate
       </button>
       }
 
       @if(showDeleteButton){
-      <button mat-raised-button color="warn" (click)="onDelete()" type="button">
-        <mat-icon>delete</mat-icon>Delete
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="loading">
+        <mat-icon>delete</mat-icon>
+        Delete
       </button>
       }
 
@@ -180,12 +192,12 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email</mat-label>
-            <input matInput formControlName="mainEmail" placeholder="Enter email">
+            <input matInput formControlName="defaultEmail" placeholder="Enter email">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email Type</mat-label>
-            <mat-select formControlName="mainEmailType">
+            <mat-select formControlName="defaultEmailType">
               <mat-option [value]="EmailTypeLvo.PERSONAL">PERSONAL</mat-option>
               <mat-option [value]="EmailTypeLvo.WORK">WORK</mat-option>
             </mat-select>
@@ -195,12 +207,12 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Phone</mat-label>
-            <input matInput formControlName="mainPhone" placeholder="Enter phone">
+            <input matInput formControlName="defaultPhone" placeholder="Enter phone">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Phone Type</mat-label>
-            <mat-select formControlName="mainPhoneType">
+            <mat-select formControlName="defaultPhoneType">
               <mat-option [value]="PhoneTypeLvo.MOBILE">MOBILE</mat-option>
               <mat-option [value]="PhoneTypeLvo.HOME">HOME</mat-option>
               <mat-option [value]="PhoneTypeLvo.WORK">WORK</mat-option>
@@ -211,12 +223,12 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Address</mat-label>
-            <input matInput formControlName="mainAddress" placeholder="Enter address">
+            <input matInput formControlName="defaultAddress" placeholder="Enter address">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Address Type</mat-label>
-            <mat-select formControlName="mainAddressType">
+            <mat-select formControlName="defaultAddressType">
               <mat-option [value]="AddressTypeLvo.HOME">HOME</mat-option>
               <mat-option [value]="AddressTypeLvo.WORK">WORK</mat-option>
             </mat-select>

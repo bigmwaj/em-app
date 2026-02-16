@@ -1,5 +1,4 @@
-import { HttpParams } from "@angular/common/http";
-import { BaseHistDto, AbstractSearchCriteria, createDefaultSearchCriteria, mapDefaultSearchCriteriaToHttpParams } from "../shared/api.shared.model";
+import { BaseHistDto, AbstractSearchCriteria, ChangeStatusDelegateDto } from "../shared/api.shared.model";
 
 export enum AccountContactRoleLvo {
   PRINCIPAL = 'PRINCIPAL',
@@ -43,13 +42,10 @@ export enum UsernameTypeLvo {
   EMAIL = 'EMAIL'
 }
 
-export interface AccountDto extends BaseHistDto {
+export interface AccountDto extends BaseHistDto, ChangeStatusDelegateDto<AccountStatusLvo> {
   id?: number;
   name: string;
   description?: string;
-  status: AccountStatusLvo;
-  statusDate?: Date;
-  statusReason?: string;
   accountContacts?: AccountContactDto[];
   adminUsername?: string;
   adminUsernameType?: UsernameTypeLvo;
@@ -97,7 +93,7 @@ export interface ContactPhoneDto extends AbstractContactPointDto {
   type: PhoneTypeLvo;
 }
 
-export interface UserDto extends BaseHistDto {
+export interface UserDto extends BaseHistDto, ChangeStatusDelegateDto<UserStatusLvo> {
   id?: number;
   picture: string;
   provider: string;
@@ -105,34 +101,13 @@ export interface UserDto extends BaseHistDto {
   usernameType: UsernameTypeLvo;
   password?: string;
   contact?: ContactDto;
-  status: UserStatusLvo;
-  statusDate?: Date;
-  statusReason?: string;
   holderType: HolderTypeLvo;
+  usernameVerified?: boolean;
 }
 
 export interface AccountSearchCriteria extends AbstractSearchCriteria {
   includeMainContact?: boolean;
   includeContactRoles?: boolean;
-}
-
-export function createAccountSearchCriteria(): AccountSearchCriteria {
-  return {
-    ...createDefaultSearchCriteria(),
-    includeMainContact: true,
-    includeContactRoles: false
-  };
-}
-
-export function mapAccountSearchCriteriaToHttpParams(searchCriteria: AccountSearchCriteria): HttpParams {
-  let params = mapDefaultSearchCriteriaToHttpParams(searchCriteria);
-  if (searchCriteria.includeMainContact !== undefined) {
-    params = params.set('includeMainContact', searchCriteria.includeMainContact.toString());
-  }
-  if (searchCriteria.includeContactRoles !== undefined) {
-    params = params.set('includeContactRoles', searchCriteria.includeContactRoles.toString());
-  }
-  return params;
 }
 
 export interface GroupDto extends BaseHistDto {

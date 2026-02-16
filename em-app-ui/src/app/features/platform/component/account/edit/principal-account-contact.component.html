@@ -1,7 +1,7 @@
 <mat-card class="form-section">
   <mat-card-header>
     <mat-card-title>
-      <mat-icon>person</mat-icon>Account Main Contact
+      <mat-icon>person</mat-icon>Account Primary Contact
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
@@ -44,62 +44,82 @@
         </mat-form-field>
       </div>
 
-      <!-- Default Email -->
-      <div class="subsection-title">Default Email</div>
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="form-field half-width">
-          <mat-label>Email Address</mat-label>
-          <input matInput type="email" formControlName="mainEmail" placeholder="Enter email address">
-          <mat-icon matPrefix>email</mat-icon>
-        </mat-form-field>
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>email</mat-icon>
+            Primary Contact Email
+          </ng-template>
+          <!-- Default Email -->
+          <div class="subsection-title">Default Email</div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Email Address</mat-label>
+              <input matInput type="email" formControlName="defaultEmail" placeholder="Enter email address">
+              <mat-icon matPrefix>email</mat-icon>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="form-field half-width">
-          <mat-label>Email Type</mat-label>
-          <mat-select formControlName="mainEmailType">
-            @for (type of emailTypes; track $index) {
-            <mat-option [value]="type">{{ type }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Email Type</mat-label>
+              <mat-select formControlName="defaultEmailType">
+                @for (type of emailTypes; track $index) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-      <!-- Default Phone -->
-      <div class="subsection-title">Default Phone</div>
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="form-field half-width">
-          <mat-label>Phone Number</mat-label>
-          <input matInput type="tel" formControlName="mainPhone" placeholder="Enter phone number">
-          <mat-icon matPrefix>phone</mat-icon>
-        </mat-form-field>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>phone</mat-icon>
+            Primary Contact Phone
+          </ng-template>
+          <!-- Default Phone -->
+          <div class="subsection-title">Default Phone</div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Phone Number</mat-label>
+              <input matInput type="tel" formControlName="defaultPhone" placeholder="Enter phone number">
+              <mat-icon matPrefix>phone</mat-icon>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="form-field half-width">
-          <mat-label>Phone Type</mat-label>
-          <mat-select formControlName="mainPhoneType">
-            @for (type of phoneTypes; track $index) {
-            <mat-option [value]="type">{{ type }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Phone Type</mat-label>
+              <mat-select formControlName="defaultPhoneType">
+                @for (type of phoneTypes; track $index) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon>location_on</mat-icon>
+            Primary Contact Address
+          </ng-template>
 
-      <!-- Default Address -->
-      <div class="subsection-title">Default Address</div>
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="form-field half-width">
-          <mat-label>Address</mat-label>
-          <input matInput formControlName="mainAddress" placeholder="Enter address">
-          <mat-icon matPrefix>location_on</mat-icon>
-        </mat-form-field>
+          <!-- Default Address -->
+          <div class="subsection-title">Default Address</div>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="defaultAddress" placeholder="Enter address">
+              <mat-icon matPrefix>location_on</mat-icon>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" class="form-field half-width">
-          <mat-label>Address Type</mat-label>
-          <mat-select formControlName="mainAddressType">
-            @for (type of addressTypes; track $index) {
-            <mat-option [value]="type">{{ type }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
+            <mat-form-field appearance="outline" class="form-field half-width">
+              <mat-label>Address Type</mat-label>
+              <mat-select formControlName="defaultAddressType">
+                @for (type of addressTypes; track $index) {
+                <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
     </form>
   </mat-card-content>
 </mat-card>

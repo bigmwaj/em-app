@@ -16,7 +16,7 @@ import { AccountChangeStatusDialogComponent } from './change-status-dialog.compo
 import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { SharedHelper } from '../../../shared/shared.helper';
-
+import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
 
 @Component({
   selector: 'app-account-edit',
@@ -24,9 +24,7 @@ import { SharedHelper } from '../../../shared/shared.helper';
   styleUrls: ['./edit.component.scss'],
   standalone: false
 })
-export class AccountEditComponent implements OnInit {
-  mode = SharedHelper.AccountEditMode.VIEW;
-
+export class AccountEditComponent extends AbstractEditComponent implements OnInit {
   accountForm!: FormGroup;
   primaryAccountContactForm!: FormGroup;
   adminUserForm!: FormGroup;
@@ -35,16 +33,21 @@ export class AccountEditComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
-  // Enums for dropdowns
-  AccountEditMode = SharedHelper.AccountEditMode;
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private accountService: AccountService,
     private dialog: MatDialog
-  ) { }
+  ) {
+    super();
+  }
+
+  get isInvalidForm(): boolean {
+    return this.primaryAccountContactForm.invalid 
+    || this.accountForm.invalid 
+    || ( this.isCreateMode && this.adminUserForm.invalid);
+  }
 
   ngOnInit(): void {
     this.initializeForms();
@@ -65,12 +68,12 @@ export class AccountEditComponent implements OnInit {
       lastName: ['', Validators.required],
       birthDate: [''],
       holderType: [HolderTypeLvo.ACCOUNT, Validators.required],
-      mainEmail: [''],
-      mainEmailType: [EmailTypeLvo.WORK],
-      mainPhone: [''],
-      mainPhoneType: [PhoneTypeLvo.WORK],
-      mainAddress: [''],
-      mainAddressType: [AddressTypeLvo.WORK]
+      defaultEmail: [''],
+      defaultEmailType: [EmailTypeLvo.WORK],
+      defaultPhone: [''],
+      defaultPhoneType: [PhoneTypeLvo.WORK],
+      defaultAddress: [''],
+      defaultAddressType: [AddressTypeLvo.WORK]
     });
 
     // Main User Form
@@ -90,7 +93,7 @@ export class AccountEditComponent implements OnInit {
       const modeParam = params['mode'] || state.mode;
 
       if (modeParam === 'create') {
-        this.mode = SharedHelper.AccountEditMode.CREATE;
+        this.mode = SharedHelper.EditMode.CREATE;
         // Check if we have a duplicated account to populate
         if (state.account) {
           this.account = state.account;
@@ -100,14 +103,15 @@ export class AccountEditComponent implements OnInit {
         } else {
           this.setupCreateMode();
         }
+        this.enableAllForms();
       } else if (modeParam === 'edit' && state.account) {
-        this.mode = SharedHelper.AccountEditMode.EDIT;
+        this.mode = SharedHelper.EditMode.EDIT;
         this.account = state.account;
         if (this.account) {
           this.populateForms(this.account);
         }
       } else if (modeParam === 'view' && state.account) {
-        this.mode = SharedHelper.AccountEditMode.VIEW;
+        this.mode = SharedHelper.EditMode.VIEW;
         this.account = state.account;
         if (this.account) {
           this.populateForms(this.account);
@@ -127,9 +131,9 @@ export class AccountEditComponent implements OnInit {
     });
     this.primaryAccountContactForm.patchValue({
       holderType: HolderTypeLvo.ACCOUNT,
-      mainEmailType: EmailTypeLvo.WORK,
-      mainPhoneType: PhoneTypeLvo.WORK,
-      mainAddressType: AddressTypeLvo.WORK
+      defaultEmailType: EmailTypeLvo.WORK,
+      defaultPhoneType: PhoneTypeLvo.WORK,
+      defaultAddressType: AddressTypeLvo.WORK
     });
     this.adminUserForm.patchValue({
       adminUsername: ''
@@ -159,12 +163,12 @@ export class AccountEditComponent implements OnInit {
         lastName: primaryContact.lastName,
         birthDate: primaryContact.birthDate,
         holderType: primaryContact.holderType,
-        mainEmail: defaultEmail?.email,
-        mainEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
-        mainPhone: defaultPhone?.phone,
-        mainPhoneType: defaultPhone?.type || PhoneTypeLvo.WORK,
-        mainAddress: defaultAddress?.address,
-        mainAddressType: defaultAddress?.type || AddressTypeLvo.WORK
+        defaultEmail: defaultEmail?.email,
+        defaultEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
+        defaultPhone: defaultPhone?.phone,
+        defaultPhoneType: defaultPhone?.type || PhoneTypeLvo.WORK,
+        defaultAddress: defaultAddress?.address,
+        defaultAddressType: defaultAddress?.type || AddressTypeLvo.WORK
       });
     }
   }
@@ -176,7 +180,7 @@ export class AccountEditComponent implements OnInit {
   }
 
   onSave(): void {
-    if (this.mode === SharedHelper.AccountEditMode.VIEW) {
+    if (this.mode === SharedHelper.EditMode.VIEW) {
       return;
     }
 
@@ -190,7 +194,7 @@ export class AccountEditComponent implements OnInit {
       return;
     }
 
-    if (this.mode === SharedHelper.AccountEditMode.CREATE && this.adminUserForm.invalid) {
+    if (this.isCreateMode && this.adminUserForm.invalid) {
       this.error = 'Please fill in all required fields in Account Admin User';
       return;
     }
@@ -200,7 +204,7 @@ export class AccountEditComponent implements OnInit {
 
     const accountData = PlatformHelper.buildAccountDto(this.accountForm, this.primaryAccountContactForm, this.adminUserForm);
 
-    if (this.mode === SharedHelper.AccountEditMode.CREATE) {
+    if (this.isCreateMode) {
       this.accountService.createAccount(accountData).subscribe({
         next: () => {
           this.loading = false;
@@ -212,7 +216,7 @@ export class AccountEditComponent implements OnInit {
           this.loading = false;
         }
       });
-    } else if (this.mode === SharedHelper.AccountEditMode.EDIT && this.account?.id) {
+    } else if (this.isEditMode && this.account?.id) {
       this.accountService.updateAccount(accountData).subscribe({
         next: () => {
           this.loading = false;
@@ -235,26 +239,6 @@ export class AccountEditComponent implements OnInit {
     this.router.navigate(['/accounts']);
   }
 
-  get isCreateMode(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.CREATE;
-  }
-
-  get isEditMode(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.EDIT;
-  }
-
-  get isViewMode(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.VIEW;
-  }
-
-  get showCancelButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.CREATE || this.mode === SharedHelper.AccountEditMode.EDIT;
-  }
-
-  get showSaveButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.CREATE || this.mode === SharedHelper.AccountEditMode.EDIT;
-  }
-
   onDuplicate(): void {
     if (!this.account) {
       return;
@@ -269,15 +253,15 @@ export class AccountEditComponent implements OnInit {
     });
   }
 
-  onCreateAccount(): void {
+  onCreate(): void {
     this.router.navigate(['/accounts/edit', 'create'], {
       state: { mode: 'create' }
     });
   }
 
-  onEditAccount(): void {
-    if (this.mode === SharedHelper.AccountEditMode.VIEW) {
-      this.mode = SharedHelper.AccountEditMode.EDIT;
+  onEdit(): void {
+    if (this.isViewMode) {
+      this.mode = SharedHelper.EditMode.EDIT;
       this.enableAllForms();
     }
   }
@@ -308,26 +292,6 @@ export class AccountEditComponent implements OnInit {
     this.accountForm.enable();
     this.primaryAccountContactForm.enable();
     this.adminUserForm.enable();
-  }
-
-  get showDuplicateButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.EDIT || this.mode === SharedHelper.AccountEditMode.VIEW;
-  }
-
-  get showCreateAccountButton(): boolean {
-    return true; // Visible in all modes
-  }
-
-  get showEditAccountButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.VIEW;
-  }
-
-  get showChangeStatusButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.EDIT || this.mode === SharedHelper.AccountEditMode.VIEW;
-  }
-
-  get showDeleteButton(): boolean {
-    return this.mode === SharedHelper.AccountEditMode.VIEW;
   }
 
   onDelete(): void {

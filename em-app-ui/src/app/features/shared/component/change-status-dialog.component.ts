@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { UserDto, UserStatusLvo } from '../../platform/api.platform.model';
 import { UserService } from '../../platform/service/user.service';
-import { EditActionLvo } from '../api.shared.model';
+import { ChangeStatusDelegateDto, EditActionLvo } from '../api.shared.model';
 
-export interface ChangeStatusDialogData {
+export interface ChangeStatusDialogData<T> {  
   user: UserDto;
+  dto: ChangeStatusDelegateDto<T>;
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class ChangeStatusDialogComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<ChangeStatusDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ChangeStatusDialogData
+    @Inject(MAT_DIALOG_DATA) public data: ChangeStatusDialogData<any>
   ) {
     this.user = data.user;
     this.userStatuses = this.userStatuses.filter(e => e !== this.user.status);
@@ -90,7 +91,9 @@ export class ChangeStatusDialogComponent implements OnInit, OnDestroy {
       picture: this.user.picture,
       holderType: this.user.holderType,
       status: formValue.status,
-      editAction: EditActionLvo.CHANGE_STATUS
+      editAction: EditActionLvo.CHANGE_STATUS,
+      statusDate: formValue.statusDate,
+      statusReason: formValue.statusReason
     } as UserDto;
 
     if (formValue.statusDate) {
