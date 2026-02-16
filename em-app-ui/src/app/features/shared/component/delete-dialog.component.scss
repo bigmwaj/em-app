@@ -1,6 +1,17 @@
 @use '../../../../styles/variables' as *;
 @use '../../../../styles/mixins' as *;
 
+.dialog-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  
+  mat-icon {
+    color: $color-warn;
+    vertical-align: middle;
+  }
+}
+
 mat-dialog-content {
   padding: $spacing-lg;
   min-width: 400px;
@@ -29,11 +40,6 @@ mat-dialog-content {
   background-color: $color-warn-light;
   border-radius: $border-radius-base;
   border-left: 4px solid $color-warn;
-
-  &::before {
-    content: '⚠';
-    font-size: $font-size-xl;
-  }
 }
 
 .error-message {
