@@ -83,7 +83,7 @@
 
     &.active {
       background-color: $color-success-light;
-      color: #2e7d32; // darker success color
+      color: $color-success-dark;
     }
 
     &.blocked {
