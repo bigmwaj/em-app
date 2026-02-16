@@ -50,9 +50,12 @@ import { UserEditComponent } from './features/platform/component/user/edit.compo
 import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
 import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
 
+
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { ChangeStatusDialogComponent } from './features/shared/component/change-status-dialog.component';
+import { DeleteDialogComponent } from './features/shared/component/delete-dialog.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +78,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     ContactIndexComponent,
     ContactEditComponent,
     ContactDeleteDialogComponent,
+    ChangeStatusDialogComponent,
+    DeleteDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -108,8 +113,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     provideBrowserGlobalErrorListeners(),
     provideNativeDateAdapter(),
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
-  bootstrap: [App],
+  bootstrap: [App]
 })
-export class AppModule {}
+export class AppModule { }

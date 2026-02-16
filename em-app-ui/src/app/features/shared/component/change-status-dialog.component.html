@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>Change User Status</h2>
+
+<mat-dialog-content>
+  <p>Change status for user: <strong>{{ data.user.username }}</strong></p>
+  @if (error && !loading) {
+  <div class="error-message">
+    <mat-card>
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+  }
+
+  @if (loading) {
+  <div class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Changing user status...</p>
+  </div>
+  } @else {
+  <form [formGroup]="form" class="user-change-status-form">
+
+    <mat-form-field appearance="outline" class="form-field full-width">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        @for (status of userStatuses; track $index) {
+        <mat-option [value]="status">{{ status }}</mat-option>
+        }
+      </mat-select>
+      @if(form.get('status')?.hasError('required')) {
+      <mat-error>Status is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field full-width">
+      <mat-label>Change Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="statusDate" placeholder="Enter change date" />
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      @if(form.get('statusDate')?.hasError('required')) {
+      <mat-error>Change date is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field full-width">
+      <mat-label>Reason</mat-label>
+      <textarea matInput formControlName="statusReason" placeholder="Enter reason for status change"
+        rows="3"></textarea>
+    </mat-form-field>
+  </form>
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button (click)="onCancel()">
+    <mat-icon>cancel</mat-icon>Cancel
+  </button>
+  <button mat-raised-button color="primary" (click)="onConfirm()">
+    <mat-icon>check</mat-icon>Change Status
+  </button>
+</mat-dialog-actions>
