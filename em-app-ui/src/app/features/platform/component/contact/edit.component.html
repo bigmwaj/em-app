@@ -174,6 +174,30 @@
                 <mat-option [value]="AddressTypeLvo.WORK">Work</mat-option>
               </mat-select>
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Country</mat-label>
+              <mat-select formControlName="country">
+                @for (country of countries; track country) {
+                  <mat-option [value]="country">{{ country }}</mat-option>
+                }
+              </mat-select>
+              <mat-error *ngIf="contactForm.get('country')?.hasError('required')">
+                Country is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Region</mat-label>
+              <input matInput formControlName="region" placeholder="Enter region">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>City</mat-label>
+              <input matInput formControlName="city" placeholder="Enter city">
+            </mat-form-field>
           </div>
         </div>
 

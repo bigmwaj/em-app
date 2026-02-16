@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -100,7 +101,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatExpansionModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

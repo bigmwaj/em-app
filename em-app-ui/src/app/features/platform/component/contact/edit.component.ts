@@ -14,6 +14,7 @@ import { ContactDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { SharedHelper } from '../../../shared/shared.helper';
 import { Subject, takeUntil } from 'rxjs';
+import { COUNTRIES } from '../../constants/country.constants';
 
 @Component({
   selector: 'app-contact-edit',
@@ -36,6 +37,9 @@ export class ContactEditComponent implements OnInit, OnDestroy {
   EmailTypeLvo = EmailTypeLvo;
   PhoneTypeLvo = PhoneTypeLvo;
   AddressTypeLvo = AddressTypeLvo;
+  
+  // Constants
+  readonly countries = COUNTRIES;
 
   private destroy$ = new Subject<void>();
 
@@ -68,7 +72,10 @@ export class ContactEditComponent implements OnInit, OnDestroy {
       mainPhone: [''],
       mainPhoneType: [PhoneTypeLvo.WORK],
       mainAddress: [''],
-      mainAddressType: [AddressTypeLvo.WORK]
+      mainAddressType: [AddressTypeLvo.WORK],
+      country: ['', Validators.required],
+      region: [''],
+      city: ['']
     });
   }
 
@@ -129,7 +136,10 @@ export class ContactEditComponent implements OnInit, OnDestroy {
       mainPhone: defaultPhone?.phone || '',
       mainPhoneType: defaultPhone?.type || PhoneTypeLvo.WORK,
       mainAddress: defaultAddress?.address || '',
-      mainAddressType: defaultAddress?.type || AddressTypeLvo.WORK
+      mainAddressType: defaultAddress?.type || AddressTypeLvo.WORK,
+      country: defaultAddress?.country || '',
+      region: defaultAddress?.region || '',
+      city: defaultAddress?.city || ''
     });
   }
 
@@ -192,7 +202,10 @@ export class ContactEditComponent implements OnInit, OnDestroy {
         address: formValue.mainAddress,
         type: formValue.mainAddressType,
         holderType: formValue.holderType,
-        defaultContactPoint: true
+        defaultContactPoint: true,
+        country: formValue.country,
+        region: formValue.region,
+        city: formValue.city
       }];
       
       // Preserve ID if editing

@@ -16,6 +16,8 @@ export class SessionStorageService {
 
     private static SIDENAV_OPENED_KEY = 'sidenav_opened_key';
 
+    private static PLATFORM_MENU_EXPANDED_KEY = 'platform_menu_expanded_key';
+
     clear(): void {
         window.localStorage.clear()
     }
@@ -55,6 +57,14 @@ export class SessionStorageService {
 
     set sidenavOpened(value: string) {
         this.setItem<string>(SessionStorageService.SIDENAV_OPENED_KEY, value, v => v)
+    }
+
+    get platformMenuExpanded(): string | null {
+        return this.getItem<string>(SessionStorageService.PLATFORM_MENU_EXPANDED_KEY, v => v)
+    }
+
+    set platformMenuExpanded(value: string) {
+        this.setItem<string>(SessionStorageService.PLATFORM_MENU_EXPANDED_KEY, value, v => v)
     }
 
     removeToken() {
