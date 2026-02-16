@@ -11,20 +11,35 @@
         <span matListItemTitle>Dashboard</span>
       </a>
 
-      <a mat-list-item routerLink="/users" routerLinkActive="active">
-        <mat-icon matListItemIcon>people</mat-icon>
-        <span matListItemTitle>Users</span>
-      </a>
+      <mat-expansion-panel
+        class="nav-expansion-panel"
+        [expanded]="platformMenuExpanded"
+        (expandedChange)="onPlatformMenuToggle($event)"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>folder</mat-icon>
+            <span>Platform</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
 
-      <a mat-list-item routerLink="/accounts" routerLinkActive="active">
-        <mat-icon matListItemIcon>business</mat-icon>
-        <span matListItemTitle>Accounts</span>
-      </a>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/users" routerLinkActive="active">
+            <mat-icon matListItemIcon>people</mat-icon>
+            <span matListItemTitle>Users</span>
+          </a>
 
-      <a mat-list-item routerLink="/contacts" routerLinkActive="active">
-        <mat-icon matListItemIcon>contacts</mat-icon>
-        <span matListItemTitle>Contacts</span>
-      </a>
+          <a mat-list-item routerLink="/accounts" routerLinkActive="active">
+            <mat-icon matListItemIcon>business</mat-icon>
+            <span matListItemTitle>Accounts</span>
+          </a>
+
+          <a mat-list-item routerLink="/contacts" routerLinkActive="active">
+            <mat-icon matListItemIcon>contacts</mat-icon>
+            <span matListItemTitle>Contacts</span>
+          </a>
+        </mat-nav-list>
+      </mat-expansion-panel>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -60,11 +75,9 @@
           </div>
         </div>
         <div class="user-menu-divider">
-           <mat-divider></mat-divider>
+          <mat-divider></mat-divider>
         </div>
-        <div class="row">
-          Global Actions
-        </div>
+        <div class="row">Global Actions</div>
 
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">

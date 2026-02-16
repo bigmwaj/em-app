@@ -23,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -49,7 +50,6 @@ import { UserEditComponent } from './features/platform/component/user/edit.compo
 import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
 import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
 
-
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
@@ -74,7 +74,7 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     AccountDeleteDialogComponent,
     ContactIndexComponent,
     ContactEditComponent,
-    ContactDeleteDialogComponent
+    ContactDeleteDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -100,15 +100,16 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatExpansionModule,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
     provideBrowserGlobalErrorListeners(),
     provideNativeDateAdapter(),
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
-  bootstrap: [App]
+  bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}
