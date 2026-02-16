@@ -65,10 +65,6 @@
       </button>
 
       @if (mode === EditMode.CREATE || mode === EditMode.EDIT) {
-        <button mat-raised-button (click)="onCancel()">
-          <mat-icon>close</mat-icon>
-          Cancel
-        </button>
         <button mat-raised-button color="primary" (click)="onSave()" [disabled]="isInvalidForm || loading">
           <mat-icon>save</mat-icon>
           @if (mode === EditMode.CREATE) { Create } @else { Update }
