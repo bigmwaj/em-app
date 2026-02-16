@@ -1,0 +1,264 @@
+// =============================================================================
+// Shared Mixins for Consistent UI Patterns
+// =============================================================================
+
+@use 'variables' as *;
+
+// -----------------------------------------------------------------------------
+// Card with elevation
+// -----------------------------------------------------------------------------
+@mixin card-elevated {
+  background: $color-background-white;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-base;
+  transition: box-shadow $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Loading state
+// -----------------------------------------------------------------------------
+@mixin loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xxl $spacing-lg;
+  gap: $spacing-md;
+
+  p {
+    margin: 0;
+    color: $color-text-secondary;
+    font-size: $font-size-base;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Error message
+// -----------------------------------------------------------------------------
+@mixin error-message {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background-color: $color-warn-light;
+  color: $color-warn-dark;
+  border-radius: $border-radius-base;
+  border-left: 4px solid $color-warn;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Info message
+// -----------------------------------------------------------------------------
+@mixin info-message {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background-color: $color-info-light;
+  color: $color-primary-dark;
+  border-radius: $border-radius-base;
+  border-left: 4px solid $color-info;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Page header
+// -----------------------------------------------------------------------------
+@mixin page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+  flex-wrap: wrap;
+  gap: $spacing-md;
+
+  h1 {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin: 0;
+    font-size: $font-size-xxxl;
+    font-weight: $font-weight-regular;
+    color: $color-text-primary;
+
+    mat-icon {
+      font-size: 36px;
+      width: 36px;
+      height: 36px;
+      color: $color-primary;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Form section
+// -----------------------------------------------------------------------------
+@mixin form-section {
+  margin-bottom: $spacing-lg;
+
+  mat-card-header {
+    margin-bottom: $spacing-md;
+
+    mat-card-title {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      font-size: $font-size-xl;
+      font-weight: $font-weight-medium;
+      color: $color-text-primary;
+
+      mat-icon {
+        color: $color-primary;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    mat-card-subtitle {
+      color: $color-text-secondary;
+      font-size: $font-size-sm;
+      margin-top: $spacing-xs;
+    }
+  }
+
+  mat-card-content {
+    padding: 0 $spacing-md $spacing-md;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Form row (2-column responsive grid)
+// -----------------------------------------------------------------------------
+@mixin form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-md;
+
+  @media (max-width: $breakpoint-sm) {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Subsection title
+// -----------------------------------------------------------------------------
+@mixin subsection-title {
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  margin: $spacing-lg 0 $spacing-md 0;
+  padding-left: $spacing-md;
+  border-left: 3px solid $color-primary;
+}
+
+// -----------------------------------------------------------------------------
+// Table improvements
+// -----------------------------------------------------------------------------
+@mixin table-enhanced {
+  width: 100%;
+  background: $color-background-white;
+
+  th {
+    background-color: $color-background-light;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tr {
+    &:hover {
+      background-color: rgba($color-primary-light, 0.5);
+      transition: background-color $transition-fast;
+    }
+  }
+
+  td {
+    color: $color-text-primary;
+    font-size: $font-size-base;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Empty state
+// -----------------------------------------------------------------------------
+@mixin empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xxl;
+  text-align: center;
+  color: $color-text-secondary;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: $spacing-md;
+    color: $color-text-disabled;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-md;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Responsive utilities
+// -----------------------------------------------------------------------------
+@mixin mobile-only {
+  @media (max-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: $breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin desktop-up {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin large-desktop-up {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
