@@ -50,6 +50,12 @@ import { UserIndexComponent } from './features/platform/component/user/index.com
 import { UserEditComponent } from './features/platform/component/user/edit.component';
 import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
 import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
+import { GroupIndexComponent } from './features/platform/component/group/index.component';
+import { GroupEditComponent } from './features/platform/component/group/edit.component';
+import { GroupDeleteDialogComponent } from './features/platform/component/group/delete-dialog.component';
+import { RoleIndexComponent } from './features/platform/component/role/index.component';
+import { RoleEditComponent } from './features/platform/component/role/edit.component';
+import { RoleDeleteDialogComponent } from './features/platform/component/role/delete-dialog.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
@@ -81,6 +87,12 @@ import { AddressListComponent } from './features/platform/component/contact/addr
     ContactIndexComponent,
     ContactEditComponent,
     ContactDeleteDialogComponent,
+    GroupIndexComponent,
+    GroupEditComponent,
+    GroupDeleteDialogComponent,
+    RoleIndexComponent,
+    RoleEditComponent,
+    RoleDeleteDialogComponent,
     ChangeStatusDialogComponent,
     DeleteDialogComponent,
     PhoneListComponent,

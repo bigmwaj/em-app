@@ -1,0 +1,29 @@
+.warning-text {
+  color: #f44336;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  border-radius: 4px;
+  margin-top: 1rem;
+}
+
+.loading-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+}
+
+mat-dialog-actions {
+  padding: 1rem;
+  gap: 0.5rem;
+}
