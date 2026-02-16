@@ -79,15 +79,18 @@ export class ContactEditComponent implements OnInit, OnDestroy {
     });
 
     // Make country required when address is provided
-    this.contactForm.get('mainAddress')?.valueChanges.subscribe((address) => {
-      const countryControl = this.contactForm.get('country');
-      if (address && address.trim()) {
-        countryControl?.setValidators([Validators.required]);
-      } else {
-        countryControl?.clearValidators();
-      }
-      countryControl?.updateValueAndValidity();
-    });
+    this.contactForm
+      .get('mainAddress')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((address) => {
+        const countryControl = this.contactForm.get('country');
+        if (address && address.trim()) {
+          countryControl?.setValidators([Validators.required]);
+        } else {
+          countryControl?.clearValidators();
+        }
+        countryControl?.updateValueAndValidity();
+      });
   }
 
   private loadContactData(): void {
