@@ -1,61 +1,79 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
+  padding: $spacing-lg;
+
+  @include mobile-only {
+    padding: $spacing-md;
+  }
 }
 
 .login-card {
-  background: white;
-  border-radius: 12px;
-  padding: 48px 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
+  background: $color-background-white;
+  border-radius: $border-radius-xl;
+  padding: $spacing-xxl * 1.5 $spacing-xxl;
+  box-shadow: $shadow-xl;
+  max-width: 450px;
   width: 100%;
+  animation: slideUp 0.5s ease-out;
+
+  @include mobile-only {
+    padding: $spacing-xl $spacing-lg;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: $spacing-xxl;
 
   h1 {
-    margin: 0 0 8px 0;
-    color: #333;
-    font-size: 28px;
-    font-weight: 500;
+    margin: 0 0 $spacing-sm 0;
+    color: $color-text-primary;
+    font-size: $font-size-xxxl;
+    font-weight: $font-weight-semibold;
+    letter-spacing: -0.5px;
   }
 
   p {
     margin: 0;
-    color: #666;
-    font-size: 16px;
+    color: $color-text-secondary;
+    font-size: $font-size-md;
   }
 }
 
 .login-form {
-  margin-bottom: 24px;
+  margin-bottom: $spacing-lg;
 
   .full-width {
     width: 100%;
   }
 
   mat-form-field {
-    margin-bottom: 16px;
+    margin-bottom: $spacing-md;
   }
 }
 
 .error-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #d32f2f;
-  background-color: #ffebee;
-  padding: 12px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  font-size: 14px;
+  @include error-message;
+  margin-bottom: $spacing-md;
+  font-size: $font-size-sm;
 
   mat-icon {
     font-size: 20px;
@@ -67,9 +85,16 @@
 .login-button {
   width: 100%;
   height: 48px;
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  margin-bottom: $spacing-sm;
+  border-radius: $border-radius-md;
+  transition: all $transition-base;
+
+  &:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
 
   mat-spinner {
     display: inline-block;
@@ -80,40 +105,49 @@
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 24px 0;
-  color: #999;
+  margin: $spacing-lg 0;
+  color: $color-text-disabled;
 
   &::before,
   &::after {
     content: '';
     flex: 1;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid $color-border;
   }
 
   span {
-    padding: 0 16px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 0 $spacing-md;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 }
 
 .oauth-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: $spacing-md;
 }
 
 .oauth-button {
   width: 100%;
-  height: 44px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  font-size: 14px;
-  font-weight: 500;
+  gap: $spacing-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
   text-transform: none;
   letter-spacing: 0;
+  border-radius: $border-radius-md;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
 
   mat-icon {
     font-size: 20px;
@@ -123,7 +157,7 @@
 
   &.google {
     background-color: #4285f4;
-    color: white;
+    color: $color-background-white;
 
     &:hover {
       background-color: #357ae8;
@@ -131,8 +165,8 @@
   }
 
   &.github {
-    background-color: #333;
-    color: white;
+    background-color: #333333;
+    color: $color-background-white;
 
     &:hover {
       background-color: #24292e;
@@ -141,7 +175,7 @@
 
   &.facebook {
     background-color: #1877f2;
-    color: white;
+    color: $color-background-white;
 
     &:hover {
       background-color: #166fe5;
@@ -150,7 +184,7 @@
 
   &.tiktok {
     background-color: #000000;
-    color: white;
+    color: $color-background-white;
 
     &:hover {
       background-color: #1a1a1a;
@@ -159,22 +193,13 @@
 }
 
 .login-footer {
-  margin-top: 32px;
+  margin-top: $spacing-xxl;
   text-align: center;
 
   p {
     margin: 0;
-    color: #999;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 600px) {
-  .login-card {
-    padding: 32px 24px;
-  }
-
-  .login-header h1 {
-    font-size: 24px;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    line-height: $line-height-relaxed;
   }
 }

@@ -1,127 +1,109 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
 
+.accounts-container {
+  // Uses global .main-container styles
+}
 
 .loading-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-
-  mat-spinner {
-    margin-bottom: 16px;
-  }
+  @include loading-state;
 }
 
 .info-message {
-  margin-bottom: 24px;
-
   mat-card {
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: #fff3cd;
-    border-left: 4px solid #ff9800;
+    @include info-message;
+    margin: $spacing-lg 0;
+  }
+}
 
-    mat-icon {
-      color: #ff9800;
+.error-section,
+.empty-section {
+  mat-card {
+    @include empty-state;
+
+    .error-icon {
+      color: $color-warn;
+    }
+
+    .empty-icon {
+      color: $color-text-disabled;
+    }
+
+    h3 {
+      margin: 0 0 $spacing-sm 0;
+      font-size: $font-size-xxl;
+      font-weight: $font-weight-regular;
     }
 
     p {
-      margin: 0;
-      color: #666;
+      margin: 0 0 $spacing-md 0;
+      color: $color-text-secondary;
+      font-size: $font-size-md;
     }
   }
 }
 
-.accounts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-}
+// Table enhancements
+.accounts-table {
+  width: 100%;
 
-.account-card {
-  mat-card-header {
-    mat-icon[mat-card-avatar] {
-      font-size: 40px;
-      width: 40px;
-      height: 40px;
-      color: #3f51b5;
-      background: none;
+  th {
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tr {
+    &:hover {
+      background-color: rgba($color-primary-light, 0.3);
     }
   }
 
-  mat-card-content {
-    margin-top: 16px;
+  td {
+    font-size: $font-size-base;
 
-    .account-info {
-      p {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin: 8px 0;
-        color: #666;
+    button[mat-button] {
+      padding: 0;
+      min-width: auto;
 
-        mat-icon {
-          font-size: 18px;
-          width: 18px;
-          height: 18px;
-          color: #999;
-        }
-
-        mat-chip {
-          font-size: 12px;
-          padding: 4px 12px;
-          height: auto;
-
-          &.active {
-            background-color: #4caf50;
-            color: white;
-          }
-
-          &.pending {
-            background-color: #ff9800;
-            color: white;
-          }
-        }
+      mat-icon {
+        margin-right: $spacing-xs;
       }
     }
   }
 
-  mat-card-actions {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 16px 16px;
+  .status-chip {
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-base;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    text-transform: uppercase;
 
-    button mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      margin-right: 4px;
+    &.active {
+      background-color: $color-success-light;
+      color: $color-success-dark;
+    }
+
+    &.blocked {
+      background-color: $color-warn-light;
+      color: $color-warn-dark;
     }
   }
 }
 
-@media (max-width: 960px) {
-  .accounts-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-  }
-}
-
-@media (max-width: 600px) {
+@include mobile-only {
   .accounts-container {
-    padding: 16px;
+    padding: $spacing-md;
   }
 
-  .header {
+  .main-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
 
     h1 {
-      font-size: 24px;
+      font-size: $font-size-xxl;
     }
 
     button {
@@ -129,7 +111,20 @@
     }
   }
 
-  .accounts-grid {
-    grid-template-columns: 1fr;
+  .search-form {
+    flex-direction: column;
+
+    mat-form-field,
+    button {
+      width: 100%;
+    }
+  }
+
+  .accounts-table {
+    // Hide less important columns on mobile
+    .mat-column-phone,
+    .mat-column-address {
+      display: none;
+    }
   }
 }

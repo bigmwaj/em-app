@@ -6,6 +6,7 @@ import { Subject } from "rxjs";
 @Component({
   selector: 'app-phone-list',
   templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
   standalone: false
 })
 export class PhoneListComponent extends CommonDataSource<ContactPhoneDto> implements OnInit, OnDestroy {

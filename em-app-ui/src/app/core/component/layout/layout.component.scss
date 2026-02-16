@@ -1,47 +1,57 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
 .layout-container {
   height: 100vh;
   display: flex;
 }
 
 .layout-sidenav {
-  width: 250px;
-  background-color: #fafafa;
-  border-right: 1px solid #e0e0e0;
+  width: $sidenav-width;
+  background-color: $color-background-light;
+  border-right: 1px solid $color-border;
 
   .sidenav-header {
-    padding: 16px;
-    border-bottom: 1px solid #e0e0e0;
+    padding: $spacing-lg;
+    border-bottom: 1px solid $color-border;
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-dark 100%);
 
     h2 {
       margin: 0;
-      font-size: 20px;
-      font-weight: 500;
-      color: #3f51b5;
+      font-size: $font-size-xxl;
+      font-weight: $font-weight-semibold;
+      color: $color-background-white;
+      letter-spacing: 1px;
     }
   }
 
   mat-nav-list {
-    padding-top: 8px;
+    padding: $spacing-sm;
 
     a {
-      margin: 4px 8px;
-      border-radius: 4px;
+      margin: $spacing-xs $spacing-sm;
+      border-radius: $border-radius-md;
+      transition: all $transition-fast;
 
       &.active {
-        background-color: #e3f2fd;
-        color: #3f51b5;
+        background-color: $color-primary-light;
+        color: $color-primary;
+        font-weight: $font-weight-medium;
+        box-shadow: $shadow-sm;
 
         mat-icon {
-          color: #3f51b5;
+          color: $color-primary;
         }
       }
 
       &:hover:not(.active) {
-        background-color: #f5f5f5;
+        background-color: rgba($color-primary, 0.08);
+        transform: translateX(4px);
       }
 
       mat-icon {
-        color: #666;
+        color: $color-text-secondary;
+        transition: color $transition-fast;
       }
     }
   }
@@ -49,26 +59,27 @@
   .nav-expansion-panel {
     box-shadow: none;
     background-color: transparent;
-    margin: 4px 8px;
+    margin: $spacing-xs $spacing-sm;
 
     ::ng-deep {
       .mat-expansion-panel-header {
-        padding: 0 16px;
+        padding: 0 $spacing-md;
         height: 48px;
-        border-radius: 4px;
+        border-radius: $border-radius-md;
+        transition: all $transition-fast;
 
         &:hover {
-          background-color: #f5f5f5;
+          background-color: rgba($color-primary, 0.08);
         }
 
         .mat-content {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: $spacing-md;
         }
 
         mat-icon {
-          color: #666;
+          color: $color-text-secondary;
         }
 
         .mat-expansion-indicator {
@@ -81,9 +92,13 @@
       }
 
       mat-nav-list {
-        padding-left: 16px;
+        padding-left: $spacing-md;
       }
     }
+  }
+
+  @media (max-width: $breakpoint-md) {
+    width: $sidenav-width-tablet;
   }
 }
 
@@ -91,16 +106,18 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow: hidden;
 }
 
 .layout-toolbar {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: $shadow-base;
+  z-index: $z-index-sticky;
+  min-height: $toolbar-height;
 
   .toolbar-title {
-    font-size: 20px;
-    font-weight: 500;
-    margin-left: 16px;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+    margin-left: $spacing-md;
   }
 
   .spacer {
@@ -110,56 +127,98 @@
   .user-button {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: $spacing-sm;
     text-transform: none;
-    font-size: 14px;
+    font-size: $font-size-base;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-base;
+    transition: background-color $transition-fast;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
 
     mat-icon:first-child {
-      margin-right: 4px;
+      margin-right: $spacing-xs;
     }
 
     mat-icon:last-child {
-      margin-left: 4px;
+      margin-left: $spacing-xs;
+    }
+  }
+
+  @media (max-width: $breakpoint-md) {
+    .toolbar-title {
+      display: none;
+    }
+  }
+
+  @media (max-width: $breakpoint-sm) {
+    .user-button span {
+      display: none;
     }
   }
 }
 
-.user-menu-header {
-  padding: 16px;
-  border-bottom: 1px solid #e0e0e0;
-
-  .user-name {
-    margin: 0 0 4px 0;
-    font-weight: 500;
-    color: #333;
+::ng-deep .user-menu-panel {
+  .mat-mdc-menu-content {
+    padding: 0;
   }
 
-  .user-email {
-    margin: 0;
-    font-size: 13px;
-    color: #666;
+  .user-menu-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-md $spacing-lg;
+    border-bottom: 1px solid $color-border;
+    background-color: $color-background-light;
+
+    .user-avatar-placeholder {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: $color-primary;
+    }
+
+    .user-info {
+      flex: 1;
+
+      .user-name {
+        margin: 0 0 $spacing-xs 0;
+        font-weight: $font-weight-medium;
+        color: $color-text-primary;
+        font-size: $font-size-base;
+      }
+
+      .user-email {
+        margin: 0;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+      }
+    }
+  }
+
+  .menu-section {
+    padding: $spacing-sm 0;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid $color-border;
+    }
+  }
+
+  .menu-section-title {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 }
 
 .page-content {
   flex: 1;
   overflow-y: auto;
-  background-color: #f5f5f5;
-}
-
-// Responsive adjustments
-@media (max-width: 960px) {
-  .layout-sidenav {
-    width: 200px;
-  }
-
-  .toolbar-title {
-    display: none;
-  }
-}
-
-@media (max-width: 600px) {
-  .layout-toolbar .user-button span {
-    display: none;
-  }
+  background-color: $color-background;
+  padding: 0;
 }

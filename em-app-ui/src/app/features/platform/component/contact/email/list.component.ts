@@ -6,6 +6,7 @@ import { Subject } from "rxjs";
 @Component({
   selector: 'app-email-list',
   templateUrl: './list.component.html',
+  styleUrls: ['./list.component.scss'],
   standalone: false
 })
 export class EmailListComponent extends CommonDataSource<ContactEmailDto> implements OnInit, OnDestroy {

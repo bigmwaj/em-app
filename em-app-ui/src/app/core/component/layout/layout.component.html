@@ -62,28 +62,25 @@
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
 
-      <mat-menu #userMenu="matMenu">
-        <div class="row">
-          <div class="col">
-            <mat-icon class="user-avatar-placeholder">account_circle</mat-icon>
-          </div>
-          <div class="col">
-            <div class="user-menu-header">
-              <p class="user-name">{{ user?.name }}</p>
-              <p class="user-email">{{ user?.email }}</p>
-            </div>
+      <mat-menu #userMenu="matMenu" class="user-menu-panel">
+        <div class="user-menu-header">
+          <mat-icon class="user-avatar-placeholder">account_circle</mat-icon>
+          <div class="user-info">
+            <p class="user-name">{{ user?.name }}</p>
+            <p class="user-email">{{ user?.email }}</p>
           </div>
         </div>
-        <div class="user-menu-divider">
-          <mat-divider></mat-divider>
-        </div>
-        <div class="row">Global Actions</div>
 
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          <span>Logout</span>
-        </button>
+        <div class="menu-section">
+          <div class="menu-section-title">Global Actions</div>
+        </div>
+
+        <div class="menu-section">
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </div>
       </mat-menu>
     </mat-toolbar>
 

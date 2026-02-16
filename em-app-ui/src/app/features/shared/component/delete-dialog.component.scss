@@ -1,44 +1,68 @@
-.error-message {
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.dialog-title-with-icon {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
-  background-color: #ffebee;
-  color: #c62828;
-  border-radius: 4px;
-  margin-top: 16px;
-
+  gap: $spacing-sm;
+  
   mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
+    color: $color-warn;
+    vertical-align: middle;
   }
 }
 
-.loading-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+mat-dialog-content {
+  padding: $spacing-lg;
+  min-width: 400px;
+
+  @include mobile-only {
+    min-width: 280px;
+    padding: $spacing-md;
+  }
 
   p {
-    margin-top: 12px;
-    color: #666;
+    margin: 0 0 $spacing-sm 0;
+    color: $color-text-primary;
+    font-size: $font-size-base;
+    line-height: $line-height-relaxed;
   }
 }
 
 .warning-text {
-  color: #f44336;
-  font-weight: 500;
+  color: $color-warn;
+  font-weight: $font-weight-medium;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+  padding: $spacing-sm;
+  background-color: $color-warn-light;
+  border-radius: $border-radius-base;
+  border-left: 4px solid $color-warn;
 }
 
-mat-dialog-content {
-  padding: 20px 24px;
-  min-width: 300px;
+.error-message {
+  @include error-message;
+  margin-top: $spacing-md;
+}
+
+.loading-section {
+  @include loading-state;
+  padding: $spacing-lg;
 }
 
 mat-dialog-actions {
-  padding: 8px 24px 16px;
-  gap: 10px;
+  padding: $spacing-md $spacing-lg;
+  gap: $spacing-sm;
+  border-top: 1px solid $color-border;
+  justify-content: flex-end;
+
+  button {
+    min-width: 100px;
+
+    mat-icon {
+      margin-right: $spacing-xs;
+    }
+  }
 }

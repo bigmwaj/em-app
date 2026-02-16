@@ -1,0 +1,71 @@
+@use '../../../../../../styles/variables' as *;
+@use '../../../../../../styles/mixins' as *;
+
+.main-header {
+  @include page-header;
+  margin-bottom: $spacing-lg;
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    font-size: $font-size-xl;
+    margin: 0;
+
+    mat-icon {
+      font-size: $font-size-xl;
+      height: $font-size-xl;
+      width: $font-size-xl;
+    }
+  }
+}
+
+// Table enhancements
+.contacts-table {
+  width: 100%;
+
+  th {
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    font-size: $font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tr {
+    &:hover {
+      background-color: rgba($color-primary-light, 0.3);
+    }
+  }
+
+  td {
+    font-size: $font-size-base;
+
+    button[mat-button] {
+      padding: 0;
+      min-width: auto;
+
+      mat-icon {
+        margin-right: $spacing-xs;
+      }
+    }
+  }
+}
+
+@include mobile-only {
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .contacts-table {
+    // Hide less important columns on mobile
+    .mat-column-region {
+      display: none;
+    }
+  }
+}
