@@ -1,103 +1,63 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
+
 .account-edit-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-
-  .main-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #e0e0e0;
-
-    .title {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 0;
-      font-size: 28px;
-      font-weight: 500;
-
-      mat-icon {
-        font-size: 32px;
-        width: 32px;
-        height: 32px;
-      }
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 12px;
-
-      .cancel-button {
-        margin-left: 8px;
-      }
-    }
-  }
-
-  .error-message {
-    margin-bottom: 24px;
-
-    mat-card {
-      background-color: #ffebee;
-      color: #c62828;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 16px;
-
-      mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
-      }
-
-      p {
-        margin: 0;
-      }
-    }
-  }
-
-  .loading-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 48px;
-    gap: 16px;
-
-    p {
-      font-size: 16px;
-      color: #666;
-    }
-  }
-
+  // Uses global .main-container styles
 }
 
-// Responsive design for smaller screens
-@media (max-width: 768px) {
-  .account-edit-container {
-    padding: 12px;
+.main-header {
+  @include page-header;
 
-    .main-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 16px;
+  @include mobile-only {
+    flex-direction: column;
+    align-items: flex-start;
 
-      .header-actions {
-        width: 100%;
-        justify-content: flex-end;
+    .header-actions {
+      width: 100%;
+      justify-content: flex-start;
+
+      button {
+        flex: 1;
+        min-width: auto;
       }
     }
+  }
+}
 
+.error-message {
+  margin-bottom: $spacing-lg;
+
+  mat-card {
+    @include error-message;
+  }
+}
+
+.loading-section {
+  @include loading-state;
+}
+
+.form-section {
+  @include form-section;
+
+  .account-form,
+  .contact-form {
     .form-row {
-      flex-direction: column;
+      @include form-row;
 
-      .half-width {
+      mat-form-field {
         width: 100%;
-        min-width: 100%;
+
+        &.full-width {
+          grid-column: 1 / -1;
+        }
       }
     }
+  }
+}
+
+// Responsive adjustments
+@include mobile-only {
+  .account-edit-container {
+    padding: $spacing-md;
   }
 }

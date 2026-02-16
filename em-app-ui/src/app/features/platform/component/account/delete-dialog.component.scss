@@ -1,38 +1,29 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
+
 .warning-text {
-  color: #f44336;
-  font-weight: 500;
-  margin-top: 16px;
+  color: $color-warn;
+  font-weight: $font-weight-medium;
+  margin-top: $spacing-md;
 }
 
 .error-message {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 16px;
-  padding: 12px;
-  background-color: #ffebee;
-  border-radius: 4px;
-  color: #c62828;
-
-  mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-  }
+  @include error-message;
+  margin-top: $spacing-md;
 }
 
 .loading-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 16px;
-  padding: 20px;
-
-  p {
-    margin: 0;
-    color: #666;
-  }
+  @include loading-state;
+  margin-top: $spacing-md;
+  padding: $spacing-lg;
 }
 
+mat-dialog-content {
+  padding: $spacing-lg $spacing-xl;
+  min-width: 300px;
+}
+
+mat-dialog-actions {
+  padding: $spacing-sm $spacing-xl $spacing-md;
+  gap: $spacing-sm;
+}
