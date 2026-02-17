@@ -43,6 +43,10 @@ import { EditPrincipalAccountContactComponent } from './features/platform/compon
 import { EditAccountAdminUserFormComponent } from './features/platform/component/account/edit/account-admin-user.component';
 import { ContactIndexComponent } from './features/platform/component/contact/index.component';
 import { ContactEditComponent } from './features/platform/component/contact/edit.component';
+import { GroupIndexComponent } from './features/platform/component/group/index.component';
+import { GroupEditComponent } from './features/platform/component/group/edit.component';
+import { RoleIndexComponent } from './features/platform/component/role/index.component';
+import { RoleEditComponent } from './features/platform/component/role/edit.component';
 import { UserIndexComponent } from './features/platform/component/user/index.component';
 import { UserEditComponent } from './features/platform/component/user/edit.component';
 
@@ -72,6 +76,10 @@ import { SearchFormComponent } from './features/shared/component/search-form.com
     EditAccountAdminUserFormComponent,
     ContactIndexComponent,
     ContactEditComponent,
+    GroupIndexComponent,
+    GroupEditComponent,
+    RoleIndexComponent,
+    RoleEditComponent,
     ChangeStatusDialogComponent,
     DeleteDialogComponent,
     PhoneListComponent,

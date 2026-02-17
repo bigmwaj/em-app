@@ -1,0 +1,119 @@
+<div class="main-container role-edit-container">
+  <div class="main-header">
+    <h1 class="title">
+      <mat-icon mat-card-avatar>assignment_ind</mat-icon>
+      @if (isCreateMode) {
+      <span>Create Role</span>
+      }
+      @if (isEditMode) {
+      <span>Edit Role</span>
+      }
+      @if (isViewMode) {
+      <span>View Role</span>
+      }
+    </h1>
+    <div class="header-actions">
+      <button mat-raised-button (click)="onBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+
+      @if(showCancelButton){
+      <button mat-raised-button color="primary" (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      }
+
+      @if(showSaveButton){
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading || isInvalidForm">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      }
+
+      @if(showCreateButton){
+      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="loading">
+        <mat-icon>add</mat-icon>
+        Create
+      </button>
+      }
+
+      @if(showEditButton){
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="loading">
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+      }
+
+      @if(showDuplicateButton){
+      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="loading">
+        <mat-icon>content_copy</mat-icon>
+        Duplicate
+      </button>
+      }
+
+      @if(showDeleteButton){
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="loading">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+      }
+    </div>
+  </div>
+
+  @if (error && !loading) {
+  <div class="error-section">
+    <mat-card>
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ error }}</p>
+    </mat-card>
+  </div>
+  }
+
+  @if (loading) {
+  <div class="loading-section">
+    <mat-spinner></mat-spinner>
+    <p>Processing...</p>
+  </div>
+  }
+
+  <mat-card class="form-card form-section">
+    <mat-card-content>
+      <form [formGroup]="roleForm">
+        <!-- Role Details Section -->
+        <div class="form-section">
+          <h2 class="section-title">Role Details</h2>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name" placeholder="Enter role name" />
+              <mat-error *ngIf="roleForm.get('name')?.hasError('required')">
+                Name is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Holder Type</mat-label>
+              <mat-select formControlName="holderType">
+                <mat-option [value]="HolderTypeLvo.ACCOUNT">Account</mat-option>
+                <mat-option [value]="HolderTypeLvo.CORPORATE">Corporate</mat-option>
+              </mat-select>
+              <mat-error *ngIf="roleForm.get('holderType')?.hasError('required')">
+                Holder type is required
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field-full">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
