@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.AccountDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
@@ -69,11 +69,11 @@ public class AccountService extends AbstractService {
     }
 
     public AccountDto create(AccountDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreate(entity, dto);
         entity = dao.save(entity);
         userService.create(entity, dto.getAdminUsername(), dto.getAdminUsernameType());
-        return GlobalMapper.INSTANCE.toDto(entity);
+        return GlobalPlatformMapper.INSTANCE.toDto(entity);
     }
 
     public void beforeCreate(AccountEntity entity, AccountDto dto) {
@@ -98,9 +98,9 @@ public class AccountService extends AbstractService {
     }
 
     public AccountDto update(AccountDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public AccountDto changeStatus(AccountDto dto) {
@@ -109,11 +109,11 @@ public class AccountService extends AbstractService {
         entity.setStatusDate(dto.getStatusDate());
         entity.setStatusReason(dto.getStatusReason());
         beforeUpdateHistEntity(entity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     private AccountDto toDtoWithChildren(AccountEntity entity) {
-        var dto = GlobalMapper.INSTANCE.toDto(entity);
+        var dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
 
         dto.setAccountContacts(entity.getAccountContacts().stream()
                 .map(accountContactService::toDtoWithChildren)

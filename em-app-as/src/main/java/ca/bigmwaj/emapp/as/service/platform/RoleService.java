@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.RoleDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.RoleDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
@@ -27,7 +27,7 @@ public class RoleService extends AbstractService {
 
     protected SearchResultDto<RoleDto> searchAll() {
         var r = dao.findAll().stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList();
         return new SearchResultDto<>(r);
     }
@@ -45,7 +45,7 @@ public class RoleService extends AbstractService {
         }
         var r = dao.findAllByCriteria(entityManager, sc)
                 .stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList();
 
         return new SearchResultDto<>(searchStats, r);
@@ -53,7 +53,7 @@ public class RoleService extends AbstractService {
 
     public RoleDto findById(Short roleId) {
         return dao.findById(roleId)
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .orElseThrow(() -> new NoSuchElementException("Role not found with id: " + roleId));
     }
 
@@ -62,16 +62,16 @@ public class RoleService extends AbstractService {
     }
 
     public RoleDto create(RoleDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreateHistEntity(entity);
         entity = dao.save(entity);
-        return GlobalMapper.INSTANCE.toDto(entity);
+        return GlobalPlatformMapper.INSTANCE.toDto(entity);
     }
 
     public RoleDto update(RoleDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
         entity = dao.save(entity);
-        return GlobalMapper.INSTANCE.toDto(entity);
+        return GlobalPlatformMapper.INSTANCE.toDto(entity);
     }
 }

@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.GroupDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.GroupDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
@@ -27,7 +27,7 @@ public class GroupService extends AbstractService {
 
     protected SearchResultDto<GroupDto> searchAll() {
         var r = dao.findAll().stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList();
         return new SearchResultDto<>(r);
     }
@@ -45,7 +45,7 @@ public class GroupService extends AbstractService {
         }
         var r = dao.findAllByCriteria(entityManager, sc)
                 .stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList();
 
         return new SearchResultDto<>(searchStats, r);
@@ -53,7 +53,7 @@ public class GroupService extends AbstractService {
 
     public GroupDto findById(Short groupId) {
         return dao.findById(groupId)
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .orElseThrow(() -> new NoSuchElementException("Group not found with id: " + groupId));
     }
 
@@ -62,16 +62,16 @@ public class GroupService extends AbstractService {
     }
 
     public GroupDto create(GroupDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreateHistEntity(entity);
         entity = dao.save(entity);
-        return GlobalMapper.INSTANCE.toDto(entity);
+        return GlobalPlatformMapper.INSTANCE.toDto(entity);
     }
 
     public GroupDto update(GroupDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
         entity = dao.save(entity);
-        return GlobalMapper.INSTANCE.toDto(entity);
+        return GlobalPlatformMapper.INSTANCE.toDto(entity);
     }
 }

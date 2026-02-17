@@ -8,9 +8,9 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper()
-public interface GlobalMapper {
+public interface GlobalPlatformMapper {
 
-    GlobalMapper INSTANCE = Mappers.getMapper(GlobalMapper.class);
+    GlobalPlatformMapper INSTANCE = Mappers.getMapper(GlobalPlatformMapper.class);
 
     @AnyEntityToAnyDtoMapping
     @Mapping(target = "accountContacts", ignore = true)
@@ -63,6 +63,8 @@ public interface GlobalMapper {
     ContactEntity toEntity(ContactDto dto);
 
     @AnyEntityToAnyDtoMapping
+    @Mapping(target = "groupRoles", ignore = true)
+    @Mapping(target = "groupUsers", ignore = true)
     GroupDto toDto(GroupEntity entity);
     @AnyDtoToAnyEntityMapping
     GroupEntity toEntity(GroupDto dto);
@@ -72,6 +74,7 @@ public interface GlobalMapper {
     @AnyDtoToAnyEntityMapping
     PrivilegeEntity toEntity(PrivilegeDto dto);
 
+    @Mapping(target = "rolePrivileges", ignore = true)
     @AnyEntityToAnyDtoMapping
     RoleDto toDto(RoleEntity entity);
     @AnyDtoToAnyEntityMapping

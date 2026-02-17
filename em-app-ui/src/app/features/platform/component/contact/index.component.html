@@ -5,7 +5,7 @@
       <mat-icon mat-card-avatar>person</mat-icon>
       <span>Contacts Management</span>
     </h1>
-    <button mat-raised-button color="primary" (click)="createContact()">
+    <button mat-raised-button color="primary" (click)="createAction()">
       <mat-icon>add</mat-icon>
       Add Contact
     </button>
@@ -34,18 +34,18 @@
     </mat-card>
   </div>
 
-  @if (error && !loading) {
+   @if (pageData.error && !pageData.loading) {
 
   <div class="info-message">
     <mat-card>
       <mat-icon>info</mat-icon>
-      <p>{{ error }}</p>
+      <p>{{ pageData.error }}</p>
     </mat-card>
   </div>
 
   }
 
-  @if (loading) {
+  @if (pageData.loading) {
 
   <div class="loading-section">
     <mat-spinner></mat-spinner>
@@ -60,7 +60,7 @@
         <ng-container matColumnDef="fullName">
           <th mat-header-cell *matHeaderCellDef>Full Name</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary" (click)="viewContact(element)">
+            <button mat-button color="primary" (click)="viewAction(element)">
               @if(element?.holderType === 'CORPORATE') {
                  <mat-icon>person</mat-icon>
               } @else {
@@ -89,7 +89,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary" (click)="editContact(element)">
+            <button mat-button color="primary" (click)="editAction(element)">
               <mat-icon>edit</mat-icon>
             </button>
 
@@ -97,15 +97,15 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item color="primary" (click)="viewContact(element)">
+              <button mat-menu-item color="primary" (click)="viewAction(element)">
                 <mat-icon>visibility</mat-icon>
                 View Details
               </button>
-              <button mat-menu-item color="accent" (click)="duplicateContact(element)">
+              <button mat-menu-item color="accent" (click)="duplicateAction(element)">
                 <mat-icon>content_copy</mat-icon>
                 Duplicate
               </button>
-              <button mat-menu-item color="warn" (click)="deleteContact(element)">
+              <button mat-menu-item color="warn" (click)="deleteAction(element)">
                 <mat-icon>delete</mat-icon>
                 Delete
               </button>

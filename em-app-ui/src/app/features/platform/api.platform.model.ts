@@ -1,4 +1,9 @@
-import { BaseHistDto, AbstractSearchCriteria, ChangeStatusDelegateDto } from "../shared/api.shared.model";
+import {
+  AbstractBaseDto,
+  AbstractChangeTrackingDto,
+  AbstractSearchCriteria,
+  AbstractStatusTrackingDto
+} from "../shared/api.shared.model";
 
 export enum AccountContactRoleLvo {
   PRINCIPAL = 'PRINCIPAL',
@@ -42,7 +47,7 @@ export enum UsernameTypeLvo {
   EMAIL = 'EMAIL'
 }
 
-export interface AccountDto extends BaseHistDto, ChangeStatusDelegateDto<AccountStatusLvo> {
+export interface AccountDto extends AbstractStatusTrackingDto<AccountStatusLvo> {
   id?: number;
   name: string;
   description?: string;
@@ -51,7 +56,7 @@ export interface AccountDto extends BaseHistDto, ChangeStatusDelegateDto<Account
   adminUsernameType?: UsernameTypeLvo;
 }
 
-export interface ContactDto extends BaseHistDto {
+export interface ContactDto extends AbstractChangeTrackingDto {
   id?: number;
   firstName: string;
   lastName: string;
@@ -62,13 +67,13 @@ export interface ContactDto extends BaseHistDto {
   addresses?: ContactAddressDto[];
 }
 
-export interface AccountContactDto extends BaseHistDto {
+export interface AccountContactDto extends AbstractChangeTrackingDto {
   accountId?: number;
   contact: ContactDto;
   role: AccountContactRoleLvo;
 }
 
-export interface AbstractContactPointDto extends BaseHistDto {
+export interface AbstractContactPointDto extends AbstractBaseDto {
   id?: number;
   contactId?: number;
   holderType: HolderTypeLvo;
@@ -93,7 +98,7 @@ export interface ContactPhoneDto extends AbstractContactPointDto {
   type: PhoneTypeLvo;
 }
 
-export interface UserDto extends BaseHistDto, ChangeStatusDelegateDto<UserStatusLvo> {
+export interface UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
   id?: number;
   picture: string;
   provider: string;
@@ -110,42 +115,46 @@ export interface AccountSearchCriteria extends AbstractSearchCriteria {
   includeContactRoles?: boolean;
 }
 
-export interface GroupDto extends BaseHistDto {
+export interface GroupDto extends AbstractChangeTrackingDto {
   id?: number;
   name: string;
   description?: string;
   holderType: HolderTypeLvo;
+  groupRoles?: GroupRoleDto[];
+  groupUsers?: GroupUserDto[];
+
 }
 
-export interface PrivilegeDto extends BaseHistDto {
+export interface PrivilegeDto extends AbstractChangeTrackingDto {
   id?: number;
   name: string;
   description?: string;
 }
 
-export interface RoleDto extends BaseHistDto {
+export interface RoleDto extends AbstractChangeTrackingDto {
   id?: number;
   name: string;
   description?: string;
   holderType: HolderTypeLvo;
+  rolePrivileges?: RolePrivilegeDto[];
 }
 
-export interface GroupRoleDto extends BaseHistDto {
+export interface GroupRoleDto extends AbstractChangeTrackingDto {
   groupId?: number;
   roleId?: number;
 }
 
-export interface GroupUserDto extends BaseHistDto {
+export interface GroupUserDto extends AbstractChangeTrackingDto {
   groupId?: number;
   userId?: number;
 }
 
-export interface RolePrivilegeDto extends BaseHistDto {
+export interface RolePrivilegeDto extends AbstractChangeTrackingDto {
   roleId?: number;
   privilegeId?: number;
 }
 
-export interface UserRoleDto extends BaseHistDto {
+export interface UserRoleDto extends AbstractChangeTrackingDto {
   userId?: number;
   roleId?: number;
 }

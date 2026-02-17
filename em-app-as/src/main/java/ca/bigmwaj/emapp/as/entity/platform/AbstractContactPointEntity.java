@@ -1,8 +1,8 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.PhoneTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

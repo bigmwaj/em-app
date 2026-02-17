@@ -1,7 +1,7 @@
-<h2 mat-dialog-title>Change User Status</h2>
+<h2 mat-dialog-title>Change Status</h2>
 
 <mat-dialog-content>
-  <p>Change status for user: <strong>{{ data.user.username }}</strong></p>
+  <p><strong>{{ title }}</strong></p>
   @if (error && !loading) {
   <div class="error-message">
     <mat-card>
@@ -14,15 +14,15 @@
   @if (loading) {
   <div class="loading-section">
     <mat-spinner></mat-spinner>
-    <p>Changing user status...</p>
+    <p>Changing status...</p>
   </div>
   } @else {
-  <form [formGroup]="form" class="user-change-status-form">
+  <form [formGroup]="form" class="change-status-form">
 
     <mat-form-field appearance="outline" class="form-field full-width">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
-        @for (status of userStatuses; track $index) {
+        @for (status of statuses; track $index) {
         <mat-option [value]="status">{{ status }}</mat-option>
         }
       </mat-select>

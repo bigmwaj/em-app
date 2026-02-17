@@ -14,9 +14,6 @@ export class RoleService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets all roles
-   */
   getRoles(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<RoleDto>> {
     let params = new HttpParams();
 
@@ -27,31 +24,19 @@ export class RoleService {
     return this.http.get<SearchResult<RoleDto>>(this.apiUrl, { params });
   }
 
-  /**
-   * Gets a single role by ID
-   */
   getRole(id: number): Observable<RoleDto> {
     return this.http.get<RoleDto>(`${this.apiUrl}/id/${id}`);
   }
 
-  /**
-   * Creates a new role
-   */
   createRole(role: RoleDto): Observable<RoleDto> {
     return this.http.post<RoleDto>(this.apiUrl, role);
   }
 
-  /**
-   * Updates an existing role
-   */
   updateRole(role: RoleDto): Observable<RoleDto> {
     return this.http.patch<RoleDto>(`${this.apiUrl}`, role);
   }
 
-  /**
-   * Deletes a role
-   */
-  deleteRole(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteRole(role: RoleDto): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${role.id}`);
   }
 }

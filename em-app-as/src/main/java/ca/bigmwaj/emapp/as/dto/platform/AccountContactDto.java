@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.dm.dto.BaseHistDto;
+import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AccountContactDto extends BaseHistDto {
+public class AccountContactDto extends AbstractChangeTrackingDto {
 
     private Short accountId;
 

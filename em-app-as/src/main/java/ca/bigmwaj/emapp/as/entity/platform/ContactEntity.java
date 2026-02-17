@@ -1,12 +1,10 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "PLATFORM_CONTACT")
 @Data
-public class ContactEntity extends AbstractBaseEntity {
+public class ContactEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

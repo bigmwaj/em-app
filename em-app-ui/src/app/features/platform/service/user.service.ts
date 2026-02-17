@@ -14,9 +14,6 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets all users
-   */
   getUsers(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<UserDto>> {
     let params = new HttpParams();
 
@@ -27,31 +24,19 @@ export class UserService {
     return this.http.get<SearchResult<UserDto>>(this.apiUrl, { params });
   }
 
-  /**
-   * Gets a single user by ID
-   */
   getUser(id: number): Observable<UserDto> {
     return this.http.get<UserDto>(`${this.apiUrl}/${id}`);
   }
 
-  /**
-   * Creates a new user
-   */
   createUser(user: UserDto): Observable<UserDto> {
     return this.http.post<UserDto>(this.apiUrl, user);
   }
 
-  /**
-   * Updates an existing user
-   */
   updateUser(user: UserDto): Observable<UserDto> {
     return this.http.patch<UserDto>(`${this.apiUrl}`, user);
   }
 
-  /**
-   * Deletes a user
-   */
-  deleteUser(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteUser(user: UserDto): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${user.id}`);
   }
 }

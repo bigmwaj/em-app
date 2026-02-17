@@ -10,7 +10,9 @@ import {
     ContactDto,
     ContactEmailDto,
     ContactPhoneDto,
+    GroupDto,
     HolderTypeLvo,
+    RoleDto,
     UserDto
 } from "./api.platform.model";
 import { HttpParams } from "@angular/common/http";
@@ -73,6 +75,24 @@ export class PlatformHelper extends SharedHelper {
 
     static getDefaultContactAddress(contact: ContactDto | null): ContactAddressDto | null {
         return contact?.addresses?.[0] || null;
+    }
+
+    static duplicateRole(role: RoleDto): RoleDto {
+        // Create a deep copy of the role
+        const duplicatedRole: RoleDto = JSON.parse(JSON.stringify(role));
+
+        // Clear identifier fields
+        delete duplicatedRole.id;
+        return duplicatedRole;
+    }
+    
+    static duplicateGroup(group: GroupDto): GroupDto {
+        // Create a deep copy of the group
+        const duplicatedGroup: GroupDto = JSON.parse(JSON.stringify(group));
+
+        // Clear identifier fields
+        delete duplicatedGroup.id;
+        return duplicatedGroup;
     }
 
     static duplicateAccount(account: AccountDto): AccountDto {
@@ -159,64 +179,6 @@ export class PlatformHelper extends SharedHelper {
         }
 
         return duplicatedContact;
-    }
-
-    static buildAccountDto(detailForm: FormGroup, primaryContactForm: FormGroup, adminUserForm: FormGroup): AccountDto {
-
-        const accountFormValue = detailForm.value;
-        const contactFormValue = primaryContactForm.value;
-
-        const accountDto: AccountDto = {
-            name: accountFormValue.name,
-            description: accountFormValue.description,
-            status: AccountStatusLvo.ACTIVE,
-            adminUsername: adminUserForm.value.adminUsername
-        };
-
-        // Primary contact
-        const primaryContact: ContactDto = {
-            firstName: contactFormValue.firstName,
-            lastName: contactFormValue.lastName,
-            birthDate: contactFormValue.birthDate,
-            holderType: HolderTypeLvo.ACCOUNT
-        };
-
-        // Defaut email
-        const defaultEmail: ContactEmailDto = {
-            email: contactFormValue.defaultEmail,
-            type: contactFormValue.defaultEmailType,
-            holderType: HolderTypeLvo.ACCOUNT,
-            defaultContactPoint: true
-        }
-
-        // Defaut phone
-        const defaultPhone: ContactPhoneDto = {
-            phone: contactFormValue.defaultPhone,
-            type: contactFormValue.defaultPhoneType,
-            holderType: HolderTypeLvo.ACCOUNT,
-            defaultContactPoint: true
-        }
-
-        // Defaut address
-        const defaultAddress: ContactAddressDto = {
-            address: contactFormValue.defaultAddress,
-            type: contactFormValue.defaultAddressType,
-            holderType: HolderTypeLvo.ACCOUNT,
-            defaultContactPoint: true
-        }
-
-        primaryContact.emails = [defaultEmail];
-        primaryContact.phones = [defaultPhone];
-        primaryContact.addresses = [defaultAddress];
-
-        const accountContact: AccountContactDto = {
-            contact: primaryContact,
-            role: AccountContactRoleLvo.PRINCIPAL
-        };
-
-        accountDto.accountContacts = [accountContact];
-
-        return accountDto;
     }
 
 }

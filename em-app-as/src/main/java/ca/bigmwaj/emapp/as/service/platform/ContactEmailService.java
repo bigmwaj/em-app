@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactEmailDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.ContactEmailDto;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEmailEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
@@ -34,7 +34,7 @@ public class ContactEmailService extends AbstractService {
 
     public List<ContactEmailDto> findAll(Long contactId) {
         var example = getCommonCriteria(contactId);
-        return dao.findAll(example).stream().map(GlobalMapper.INSTANCE::toDto).toList();
+        return dao.findAll(example).stream().map(GlobalPlatformMapper.INSTANCE::toDto).toList();
     }
 
     private Optional<ContactEmailEntity> findEntityById(Long contactId, Long emailId) {
@@ -45,7 +45,7 @@ public class ContactEmailService extends AbstractService {
 
     public ContactEmailDto findById(Long contactId, Long emailId) {
         return findEntityById(contactId, emailId)
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .orElseThrow(() -> new NoSuchElementException("Contact email not found with contactId: " + contactId + " and emailId: " + emailId));
     }
 
@@ -56,21 +56,21 @@ public class ContactEmailService extends AbstractService {
     }
 
     public ContactEmailDto create(Long contactId, ContactEmailDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreateHistEntity(entity);
         var contactEntity = contactDao.findById(contactId)
                 .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
         entity.setContact(contactEntity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public ContactEmailDto update(Long contactId, ContactEmailDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
         var contactEntity = contactDao.findById(contactId)
                 .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
         entity.setContact(contactEntity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public boolean isEmailUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String email) {

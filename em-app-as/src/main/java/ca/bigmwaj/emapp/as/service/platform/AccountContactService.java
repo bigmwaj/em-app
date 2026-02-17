@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.AccountContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
@@ -26,12 +26,12 @@ public class AccountContactService extends AbstractService {
     private ContactDao contactDao;
 
     public AccountContactDto create(AccountContactDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         var contact = contactService.create(dto.getContact());
         var contactEntity = contactDao.getReferenceById(contact.getId());
         entity.setContact(contactEntity);
         beforeCreateHistEntity(entity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public void beforeCreate(AccountContactEntity entity, AccountContactDto dto) {
@@ -44,7 +44,7 @@ public class AccountContactService extends AbstractService {
     }
 
     protected AccountContactDto toDtoWithChildren(AccountContactEntity entity) {
-        var dto = GlobalMapper.INSTANCE.toDto(entity);
+        var dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
         ContactEntity contactEntity = entity.getContact();
         ContactDto contactDto = contactService.toDtoWithChildren(contactEntity);
         dto.setContact(contactDto);

@@ -14,9 +14,6 @@ export class GroupService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets all groups
-   */
   getGroups(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<GroupDto>> {
     let params = new HttpParams();
 
@@ -27,31 +24,19 @@ export class GroupService {
     return this.http.get<SearchResult<GroupDto>>(this.apiUrl, { params });
   }
 
-  /**
-   * Gets a single group by ID
-   */
   getGroup(id: number): Observable<GroupDto> {
     return this.http.get<GroupDto>(`${this.apiUrl}/id/${id}`);
   }
 
-  /**
-   * Creates a new group
-   */
   createGroup(group: GroupDto): Observable<GroupDto> {
     return this.http.post<GroupDto>(this.apiUrl, group);
   }
 
-  /**
-   * Updates an existing group
-   */
   updateGroup(group: GroupDto): Observable<GroupDto> {
     return this.http.patch<GroupDto>(`${this.apiUrl}`, group);
   }
 
-  /**
-   * Deletes a group
-   */
-  deleteGroup(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteGroup(group: GroupDto): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${group.id}`);
   }
 }

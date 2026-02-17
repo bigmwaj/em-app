@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser;
@@ -94,7 +94,7 @@ public class UserService extends AbstractService implements AuthenticationManage
     }
 
     private ContactEntity getContact(UserDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto.getContact());
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto.getContact());
         if (entity.getId() == null) {
 
             beforeCreateHistEntity(entity);
@@ -107,7 +107,7 @@ public class UserService extends AbstractService implements AuthenticationManage
     }
 
     public UserDto create(UserDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        UserEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         entity.setContact(getContact(dto));
 
         // Hash password if provided
@@ -116,7 +116,7 @@ public class UserService extends AbstractService implements AuthenticationManage
         }
 
         beforeCreateHistEntity(entity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public UserDto create(AccountEntity accountEntity, String username, UsernameTypeLvo usernameType) {
@@ -135,11 +135,11 @@ public class UserService extends AbstractService implements AuthenticationManage
         entity.setStatus(UserStatusLvo.ACTIVE);
         entity.setStatusDate(LocalDateTime.now());
         beforeCreateHistEntity(entity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public UserDto update(UserDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
 
         // Hash password if provided and changed
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
@@ -151,7 +151,7 @@ public class UserService extends AbstractService implements AuthenticationManage
         }
 
         beforeUpdateHistEntity(entity);
-        return GlobalMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public void validateAccountHolder(String email) {
@@ -171,7 +171,7 @@ public class UserService extends AbstractService implements AuthenticationManage
     }
 
     protected UserDto toDtoWithChildren(UserEntity entity) {
-        var dto = GlobalMapper.INSTANCE.toDto(entity);
+        var dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
         dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
         return dto;
     }
@@ -189,7 +189,7 @@ public class UserService extends AbstractService implements AuthenticationManage
             boolean credentialsNonExpired = true;
             boolean accountNonLocked = true;
             var authorities = Collections.singleton(new AuthenticatedUserGrantedAuthority("USER"));
-            var authUser = new AuthenticatedUser(GlobalMapper.INSTANCE.toDto(user), enabled,
+            var authUser = new AuthenticatedUser(GlobalPlatformMapper.INSTANCE.toDto(user), enabled,
                     accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
             return UsernamePasswordAuthenticationToken.authenticated(authUser, username, authorities);
 

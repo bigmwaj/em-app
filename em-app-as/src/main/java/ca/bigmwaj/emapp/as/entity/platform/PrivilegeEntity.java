@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "PLATFORM_PRIVILEGE")
 @Data
-public class PrivilegeEntity extends AbstractBaseEntity {
+public class PrivilegeEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

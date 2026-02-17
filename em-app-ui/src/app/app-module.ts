@@ -38,24 +38,13 @@ import { DashboardComponent } from './core/component/dashboard/dashboard.compone
 // Feature Components
 import { AccountIndexComponent } from './features/platform/component/account/index.component';
 import { AccountEditComponent } from './features/platform/component/account/edit.component';
-import { AccountChangeStatusDialogComponent } from './features/platform/component/account/change-status-dialog.component';
-import { AccountDeleteDialogComponent } from './features/platform/component/account/delete-dialog.component';
 import { EditAccountDetailsComponent } from './features/platform/component/account/edit/account-details.component';
 import { EditPrincipalAccountContactComponent } from './features/platform/component/account/edit/principal-account-contact.component';
 import { EditAccountAdminUserFormComponent } from './features/platform/component/account/edit/account-admin-user.component';
 import { ContactIndexComponent } from './features/platform/component/contact/index.component';
 import { ContactEditComponent } from './features/platform/component/contact/edit.component';
-import { ContactDeleteDialogComponent } from './features/platform/component/contact/delete-dialog.component';
 import { UserIndexComponent } from './features/platform/component/user/index.component';
 import { UserEditComponent } from './features/platform/component/user/edit.component';
-import { UserChangeStatusDialogComponent } from './features/platform/component/user/change-status-dialog.component';
-import { UserDeleteDialogComponent } from './features/platform/component/user/delete-dialog.component';
-import { GroupIndexComponent } from './features/platform/component/group/index.component';
-import { GroupEditComponent } from './features/platform/component/group/edit.component';
-import { GroupDeleteDialogComponent } from './features/platform/component/group/delete-dialog.component';
-import { RoleIndexComponent } from './features/platform/component/role/index.component';
-import { RoleEditComponent } from './features/platform/component/role/edit.component';
-import { RoleDeleteDialogComponent } from './features/platform/component/role/delete-dialog.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
@@ -65,6 +54,7 @@ import { DeleteDialogComponent } from './features/shared/component/delete-dialog
 import { PhoneListComponent } from './features/platform/component/contact/phone/list.component';
 import { EmailListComponent } from './features/platform/component/contact/email/list.component';
 import { AddressListComponent } from './features/platform/component/contact/address/list.component';
+import { SearchFormComponent } from './features/shared/component/search-form.component';
 
 @NgModule({
   declarations: [
@@ -75,29 +65,19 @@ import { AddressListComponent } from './features/platform/component/contact/addr
     DashboardComponent,
     UserIndexComponent,
     UserEditComponent,
-    UserChangeStatusDialogComponent,
-    UserDeleteDialogComponent,
     AccountIndexComponent,
     AccountEditComponent,
     EditAccountDetailsComponent,
     EditPrincipalAccountContactComponent,
     EditAccountAdminUserFormComponent,
-    AccountChangeStatusDialogComponent,
-    AccountDeleteDialogComponent,
     ContactIndexComponent,
     ContactEditComponent,
-    ContactDeleteDialogComponent,
-    GroupIndexComponent,
-    GroupEditComponent,
-    GroupDeleteDialogComponent,
-    RoleIndexComponent,
-    RoleEditComponent,
-    RoleDeleteDialogComponent,
     ChangeStatusDialogComponent,
     DeleteDialogComponent,
     PhoneListComponent,
     EmailListComponent,
-    AddressListComponent
+    AddressListComponent,
+    SearchFormComponent
   ],
   imports: [
     BrowserModule,

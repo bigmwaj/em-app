@@ -9,7 +9,7 @@ import ca.bigmwaj.emapp.as.validator.xml.ValidationXmlParser;
 import ca.bigmwaj.emapp.as.validator.xml.model.FieldValidation;
 import ca.bigmwaj.emapp.as.validator.xml.model.RuleConfig;
 import ca.bigmwaj.emapp.as.validator.xml.model.ValidationConfig;
-import ca.bigmwaj.emapp.dm.dto.BaseDto;
+import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
             return true; // Let @NotNull handle null checks
         }
 
-        if (!(dto instanceof BaseDto baseDto)) {
+        if (!(dto instanceof AbstractChangeTrackingDto baseDto)) {
             throw new ValidationException("DTO must extend BaseDto for validation");
         }
 
@@ -108,7 +108,7 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
             var wrapper = new BeanWrapperImpl(dto);
             var nestedObject = wrapper.getPropertyValue(fieldValidation.getName());
             if (nestedObject != null) {
-                if (nestedObject instanceof BaseDto) {
+                if (nestedObject instanceof AbstractChangeTrackingDto) {
                     isValid = nestedConfig.getFields().stream()
                             .allMatch(fv -> validateField(nestedObject, fv, context));
                 } else {

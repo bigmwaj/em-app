@@ -1,21 +1,16 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 @IdClass(GroupUserPK.class)
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "PLATFORM_GROUP_USER")
 @Data
-public class GroupUserEntity extends AbstractBaseEntity {
+public class GroupUserEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @ManyToOne

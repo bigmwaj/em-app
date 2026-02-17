@@ -4,7 +4,7 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactAddressDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactEmailDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactPhoneDao;
-import ca.bigmwaj.emapp.as.dto.GlobalMapper;
+import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.*;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
@@ -91,14 +91,14 @@ public class ContactService extends AbstractService {
     }
 
     public ContactDto create(ContactDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreate(entity, dto);
         entity = dao.save(entity);
         return findById(entity.getId());
     }
 
     public ContactDto update(ContactDto dto) {
-        var entity = GlobalMapper.INSTANCE.toEntity(dto);
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
         initUpdateContactPoints(entity, entity.getEmails(), dto.getEmails(), this::deleteEmailIfApplicable);
         initUpdateContactPoints(entity, entity.getPhones(), dto.getPhones(), this::deletePhoneIfApplicable);
@@ -140,21 +140,21 @@ public class ContactService extends AbstractService {
 
     private void deleteEmailIfApplicable(ContactEmailDto email) {
         if (email.isToDelete()) {
-            var entity = GlobalMapper.INSTANCE.toEntity(email);
+            var entity = GlobalPlatformMapper.INSTANCE.toEntity(email);
             emailDao.delete(entity);
         }
     }
 
     private void deletePhoneIfApplicable(ContactPhoneDto phone) {
         if (phone.isToDelete()) {
-            var entity = GlobalMapper.INSTANCE.toEntity(phone);
+            var entity = GlobalPlatformMapper.INSTANCE.toEntity(phone);
             phoneDao.delete(entity);
         }
     }
 
     private void deleteAddressIfApplicable(ContactAddressDto address) {
         if (address.isToDelete()) {
-            var entity = GlobalMapper.INSTANCE.toEntity(address);
+            var entity = GlobalPlatformMapper.INSTANCE.toEntity(address);
             addressDao.delete(entity);
         }
     }
@@ -166,19 +166,19 @@ public class ContactService extends AbstractService {
      * This eliminates the N+1 query problem where each contact would trigger 3 additional queries.
      */
     protected ContactDto toDtoWithChildren(ContactEntity entity) {
-        var dto = GlobalMapper.INSTANCE.toDto(entity);
+        var dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
 
         // Map child collections directly from the entity's pre-loaded collections
         dto.setEmails(entity.getEmails().stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList());
 
         dto.setPhones(entity.getPhones().stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList());
 
         dto.setAddresses(entity.getAddresses().stream()
-                .map(GlobalMapper.INSTANCE::toDto)
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
                 .toList());
 
         return dto;

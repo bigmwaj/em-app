@@ -1,14 +1,14 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-import { UserDto, UserStatusLvo } from '../../platform/api.platform.model';
-import { UserService } from '../../platform/service/user.service';
-import { ChangeStatusDelegateDto, EditActionLvo } from '../api.shared.model';
+import { Observable, Subject, takeUntil } from 'rxjs';
+import { AbstractStatusTrackingDto, EditActionLvo } from '../api.shared.model';
 
-export interface ChangeStatusDialogData<T> {  
-  user: UserDto;
-  dto: ChangeStatusDelegateDto<T>;
+export interface ChangeStatusDialogData<S> {
+  dto: AbstractStatusTrackingDto<S>;
+  title?: string;
+  statuses?: S[];
+  changeStatusAction?: (dto: AbstractStatusTrackingDto<S>) => Observable<AbstractStatusTrackingDto<S>>;
 }
 
 @Component({
@@ -17,23 +17,32 @@ export interface ChangeStatusDialogData<T> {
   styleUrls: ['./change-status-dialog.component.scss'],
   standalone: false
 })
-export class ChangeStatusDialogComponent implements OnInit, OnDestroy {
-  userStatuses = Object.values(UserStatusLvo);
+export class ChangeStatusDialogComponent<S> implements OnInit, OnDestroy {
+  title = 'Change Status';
+  changeStatusAction?: (dto: AbstractStatusTrackingDto<S>) => Observable<AbstractStatusTrackingDto<S>>;
+  statuses?: S[];
 
   form!: FormGroup;
-  user!: UserDto;
+  dto!: AbstractStatusTrackingDto<S>;
   loading = false;
   private destroy$ = new Subject<void>();
   error: string | null = null;
 
   constructor(
-    private userService: UserService,
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<ChangeStatusDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ChangeStatusDialogData<any>
+    public dialogRef: MatDialogRef<ChangeStatusDialogComponent<S>>,
+    @Inject(MAT_DIALOG_DATA) public data: ChangeStatusDialogData<S>
   ) {
-    this.user = data.user;
-    this.userStatuses = this.userStatuses.filter(e => e !== this.user.status);
+
+    this.dto = data.dto;
+    this.statuses = data.statuses ? data.statuses.filter(e => e !== this.dto.status) : [];
+    if (data.title) {
+      this.title = data.title;
+    }
+    if (data.changeStatusAction) {
+      this.changeStatusAction = data.changeStatusAction;
+    }
+
   }
 
   ngOnInit(): void {
@@ -46,7 +55,7 @@ export class ChangeStatusDialogComponent implements OnInit, OnDestroy {
   }
 
   private initializeForms(): void {
-    const defaultStatus = this.userStatuses.length > 0 ? this.userStatuses[0] : null;
+    const defaultStatus = this.statuses && this.statuses.length > 0 ? this.statuses[0] : null;
     this.form = this.fb.group({
       status: [defaultStatus, Validators.required],
       statusDate: [new Date()],
@@ -65,11 +74,14 @@ export class ChangeStatusDialogComponent implements OnInit, OnDestroy {
     }
     this.loading = true;
     this.error = null;
+    if (!this.changeStatusAction) {
+      throw new Error('Change status action is not provided');
+    }
 
-    this.userService.updateUser(this.buildUserDto()).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (userDto) => {
+    this.changeStatusAction(this.buildUserDto()).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (dto) => {
         this.loading = false;
-        this.dialogRef.close(userDto);
+        this.dialogRef.close(dto);
       },
       error: (err) => {
         console.error('Failed to change the user status:', err);
@@ -80,28 +92,23 @@ export class ChangeStatusDialogComponent implements OnInit, OnDestroy {
 
   }
 
-  buildUserDto(): UserDto {
+  buildUserDto(): AbstractStatusTrackingDto<S> {
     const formValue = this.form.value;
-    const userDto = {
-      id: this.user.id,
-      key: this.user.key,
-      username: this.user.username,
-      usernameType: this.user.usernameType,
-      provider: this.user.provider,
-      picture: this.user.picture,
-      holderType: this.user.holderType,
+    const dto = {
+      key: this.dto.key,
       status: formValue.status,
       editAction: EditActionLvo.CHANGE_STATUS,
       statusDate: formValue.statusDate,
       statusReason: formValue.statusReason
-    } as UserDto;
+    } as AbstractStatusTrackingDto<S>;
 
     if (formValue.statusDate) {
-      userDto.statusDate = formValue.statusDate;
+      dto.statusDate = formValue.statusDate;
     }
+
     if (formValue.statusReason) {
-      userDto.statusReason = formValue.statusReason;
+      dto.statusReason = formValue.statusReason;
     }
-    return userDto;
+    return dto;
   }
 }

@@ -3,7 +3,7 @@ package ca.bigmwaj.emapp.as.dao;
 import ca.bigmwaj.emapp.as.dao.shared.QueryConfig;
 import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +12,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import java.util.List;
 
 @NoRepositoryBean
-public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaRepository<E, ID> {
+public interface AbstractDao<E extends AbstractChangeTrackingEntity, ID> extends JpaRepository<E, ID> {
 
     Class<E> getEntityClass();
 

@@ -8,11 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Data
-public class BaseDto {
+public abstract class AbstractBaseDto {
 
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private boolean _new;
+
+    private Object key;
 
     private EditActionLvo editAction;
 

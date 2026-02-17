@@ -32,20 +32,20 @@ export enum SortType {
 }
 
 // Base DTOs
-export interface BaseDto {
+export interface AbstractBaseDto {
   key?: any;
   editAction?: EditActionLvo;
 }
 
-export interface BaseHistDto extends BaseDto {
+export interface AbstractChangeTrackingDto extends AbstractBaseDto {
   createdBy?: String;
   createdDate?: Date;
   updatedBy?: String;
   updatedDate?: Date;
 }
 
-export interface ChangeStatusDelegateDto<T> {
-  status: T;
+export interface AbstractStatusTrackingDto<S> extends AbstractChangeTrackingDto {
+  status?: S;
   statusDate?: Date;
   statusReason?: string;
 }

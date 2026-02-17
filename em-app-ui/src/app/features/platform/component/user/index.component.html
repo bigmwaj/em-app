@@ -5,7 +5,7 @@
       <mat-icon mat-card-avatar>people</mat-icon>
       <span>Users Management</span>
     </h1>
-    <button mat-raised-button color="primary" (click)="createUser()">
+    <button mat-raised-button color="primary" (click)="createAction()">
       <mat-icon>add</mat-icon>
       Add User
     </button>
@@ -34,18 +34,18 @@
     </mat-card>
   </div>
 
-  @if (error && !loading) {
+  @if (pageData.error && !pageData.loading) {
 
   <div class="info-message">
     <mat-card>
       <mat-icon>info</mat-icon>
-      <p>{{ error }}</p>
+      <p>{{ pageData.error }}</p>
     </mat-card>
   </div>
 
   }
 
-  @if (loading) {
+  @if (pageData.loading) {
 
   <div class="loading-section">
     <mat-spinner></mat-spinner>
@@ -79,7 +79,7 @@
         <ng-container matColumnDef="fullName">
           <th mat-header-cell *matHeaderCellDef>Full Name</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary" (click)="viewUser(element)">
+            <button mat-button color="primary" (click)="viewAction(element)">
               @if(element?.holderType === 'CORPORATE') {
                  <mat-icon>person</mat-icon>
               } @else {
@@ -113,19 +113,19 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item color="primary" (click)="viewUser(element)">
+              <button mat-menu-item color="primary" (click)="viewAction(element)">
                 <mat-icon>visibility</mat-icon>
                 View Details
               </button>
-              <button mat-menu-item color="accent" (click)="duplicateUser(element)">
+              <button mat-menu-item color="accent" (click)="duplicateAction(element)">
                 <mat-icon>content_copy</mat-icon>
                 Duplicate
               </button>
-              <button mat-menu-item (click)="changeUserStatus(element)">
+              <button mat-menu-item (click)="changeStatusAction(element)">
                 <mat-icon>swap_horiz</mat-icon>
                 Change Status
               </button>
-              <button mat-menu-item color="warn" (click)="deleteUser(element)">
+              <button mat-menu-item color="warn" (click)="deleteAction(element)">
                 <mat-icon>delete</mat-icon>
                 Delete
               </button>

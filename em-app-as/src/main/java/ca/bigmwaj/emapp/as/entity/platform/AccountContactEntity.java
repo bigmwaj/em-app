@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "PLATFORM_ACCOUNT_CONTACT")
 @Data
-public class AccountContactEntity extends AbstractBaseEntity {
+public class AccountContactEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @ManyToOne

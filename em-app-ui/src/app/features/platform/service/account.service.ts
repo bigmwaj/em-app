@@ -14,9 +14,6 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets all accounts
-   */
   getAccounts(searchCriteria?: AccountSearchCriteria): Observable<SearchResult<AccountDto>> {
     let params = new HttpParams();
 
@@ -27,31 +24,20 @@ export class AccountService {
     return this.http.get<SearchResult<AccountDto>>(this.apiUrl, { params });
   }
 
-  /**
-   * Gets a single account by ID
-   */
   getAccount(id: number): Observable<AccountDto> {
     return this.http.get<AccountDto>(`${this.apiUrl}/${id}`);
   }
 
-  /**
-   * Creates a new account
-   */
   createAccount(account: AccountDto): Observable<AccountDto> {
     return this.http.post<AccountDto>(this.apiUrl, account);
   }
 
-  /**
-   * Updates an existing account
-   */
   updateAccount(account: AccountDto): Observable<AccountDto> {
     return this.http.patch<AccountDto>(`${this.apiUrl}`, account);
   }
 
-  /**
-   * Deletes an account
-   */
-  deleteAccount(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteAccount(account: AccountDto): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${account.id}`);
   }
+
 }

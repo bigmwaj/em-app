@@ -1,14 +1,9 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 
 @IdClass(RolePrivilegePK.class)
@@ -16,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "PLATFORM_ROLE_PRIVILEGE")
 @Data
-public class RolePrivilegeEntity extends AbstractBaseEntity {
+public class RolePrivilegeEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @ManyToOne

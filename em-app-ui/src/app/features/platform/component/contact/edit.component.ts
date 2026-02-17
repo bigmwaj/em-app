@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,10 +10,8 @@ import {
   PhoneTypeLvo,
   AddressTypeLvo,
 } from '../../api.platform.model';
-import { ContactDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
 import { SharedHelper } from '../../../shared/shared.helper';
-import { Subject, takeUntil } from 'rxjs';
 import { COUNTRIES } from '../../constants/country.constants';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
 
@@ -23,11 +21,9 @@ import { AbstractEditComponent } from '../../../shared/component/abstract-edit.c
   styleUrls: ['./edit.component.scss'],
   standalone: false,
 })
-export class ContactEditComponent extends AbstractEditComponent implements OnInit, OnDestroy {
+export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
+
   contactForm!: FormGroup;
-  contact?: ContactDto;
-  loading = false;
-  error: string | null = null;
 
   // Enums for dropdowns
   ContactEditMode = SharedHelper.EditMode;
@@ -39,33 +35,54 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
   // Constants
   readonly countries = COUNTRIES;
 
-  private destroy$ = new Subject<void>();
-
   constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private contactService: ContactService,
-    private dialog: MatDialog,
+    protected override fb: FormBuilder,
+    protected override router: Router,
+    protected override route: ActivatedRoute,
+    protected override dialog: MatDialog,
+    private service: ContactService,
   ) {
-    super();
+    super(fb, router, route, dialog);
+
+    this.delete = (dto) => this.service.deleteContact(dto);
+    this.create = (dto) => this.service.createContact(dto);
+    this.update = (dto) => this.service.updateContact(dto);
   }
-  
+
   get isInvalidForm(): boolean {
     return this.contactForm.invalid;
   }
 
-  ngOnInit(): void {
-    this.initializeForm();
-    this.loadContactData();
+  protected override getBaseRoute(): string {
+    return '/contacts';
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  protected duplicate(): ContactDto {
+    if (!this.dto) {
+      throw new Error('No contact data to duplicate');
+    }
+    return PlatformHelper.duplicateContact(this.dto)
   }
 
-  private initializeForm(): void {
+  protected disableAllForms(): void {
+    this.contactForm.disable();
+  }
+
+  protected enableAllForms(): void {
+    this.contactForm.enable();
+  }
+
+  protected override setupCreateMode(): void {
+    // Initialize with default values for create mode
+    this.contactForm.patchValue({
+      holderType: HolderTypeLvo.ACCOUNT,
+      defaultEmailType: EmailTypeLvo.WORK,
+      defaultPhoneType: PhoneTypeLvo.WORK,
+      defaultAddressType: AddressTypeLvo.WORK
+    });
+  }
+
+  protected initializeForms(): void {
     this.contactForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -85,7 +102,7 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
     // Make country required when address is provided
     this.contactForm
       .get('defaultAddress')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges/*.pipe(takeUntil(this.destroy$))*/
       .subscribe((address) => {
         const countryControl = this.contactForm.get('country');
         if (address && address.trim()) {
@@ -97,58 +114,16 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
       });
   }
 
-  private loadContactData(): void {
-    // Get navigation state data
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras?.state || history.state;
-
-    // Get mode from route params or state
-    this.route.params.subscribe((params) => {
-      const modeParam = params['mode'] || state.mode;
-
-      if (modeParam === 'create') {
-        this.mode = SharedHelper.EditMode.CREATE;
-        // Check if we have a duplicated contact to populate
-        if (state.contact) {
-          this.contact = state.contact;
-          if (this.contact) {
-            this.populateForm(this.contact);
-          }
-        }
-        this.contactForm.enable();
-      } else if (modeParam === 'edit') {
-        this.mode = SharedHelper.EditMode.EDIT;
-        if (state.contact) {
-          this.contact = state.contact;
-          if (this.contact) {
-            this.populateForm(this.contact);
-          }
-        }
-        this.contactForm.enable();
-      } else {
-        // View mode
-        this.mode = SharedHelper.EditMode.VIEW;
-        if (state.contact) {
-          this.contact = state.contact;
-          if (this.contact) {
-            this.populateForm(this.contact);
-          }
-        }
-        this.contactForm.disable();
-      }
-    });
-  }
-
-  private populateForm(contact: ContactDto): void {
-    const defaultEmail = PlatformHelper.getDefaultContactEmail(contact);
-    const defaultPhone = PlatformHelper.getDefaultContactPhone(contact);
-    const defaultAddress = PlatformHelper.getDefaultContactAddress(contact);
+  protected populateForms(): void {
+    const defaultEmail = PlatformHelper.getDefaultContactEmail(this.dto!);
+    const defaultPhone = PlatformHelper.getDefaultContactPhone(this.dto!);
+    const defaultAddress = PlatformHelper.getDefaultContactAddress(this.dto!);
 
     this.contactForm.patchValue({
-      firstName: contact.firstName,
-      lastName: contact.lastName,
-      birthDate: contact.birthDate,
-      holderType: contact.holderType,
+      firstName: this.dto!.firstName,
+      lastName: this.dto!.lastName,
+      birthDate: this.dto!.birthDate,
+      holderType: this.dto!.holderType,
       defaultEmail: defaultEmail?.email || '',
       defaultEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
       defaultPhone: defaultPhone?.phone || '',
@@ -161,7 +136,7 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
     });
   }
 
-  private buildContactDto(): ContactDto {
+  protected buildDtoFromForms(): ContactDto {
     const formValue = this.contactForm.value;
 
     const contactDto: ContactDto = {
@@ -172,8 +147,8 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
     };
 
     // Add ID if editing
-    if (this.mode === SharedHelper.EditMode.EDIT && this.contact?.id) {
-      contactDto.id = this.contact.id;
+    if (this.mode === SharedHelper.EditMode.EDIT && this.dto?.id) {
+      contactDto.id = this.dto.id;
     }
 
     // Build emails array
@@ -189,10 +164,10 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
 
       // Preserve ID if editing
       if (this.mode === SharedHelper.EditMode.EDIT) {
-        const existingEmail = PlatformHelper.getDefaultContactEmail(this.contact!);
+        const existingEmail = PlatformHelper.getDefaultContactEmail(this.dto!);
         if (existingEmail?.id) {
           contactDto.emails[0].id = existingEmail.id;
-          contactDto.emails[0].contactId = this.contact!.id;
+          contactDto.emails[0].contactId = this.dto!.id;
         }
       }
     }
@@ -210,10 +185,10 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
 
       // Preserve ID if editing
       if (this.mode === SharedHelper.EditMode.EDIT) {
-        const existingPhone = PlatformHelper.getDefaultContactPhone(this.contact!);
+        const existingPhone = PlatformHelper.getDefaultContactPhone(this.dto!);
         if (existingPhone?.id) {
           contactDto.phones[0].id = existingPhone.id;
-          contactDto.phones[0].contactId = this.contact!.id;
+          contactDto.phones[0].contactId = this.dto!.id;
         }
       }
     }
@@ -234,108 +209,14 @@ export class ContactEditComponent extends AbstractEditComponent implements OnIni
 
       // Preserve ID if editing
       if (this.mode === SharedHelper.EditMode.EDIT) {
-        const existingAddress = PlatformHelper.getDefaultContactAddress(this.contact!);
+        const existingAddress = PlatformHelper.getDefaultContactAddress(this.dto!);
         if (existingAddress?.id) {
           contactDto.addresses[0].id = existingAddress.id;
-          contactDto.addresses[0].contactId = this.contact!.id;
+          contactDto.addresses[0].contactId = this.dto!.id;
         }
       }
     }
 
     return contactDto;
-  }
-
-  onCreate(): void {
-    this.router.navigate(['/contact/edit', 'create'], {
-      state: { mode: 'create' }
-    });
-  }
-
-  // Navigation handlers
-  onBack(): void {
-    this.router.navigate(['/contacts']);
-  }
-
-  onCancel(): void {
-    this.router.navigate(['/contacts']);
-  }
-
-  onSave(): void {
-    if (this.contactForm.invalid) {
-      this.error = 'Please fill in all required fields';
-      return;
-    }
-
-    this.loading = true;
-    this.error = null;
-
-    const contactDto = this.buildContactDto();
-
-    this.contactService
-      .createContact(contactDto)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (createdContact) => {
-          this.loading = false;
-          this.router.navigate(['/contacts']);
-        },
-        error: (err) => {
-          console.error('Failed to create contact:', err);
-          this.error = 'Failed to create contact. Please try again.';
-          this.loading = false;
-        },
-      });
-  }
-
-  onEdit(): void {
-    if (this.contactForm.invalid) {
-      this.error = 'Please fill in all required fields';
-      return;
-    }
-
-    this.loading = true;
-    this.error = null;
-
-    const contactDto = this.buildContactDto();
-
-    this.contactService
-      .updateContact(contactDto)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (updatedContact) => {
-          this.loading = false;
-          this.router.navigate(['/contacts']);
-        },
-        error: (err) => {
-          console.error('Failed to update contact:', err);
-          this.error = 'Failed to update contact. Please try again.';
-          this.loading = false;
-        },
-      });
-  }
-
-  onDuplicate(): void {
-    if (this.contact) {
-      const duplicatedContact = PlatformHelper.duplicateContact(this.contact);
-      this.router.navigate(['/contacts/edit', 'create'], {
-        state: { mode: 'create', contact: duplicatedContact },
-      });
-    }
-  }
-
-  onDelete(): void {
-    if (this.contact) {
-      const dialogRef = this.dialog.open(ContactDeleteDialogComponent, {
-        width: '400px',
-        data: { contact: this.contact },
-      });
-
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          // Navigate back to index after successful deletion
-          this.router.navigate(['/contacts']);
-        }
-      });
-    }
   }
 }

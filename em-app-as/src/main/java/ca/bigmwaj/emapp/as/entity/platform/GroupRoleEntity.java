@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "PLATFORM_GROUP_ROLE")
 @Data
-public class GroupRoleEntity extends AbstractBaseEntity {
+public class GroupRoleEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @ManyToOne

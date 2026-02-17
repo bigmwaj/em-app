@@ -3,7 +3,6 @@
 
 mat-dialog-content {
   padding: $spacing-lg;
-  min-width: 500px;
 
   @include mobile-only {
     min-width: 280px;
@@ -22,7 +21,7 @@ mat-dialog-content {
     }
   }
 
-  .user-change-status-form {
+  .change-status-form {
     margin-top: $spacing-lg;
     display: flex;
     flex-direction: column;

@@ -1,16 +1,19 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
+import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "PLATFORM_ROLE")
 @Data
-public class RoleEntity extends AbstractBaseEntity {
+public class RoleEntity extends AbstractChangeTrackingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +30,9 @@ public class RoleEntity extends AbstractBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
     private HolderTypeLvo holderType;
+
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RolePrivilegeEntity> rolePrivileges = new ArrayList<>();
 
     public Object getDefaultKey() {
         return id;

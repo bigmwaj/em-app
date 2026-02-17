@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class BaseHistDto extends BaseDto {
+public abstract class AbstractChangeTrackingDto extends AbstractBaseDto {
 
     private String createdBy;
 
@@ -16,7 +16,5 @@ public class BaseHistDto extends BaseDto {
     private String updatedBy;
 
     private LocalDateTime updatedDate;
-
-    private Object key;
 
 }

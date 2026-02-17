@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -11,12 +11,15 @@ import {
   PhoneTypeLvo,
   AddressTypeLvo,
   UsernameTypeLvo,
+  ContactDto,
+  ContactEmailDto,
+  ContactPhoneDto,
+  ContactAddressDto,
+  AccountContactDto,
+  AccountContactRoleLvo,
 } from '../../api.platform.model';
-import { AccountChangeStatusDialogComponent } from './change-status-dialog.component';
-import { AccountDeleteDialogComponent } from './delete-dialog.component';
 import { PlatformHelper } from '../../platform.helper';
-import { SharedHelper } from '../../../shared/shared.helper';
-import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
+import { AbstractEditWithStatusComponent } from '../../../shared/component/abstract-edit-with-status.component';
 
 @Component({
   selector: 'app-account-edit',
@@ -24,37 +27,55 @@ import { AbstractEditComponent } from '../../../shared/component/abstract-edit.c
   styleUrls: ['./edit.component.scss'],
   standalone: false
 })
-export class AccountEditComponent extends AbstractEditComponent implements OnInit {
+export class AccountEditComponent extends AbstractEditWithStatusComponent<AccountDto, AccountStatusLvo> {
   accountForm!: FormGroup;
   primaryAccountContactForm!: FormGroup;
   adminUserForm!: FormGroup;
 
-  account?: AccountDto;
-  loading = false;
-  error: string | null = null;
-
   constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private accountService: AccountService,
-    private dialog: MatDialog
+    protected override fb: FormBuilder,
+    protected override router: Router,
+    protected override route: ActivatedRoute,
+    protected override dialog: MatDialog,
+    private service: AccountService
   ) {
-    super();
+    super(fb, router, route, dialog);
+    this.delete = (dto) => this.service.deleteAccount(dto);
+    this.changeStatus = (dto) => this.service.updateAccount(dto as AccountDto);
+    this.create = (dto) => this.service.createAccount(dto);
+    this.update = (dto) => this.service.updateAccount(dto);
+  }
+
+  protected override getBaseRoute(): string {
+    return '/accounts';
+  }
+
+  protected duplicate(): AccountDto {
+    if (!this.dto) {
+      throw new Error('No account data to duplicate');
+    }
+    return PlatformHelper.duplicateAccount(this.dto)
+  }
+
+  protected disableAllForms(): void {
+    this.accountForm.disable();
+    this.primaryAccountContactForm.disable();
+    this.adminUserForm.disable();
+  }
+
+  protected enableAllForms(): void {
+    this.accountForm.enable();
+    this.primaryAccountContactForm.enable();
+    this.adminUserForm.enable();
   }
 
   get isInvalidForm(): boolean {
-    return this.primaryAccountContactForm.invalid 
-    || this.accountForm.invalid 
-    || ( this.isCreateMode && this.adminUserForm.invalid);
+    return this.primaryAccountContactForm.invalid
+      || this.accountForm.invalid
+      || (this.isCreateMode && this.adminUserForm.invalid);
   }
 
-  ngOnInit(): void {
-    this.initializeForms();
-    this.loadAccountData();
-  }
-
-  private initializeForms(): void {
+  protected initializeForms(): void {
     // Account Details Form
     this.accountForm = this.fb.group({
       name: ['', Validators.required],
@@ -83,48 +104,7 @@ export class AccountEditComponent extends AbstractEditComponent implements OnIni
     });
   }
 
-  private loadAccountData(): void {
-    // Get navigation state data
-    const navigation = this.router.getCurrentNavigation();
-    const state = navigation?.extras?.state || history.state;
-
-    // Get mode from route params or state
-    this.route.params.subscribe(params => {
-      const modeParam = params['mode'] || state.mode;
-
-      if (modeParam === 'create') {
-        this.mode = SharedHelper.EditMode.CREATE;
-        // Check if we have a duplicated account to populate
-        if (state.account) {
-          this.account = state.account;
-          if (this.account) {
-            this.populateForms(this.account);
-          }
-        } else {
-          this.setupCreateMode();
-        }
-        this.enableAllForms();
-      } else if (modeParam === 'edit' && state.account) {
-        this.mode = SharedHelper.EditMode.EDIT;
-        this.account = state.account;
-        if (this.account) {
-          this.populateForms(this.account);
-        }
-      } else if (modeParam === 'view' && state.account) {
-        this.mode = SharedHelper.EditMode.VIEW;
-        this.account = state.account;
-        if (this.account) {
-          this.populateForms(this.account);
-        }
-        this.disableAllForms();
-      } else {
-        // Invalid state - redirect back to index
-        this.router.navigate(['/accounts']);
-      }
-    });
-  }
-
-  private setupCreateMode(): void {
+  protected override setupCreateMode(): void {
     // Initialize with default values for create mode
     this.accountForm.patchValue({
       status: AccountStatusLvo.ACTIVE
@@ -140,7 +120,7 @@ export class AccountEditComponent extends AbstractEditComponent implements OnIni
     });
   }
 
-  private populateForms(account: AccountDto): void {
+  protected populateForms(account: AccountDto): void {
     // Populate account details
     this.accountForm.patchValue({
       name: account.name,
@@ -173,142 +153,61 @@ export class AccountEditComponent extends AbstractEditComponent implements OnIni
     }
   }
 
-  private disableAllForms(): void {
-    this.accountForm.disable();
-    this.primaryAccountContactForm.disable();
-    this.adminUserForm.disable();
-  }
+  protected buildDtoFromForms(): AccountDto {
+    const accountFormValue = this.accountForm.value;
+    const contactFormValue = this.primaryAccountContactForm.value;
 
-  onSave(): void {
-    if (this.mode === SharedHelper.EditMode.VIEW) {
-      return;
+    const accountDto: AccountDto = {
+      name: accountFormValue.name,
+      description: accountFormValue.description,
+      status: AccountStatusLvo.ACTIVE,
+      adminUsername: this.adminUserForm.value.adminUsername,
+      adminUsernameType: this.adminUserForm.value.usernameType
+    };
+
+    // Primary contact
+    const primaryContact: ContactDto = {
+      firstName: contactFormValue.firstName,
+      lastName: contactFormValue.lastName,
+      birthDate: contactFormValue.birthDate,
+      holderType: HolderTypeLvo.ACCOUNT
+    };
+
+    // Defaut email
+    const defaultEmail: ContactEmailDto = {
+      email: contactFormValue.defaultEmail,
+      type: contactFormValue.defaultEmailType,
+      holderType: HolderTypeLvo.ACCOUNT,
+      defaultContactPoint: true
     }
 
-    if (this.accountForm.invalid) {
-      this.error = 'Please fill in all required fields in Account Details';
-      return;
+    // Defaut phone
+    const defaultPhone: ContactPhoneDto = {
+      phone: contactFormValue.defaultPhone,
+      type: contactFormValue.defaultPhoneType,
+      holderType: HolderTypeLvo.ACCOUNT,
+      defaultContactPoint: true
     }
 
-    if (this.primaryAccountContactForm.get('firstName')?.value && this.primaryAccountContactForm.invalid) {
-      this.error = 'Please fill in all required fields in Account Main Contact';
-      return;
+    // Defaut address
+    const defaultAddress: ContactAddressDto = {
+      address: contactFormValue.defaultAddress,
+      type: contactFormValue.defaultAddressType,
+      holderType: HolderTypeLvo.ACCOUNT,
+      defaultContactPoint: true
     }
 
-    if (this.isCreateMode && this.adminUserForm.invalid) {
-      this.error = 'Please fill in all required fields in Account Admin User';
-      return;
-    }
+    primaryContact.emails = [defaultEmail];
+    primaryContact.phones = [defaultPhone];
+    primaryContact.addresses = [defaultAddress];
 
-    this.loading = true;
-    this.error = null;
+    const accountContact: AccountContactDto = {
+      contact: primaryContact,
+      role: AccountContactRoleLvo.PRINCIPAL
+    };
 
-    const accountData = PlatformHelper.buildAccountDto(this.accountForm, this.primaryAccountContactForm, this.adminUserForm);
+    accountDto.accountContacts = [accountContact];
 
-    if (this.isCreateMode) {
-      this.accountService.createAccount(accountData).subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate(['/accounts']);
-        },
-        error: (err) => {
-          console.error('Failed to create account:', err);
-          this.error = 'Failed to create account. Please try again.';
-          this.loading = false;
-        }
-      });
-    } else if (this.isEditMode && this.account?.id) {
-      this.accountService.updateAccount(accountData).subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate(['/accounts']);
-        },
-        error: (err) => {
-          console.error('Failed to update account:', err);
-          this.error = 'Failed to update account. Please try again.';
-          this.loading = false;
-        }
-      });
-    }
-  }
-
-  onCancel(): void {
-    this.router.navigate(['/accounts']);
-  }
-
-  onBack(): void {
-    this.router.navigate(['/accounts']);
-  }
-
-  onDuplicate(): void {
-    if (!this.account) {
-      return;
-    }
-
-    // Create a deep copy of the account
-    const duplicatedAccount = PlatformHelper.duplicateAccount(this.account);
-
-    // Navigate to create mode with duplicated data
-    this.router.navigate(['/accounts/edit', 'create'], {
-      state: { mode: 'create', account: duplicatedAccount }
-    });
-  }
-
-  onCreate(): void {
-    this.router.navigate(['/accounts/edit', 'create'], {
-      state: { mode: 'create' }
-    });
-  }
-
-  onEdit(): void {
-    if (this.isViewMode) {
-      this.mode = SharedHelper.EditMode.EDIT;
-      this.enableAllForms();
-    }
-  }
-
-  onChangeStatus(): void {
-    if (!this.account) {
-      return;
-    }
-
-    const dialogRef = this.dialog.open(AccountChangeStatusDialogComponent, {
-      width: '400px',
-      data: { account: this.account }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && this.account) {
-        // Update the status
-        this.account.status = result;
-        this.accountForm.patchValue({ status: result });
-
-        // In a real application, you would reload from the server
-        // For now, just update the form to reflect the change
-      }
-    });
-  }
-
-  private enableAllForms(): void {
-    this.accountForm.enable();
-    this.primaryAccountContactForm.enable();
-    this.adminUserForm.enable();
-  }
-
-  onDelete(): void {
-    if (!this.account) {
-      return;
-    }
-
-    const dialogRef = this.dialog.open(AccountDeleteDialogComponent, {
-      width: '400px',
-      data: { account: this.account }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Navigate back to accounts list
-        this.router.navigate(['/accounts']);
-      }
-    });
+    return accountDto;
   }
 }

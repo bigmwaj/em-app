@@ -14,9 +14,6 @@ export class ContactService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Gets all contacts
-   */
   getContacts(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<ContactDto>> {
     let params = new HttpParams();
 
@@ -27,31 +24,19 @@ export class ContactService {
     return this.http.get<SearchResult<ContactDto>>(this.apiUrl, { params });
   }
 
-  /**
-   * Gets a single contact by ID
-   */
   getContact(id: number): Observable<ContactDto> {
     return this.http.get<ContactDto>(`${this.apiUrl}/${id}`);
   }
 
-  /**
-   * Creates a new contact
-   */
   createContact(contact: ContactDto): Observable<ContactDto> {
     return this.http.post<ContactDto>(this.apiUrl, contact);
   }
 
-  /**
-   * Updates an existing contact
-   */
   updateContact(contact: ContactDto): Observable<ContactDto> {
     return this.http.patch<ContactDto>(`${this.apiUrl}`, contact);
   }
 
-  /**
-   * Deletes a contact
-   */
-  deleteContact(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  deleteContact(contact: ContactDto): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${contact.id}`);
   }
 }
