@@ -17,31 +17,31 @@ import { AbstractIndexComponent } from '../../../shared/component/abstract-index
 export class GroupIndexComponent extends AbstractIndexComponent<GroupDto>  {
   displayedColumns: string[] = ['name', 'description', 'holderType', 'actions'];
   PlatformHelper = PlatformHelper;
-  
-    constructor(
-      protected override router: Router,
-      private service: GroupService,
-      protected override dialog: MatDialog
-    ) {
-      super(router, dialog);
-  
-      const searchCriteria = PlatformHelper.createDefaultSearchCriteria();
-      searchCriteria.pageSize = 5;
-  
-      this.searchCriteria = searchCriteria;
-  
-      this.delete = (dto) => this.service.deleteGroup(dto);
-    }
-  
-    protected override duplicateDto(dto: GroupDto): GroupDto {
-      return PlatformHelper.duplicateGroup(dto);
-    }
-  
-    protected override getBaseRoute(): string {
-      return '/groups';
-    }
-  
-    override search(): Observable<SearchResult<GroupDto>> {
-      return this.service.getGroups(this.searchCriteria);
-    }
+
+  constructor(
+    protected override router: Router,
+    private service: GroupService,
+    protected override dialog: MatDialog
+  ) {
+    super(router, dialog);
+
+    const searchCriteria = PlatformHelper.createDefaultSearchCriteria();
+    searchCriteria.pageSize = 5;
+
+    this.searchCriteria = searchCriteria;
+
+    this.delete = (dto) => this.service.deleteGroup(dto);
+  }
+
+  protected override duplicateDto(dto: GroupDto): GroupDto {
+    return PlatformHelper.duplicateGroup(dto);
+  }
+
+  protected override getBaseRoute(): string {
+    return '/groups';
+  }
+
+  override search(): Observable<SearchResult<GroupDto>> {
+    return this.service.getGroups(this.searchCriteria);
+  }
 }
