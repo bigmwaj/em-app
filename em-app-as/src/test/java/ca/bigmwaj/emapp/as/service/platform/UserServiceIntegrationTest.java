@@ -1,8 +1,10 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
+import ca.bigmwaj.emapp.as.builder.platform.ContactDtoBuilder;
 import ca.bigmwaj.emapp.as.builder.platform.UserDtoBuilder;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
+import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,8 +41,12 @@ class UserServiceIntegrationTest {
         // Clean up any existing test data
         userDao.deleteAll();
         
-        // Create a test user DTO with all required fields
-        testUserDto = UserDtoBuilder.builderWithAllDefaults().build();
+        // Create a test user DTO with required fields but without child contact points
+        // to avoid cascade issues in tests
+        testUserDto = UserDtoBuilder.builder()
+                .withDefaults()
+                .withContactBuilder(ContactDtoBuilder.builder().withDefaults(HolderTypeLvo.CORPORATE))
+                .build();
         testUserDto.setUsername("testuser@example.com");
         testUserDto.setPassword("TestPassword123!");
     }
@@ -100,19 +106,19 @@ class UserServiceIntegrationTest {
         // When
         createdUser.setEditAction(EditActionLvo.UPDATE);
         createdUser.setUsername("updated@example.com");
-        createdUser.setStatus(UserStatusLvo.INACTIVE);
+        createdUser.setStatus(UserStatusLvo.BLOCKED);
         UserDto updatedUser = userService.update(createdUser);
 
         // Then
         assertThat(updatedUser).isNotNull();
         assertThat(updatedUser.getId()).isEqualTo(userId);
         assertThat(updatedUser.getUsername()).isEqualTo("updated@example.com");
-        assertThat(updatedUser.getStatus()).isEqualTo(UserStatusLvo.INACTIVE);
+        assertThat(updatedUser.getStatus()).isEqualTo(UserStatusLvo.BLOCKED);
         
         // Verify update persisted
         UserDto foundUser = userService.findById(userId);
         assertThat(foundUser.getUsername()).isEqualTo("updated@example.com");
-        assertThat(foundUser.getStatus()).isEqualTo(UserStatusLvo.INACTIVE);
+        assertThat(foundUser.getStatus()).isEqualTo(UserStatusLvo.BLOCKED);
     }
 
     @Test
@@ -165,17 +171,26 @@ class UserServiceIntegrationTest {
     @Test
     void shouldFindAllUsers() {
         // Given
-        UserDto user1 = UserDtoBuilder.builderWithAllDefaults().build();
+        UserDto user1 = UserDtoBuilder.builder()
+                .withDefaults()
+                .withContactBuilder(ContactDtoBuilder.builder().withDefaults(HolderTypeLvo.CORPORATE))
+                .build();
         user1.setUsername("user1@example.com");
         user1.setPassword("Password1!");
         userService.create(user1);
 
-        UserDto user2 = UserDtoBuilder.builderWithAllDefaults().build();
+        UserDto user2 = UserDtoBuilder.builder()
+                .withDefaults()
+                .withContactBuilder(ContactDtoBuilder.builder().withDefaults(HolderTypeLvo.CORPORATE))
+                .build();
         user2.setUsername("user2@example.com");
         user2.setPassword("Password2!");
         userService.create(user2);
 
-        UserDto user3 = UserDtoBuilder.builderWithAllDefaults().build();
+        UserDto user3 = UserDtoBuilder.builder()
+                .withDefaults()
+                .withContactBuilder(ContactDtoBuilder.builder().withDefaults(HolderTypeLvo.CORPORATE))
+                .build();
         user3.setUsername("user3@example.com");
         user3.setPassword("Password3!");
         userService.create(user3);
@@ -185,9 +200,9 @@ class UserServiceIntegrationTest {
 
         // Then
         assertThat(result).isNotNull();
-        assertThat(result.getResult()).isNotNull();
-        assertThat(result.getResult()).hasSize(3);
-        assertThat(result.getResult())
+        assertThat(result.getData()).isNotNull();
+        assertThat(result.getData()).hasSize(3);
+        assertThat(result.getData())
                 .extracting(UserDto::getUsername)
                 .containsExactlyInAnyOrder("user1@example.com", "user2@example.com", "user3@example.com");
     }
@@ -225,7 +240,7 @@ class UserServiceIntegrationTest {
     void shouldThrowExceptionForInactiveAccountHolder() {
         // Given
         testUserDto.setUsername("inactive@example.com");
-        testUserDto.setStatus(UserStatusLvo.INACTIVE);
+        testUserDto.setStatus(UserStatusLvo.BLOCKED);
         userService.create(testUserDto);
 
         // When / Then
