@@ -196,13 +196,13 @@ class UserServiceIntegrationTest {
         userService.create(user3);
 
         // When
-        var result = userService.search(null);
+        var searchResult = userService.search(null);
 
         // Then
-        assertThat(result).isNotNull();
-        assertThat(result.getData()).isNotNull();
-        assertThat(result.getData()).hasSize(3);
-        assertThat(result.getData())
+        assertThat(searchResult).isNotNull();
+        assertThat(searchResult.getData()).isNotNull();
+        assertThat(searchResult.getData()).hasSize(3);
+        assertThat(searchResult.getData())
                 .extracting(UserDto::getUsername)
                 .containsExactlyInAnyOrder("user1@example.com", "user2@example.com", "user3@example.com");
     }
