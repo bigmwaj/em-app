@@ -100,17 +100,24 @@ public class ContactService extends AbstractService {
         var dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
 
         // Map child collections directly from the entity's pre-loaded collections
-        dto.setEmails(entity.getEmails().stream()
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
-                .toList());
+        // Handle null collections defensively
+        if (entity.getEmails() != null) {
+            dto.setEmails(entity.getEmails().stream()
+                    .map(GlobalPlatformMapper.INSTANCE::toDto)
+                    .toList());
+        }
 
-        dto.setPhones(entity.getPhones().stream()
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
-                .toList());
+        if (entity.getPhones() != null) {
+            dto.setPhones(entity.getPhones().stream()
+                    .map(GlobalPlatformMapper.INSTANCE::toDto)
+                    .toList());
+        }
 
-        dto.setAddresses(entity.getAddresses().stream()
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
-                .toList());
+        if (entity.getAddresses() != null) {
+            dto.setAddresses(entity.getAddresses().stream()
+                    .map(GlobalPlatformMapper.INSTANCE::toDto)
+                    .toList());
+        }
 
         return dto;
     }
