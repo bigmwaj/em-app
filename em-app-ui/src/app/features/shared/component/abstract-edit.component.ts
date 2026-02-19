@@ -1,13 +1,14 @@
-import { FormBuilder } from '@angular/forms';
-import { SharedHelper } from '../shared.helper';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { PageData, SharedHelper } from '../shared.helper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent, DeleteDialogData } from './delete-dialog.component';
 import { Observable, Subject } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { EditActionLvo } from '../api.shared.model';
 
 @Component({
-  selector: 'app-account-edit',
+  selector: 'app-abstract-edit',
   template: '',
   styles: [''],
   standalone: false
@@ -19,9 +20,13 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
   protected delete?: (dto: T) => Observable<void>;
   protected create?: (dto: T) => Observable<T>;
   protected update?: (dto: T) => Observable<T>;
-  loading = false;
-  error: string | null = null;
-  private destroy$ = new Subject<void>();
+  protected buildFormData?: (dto?: T) => T;
+
+  pageData: PageData = new PageData();
+
+  protected destroy$ = new Subject<void>();
+  private forms!: FormGroup[];
+  protected mainForm!: FormGroup; // Will handle main entity fields
 
   constructor(
     protected fb: FormBuilder,
@@ -30,21 +35,17 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
     protected dialog: MatDialog
   ) { }
 
-  protected abstract get isInvalidForm(): boolean;
-
   protected abstract getBaseRoute(): string;
-
-  protected abstract enableAllForms(): void;
-
-  protected abstract disableAllForms(): void;
-
-  protected abstract duplicate(): T;
 
   protected abstract populateForms(dto: T): void;
 
   protected abstract setupCreateMode(): void;
 
   protected abstract buildDtoFromForms(): T;
+
+  protected get editAction(): EditActionLvo {
+    return this.mode === SharedHelper.EditMode.EDIT ? EditActionLvo.UPDATE : EditActionLvo.CREATE;
+  }
 
   get isCreateMode(): boolean {
     return this.mode === SharedHelper.EditMode.CREATE;
@@ -82,13 +83,51 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
     return this.isCreateMode || this.isEditMode;
   }
 
-  protected abstract initializeForms(): void;
+  private disableAllForms(): void {
+    if (this.forms) {
+      this.forms.forEach(form => form.disable());
+    }
+  }
+
+  private enableAllForms(): void {
+    if (this.forms) {
+      this.forms.forEach(form => form.enable());
+    }
+  }
+
+  get isInvalidForm(): boolean {
+    return this.forms.some(form => form.invalid);
+  }
+
+  protected abstract initializeForms(dto?: T): FormGroup[];
+
+  private addGlobalEventsListeners(): void {
+    this.forms.forEach(form => form.valueChanges.subscribe(() => {
+      if (form.get('editAction') === null) {
+        form.addControl('editAction', this.fb.control(this.editAction));
+      }
+
+      if (form === this.mainForm) {
+        form.patchValue({ editAction: this.editAction }, { emitEvent: false });
+      } else {
+        if (this.isCreateMode) {
+          form.patchValue({ editAction: EditActionLvo.CREATE }, { emitEvent: false });
+        } else if (this.isEditMode) {
+          if (form.value.key === undefined) {
+            form.patchValue({ editAction: EditActionLvo.CREATE }, { emitEvent: false });
+          } else {
+            form.patchValue({ editAction: EditActionLvo.UPDATE }, { emitEvent: false });
+          }
+        }
+      }
+    }));
+  }
 
   ngOnInit(): void {
-    this.initializeForms();
     this.loadFormData();
+    this.addGlobalEventsListeners();
   }
-  
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
@@ -120,8 +159,13 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.buildFormData) {
+      throw new Error("BuildFormData function is not defined");
+    }
+
     // Create a deep copy of the account
-    const duplicated = this.duplicate();
+
+    const duplicated = this.buildFormData(this.dto);
 
     // Navigate to create mode with duplicated data
     this.router.navigate([this.getBaseRoute(), 'edit', 'create'], {
@@ -165,24 +209,34 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
         if (state.dto) {
           this.dto = state.dto;
           if (this.dto) {
-            this.populateForms(this.dto);
+            //this.populateForms(this.dto);
           }
         } else {
-          this.setupCreateMode();
+
+          if (!this.buildFormData) {
+            throw new Error("BuildFormData function is not defined");
+          }
+          this.dto = this.buildFormData()
+          //this.setupCreateMode();
         }
+        this.forms = this.initializeForms();
         this.enableAllForms();
+
       } else if (modeParam === 'edit' && state.dto) {
         this.mode = SharedHelper.EditMode.EDIT;
         this.dto = state.dto;
         if (this.dto) {
-          this.populateForms(this.dto);
+          //this.populateForms(this.dto);
         }
+        this.forms = this.initializeForms();
+        this.enableAllForms();
       } else if (modeParam === 'view' && state.dto) {
         this.mode = SharedHelper.EditMode.VIEW;
         this.dto = state.dto;
-        if (this.dto) {
-          this.populateForms(this.dto);
+        if (!this.dto) {
+          //this.populateForms(this.dto);
         }
+        this.forms = this.initializeForms();
         this.disableAllForms();
       } else {
         // Invalid state - redirect back to index
@@ -197,14 +251,14 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
     }
 
     if (this.isInvalidForm) {
-      this.error = 'Please fill in all required fields before saving';
+      this.pageData.error.set('Please fill in all required fields before saving');
       return;
     }
 
-    this.loading = true;
-    this.error = null;
+    this.pageData.loading.set(true);
+    this.pageData.error.set(null);
 
-    const data = this.buildDtoFromForms();
+    const dto = this.buildDtoFromForms();
 
     if (this.isCreateMode) {
 
@@ -212,34 +266,41 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
         throw new Error('Create function is not defined');
       }
 
-      this.create(data).subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate([this.getBaseRoute()]);
+      this.create(dto).subscribe({
+        next: (newDto) => {
+          this.pageData.loading.set(false);
+          this.router.navigate([this.getBaseRoute()], {
+            state: { mode: 'view', dto: newDto }
+          });
         },
         error: (err) => {
-          console.error('Failed to create account:', err);
-          this.error = 'Failed to create account. Please try again.';
-          this.loading = false;
+          console.error('Failed to create data:', err);
+          this.pageData.error.set('Failed to create data. Please try again.');
+          this.pageData.loading.set(false);
         }
       });
     } else if (this.isEditMode && this.dto) {
+
       if (this.update === undefined) {
         throw new Error('Update function is not defined');
       }
 
-      this.update(data).subscribe({
-        next: () => {
-          this.loading = false;
-          this.router.navigate([this.getBaseRoute()]);
+      this.update(dto).subscribe({
+        next: (updatedDto) => {
+          this.pageData.loading.set(false);
+          this.router.navigate([this.getBaseRoute()], {
+            state: { mode: 'view', dto: updatedDto }
+          });
         },
         error: (err) => {
-          console.error('Failed to update account:', err);
-          this.error = 'Failed to update account. Please try again.';
-          this.loading = false;
-        }
+          console.error('Failed to update data:', err);
+          this.pageData.error.set('Failed to update data. Please try again.');
+          this.pageData.loading.set(false);
+        },
+        complete: () => {
+          this.pageData.loading.set(false);
+        },
       });
     }
   }
-
 }

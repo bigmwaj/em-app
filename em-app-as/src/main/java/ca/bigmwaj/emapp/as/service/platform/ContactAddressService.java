@@ -6,7 +6,6 @@ import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.ContactAddressDto;
 import ca.bigmwaj.emapp.as.entity.platform.ContactAddressEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.Optional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class ContactAddressService extends AbstractService {
+public class ContactAddressService extends AbstractContactPointService<ContactAddressEntity, ContactAddressDto> {
 
     @Autowired
     private ContactAddressDao dao;
@@ -56,29 +55,8 @@ public class ContactAddressService extends AbstractService {
         });
     }
 
-    public ContactAddressDto create(Long contactId, ContactAddressDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeCreateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
-        entity.setContact(contactEntity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    public ContactAddressDto update(Long contactId, ContactAddressDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeUpdateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
-        entity.setContact(contactEntity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    public boolean isAddressUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String address) {
-        return !dao.existsByHolderTypeAndAddress(holderType, address);
-    }
-
-    public void prepareCreation(ContactAddressEntity entity, ContactAddressDto dto) {
-        beforeCreateHistEntity(entity);
+    @Override
+    ContactAddressDao getDao() {
+        return dao;
     }
 }

@@ -10,10 +10,10 @@ import {
   PhoneTypeLvo,
   AddressTypeLvo,
 } from '../../api.platform.model';
-import { PlatformHelper } from '../../platform.helper';
 import { SharedHelper } from '../../../shared/shared.helper';
 import { COUNTRIES } from '../../constants/country.constants';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
+import { ContactHelper } from '../../helper/contact.helper';
 
 @Component({
   selector: 'app-contact-edit',
@@ -23,10 +23,9 @@ import { AbstractEditComponent } from '../../../shared/component/abstract-edit.c
 })
 export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
-  contactForm!: FormGroup;
+  ContactHelper = ContactHelper;
 
   // Enums for dropdowns
-  ContactEditMode = SharedHelper.EditMode;
   HolderTypeLvo = HolderTypeLvo;
   EmailTypeLvo = EmailTypeLvo;
   PhoneTypeLvo = PhoneTypeLvo;
@@ -47,34 +46,16 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
     this.delete = (dto) => this.service.deleteContact(dto);
     this.create = (dto) => this.service.createContact(dto);
     this.update = (dto) => this.service.updateContact(dto);
-  }
-
-  get isInvalidForm(): boolean {
-    return this.contactForm.invalid;
+    this.buildFormData = (dto) => ContactHelper.buildFormData(dto);
   }
 
   protected override getBaseRoute(): string {
     return '/contacts';
   }
 
-  protected duplicate(): ContactDto {
-    if (!this.dto) {
-      throw new Error('No contact data to duplicate');
-    }
-    return PlatformHelper.duplicateContact(this.dto)
-  }
-
-  protected disableAllForms(): void {
-    this.contactForm.disable();
-  }
-
-  protected enableAllForms(): void {
-    this.contactForm.enable();
-  }
-
   protected override setupCreateMode(): void {
     // Initialize with default values for create mode
-    this.contactForm.patchValue({
+    this.mainForm.patchValue({
       holderType: HolderTypeLvo.ACCOUNT,
       defaultEmailType: EmailTypeLvo.WORK,
       defaultPhoneType: PhoneTypeLvo.WORK,
@@ -82,8 +63,8 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
     });
   }
 
-  protected initializeForms(): void {
-    this.contactForm = this.fb.group({
+  protected override initializeForms(): FormGroup[] {
+    this.mainForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       birthDate: [''],
@@ -100,11 +81,11 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
     });
 
     // Make country required when address is provided
-    this.contactForm
+    this.mainForm
       .get('defaultAddress')
       ?.valueChanges/*.pipe(takeUntil(this.destroy$))*/
       .subscribe((address) => {
-        const countryControl = this.contactForm.get('country');
+        const countryControl = this.mainForm.get('country');
         if (address && address.trim()) {
           countryControl?.setValidators([Validators.required]);
         } else {
@@ -112,14 +93,16 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
         }
         countryControl?.updateValueAndValidity();
       });
+
+    return [this.mainForm];
   }
 
   protected populateForms(): void {
-    const defaultEmail = PlatformHelper.getDefaultContactEmail(this.dto!);
-    const defaultPhone = PlatformHelper.getDefaultContactPhone(this.dto!);
-    const defaultAddress = PlatformHelper.getDefaultContactAddress(this.dto!);
+    const defaultEmail = ContactHelper.getDefaultContactEmail(this.dto!);
+    const defaultPhone = ContactHelper.getDefaultContactPhone(this.dto!);
+    const defaultAddress = ContactHelper.getDefaultContactAddress(this.dto!);
 
-    this.contactForm.patchValue({
+    this.mainForm.patchValue({
       firstName: this.dto!.firstName,
       lastName: this.dto!.lastName,
       birthDate: this.dto!.birthDate,
@@ -137,7 +120,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
   }
 
   protected buildDtoFromForms(): ContactDto {
-    const formValue = this.contactForm.value;
+    const formValue = this.mainForm.value;
 
     const contactDto: ContactDto = {
       firstName: formValue.firstName,
@@ -164,7 +147,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
       // Preserve ID if editing
       if (this.mode === SharedHelper.EditMode.EDIT) {
-        const existingEmail = PlatformHelper.getDefaultContactEmail(this.dto!);
+        const existingEmail = ContactHelper.getDefaultContactEmail(this.dto!);
         if (existingEmail?.id) {
           contactDto.emails[0].id = existingEmail.id;
           contactDto.emails[0].contactId = this.dto!.id;
@@ -185,7 +168,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
       // Preserve ID if editing
       if (this.mode === SharedHelper.EditMode.EDIT) {
-        const existingPhone = PlatformHelper.getDefaultContactPhone(this.dto!);
+        const existingPhone = ContactHelper.getDefaultContactPhone(this.dto!);
         if (existingPhone?.id) {
           contactDto.phones[0].id = existingPhone.id;
           contactDto.phones[0].contactId = this.dto!.id;
@@ -209,7 +192,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
       // Preserve ID if editing
       if (this.mode === SharedHelper.EditMode.EDIT) {
-        const existingAddress = PlatformHelper.getDefaultContactAddress(this.dto!);
+        const existingAddress = ContactHelper.getDefaultContactAddress(this.dto!);
         if (existingAddress?.id) {
           contactDto.addresses[0].id = existingAddress.id;
           contactDto.addresses[0].contactId = this.dto!.id;

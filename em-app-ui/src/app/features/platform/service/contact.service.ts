@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ContactDto } from '../api.platform.model';
 import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { SharedHelper } from '../../shared/shared.helper';
+import { ContactHelper } from '../helper/contact.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class ContactService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = SharedHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+      params = ContactHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<ContactDto>>(this.apiUrl, { params });

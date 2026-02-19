@@ -24,19 +24,19 @@ public class AccountContactService extends AbstractService {
 
     @Autowired
     private ContactDao contactDao;
-
-    public AccountContactDto create(AccountContactDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        var contact = contactService.create(dto.getContact());
-        var contactEntity = contactDao.getReferenceById(contact.getId());
-        entity.setContact(contactEntity);
-        beforeCreateHistEntity(entity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-    }
+//
+//    public AccountContactDto create(AccountContactDto dto) {
+//        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
+//        var contact = contactService.create(dto.getContact());
+//        var contactEntity = contactDao.getReferenceById(contact.getId());
+//        entity.setContact(contactEntity);
+//        beforeCreateHistEntity(entity);
+//        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+//    }
 
     public void beforeCreate(AccountContactEntity entity, AccountContactDto dto) {
         beforeCreateHistEntity(entity);
-        var contactToCreate = entity.getContact();
+        ContactEntity contactToCreate = entity.getContact();
         if (contactToCreate == null) {
             return;
         }

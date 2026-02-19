@@ -26,35 +26,35 @@
       }
 
       @if(showSaveButton){
-      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading || isInvalidForm">
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="pageData.loading() || isInvalidForm">
         <mat-icon>save</mat-icon>
         Save
       </button>
       }
 
       @if(showCreateButton){
-      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="loading">
+      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="pageData.loading()">
         <mat-icon>add</mat-icon>
         Create
       </button>
       }
 
       @if(showEditButton){
-      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="loading">
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="pageData.loading()">
         <mat-icon>edit</mat-icon>
         Edit
       </button>
       }
 
       @if(showDuplicateButton){
-      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="loading">
+      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="pageData.loading()">
         <mat-icon>content_copy</mat-icon>
         Duplicate
       </button>
       }
 
       @if(showDeleteButton){
-      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="loading">
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="pageData.loading()">
         <mat-icon>delete</mat-icon>
         Delete
       </button>
@@ -62,34 +62,32 @@
     </div>
   </div>
 
-  @if (error && !loading) {
+  @if (pageData.error() && !pageData.loading()) {
   <div class="error-section">
     <mat-card>
       <mat-icon color="warn">error</mat-icon>
-      <p>{{ error }}</p>
+      <p>{{ pageData.error() }}</p>
     </mat-card>
   </div>
   }
 
-  @if (loading) {
+  @if (pageData.loading()) {
   <div class="loading-section">
     <mat-spinner></mat-spinner>
     <p>Processing...</p>
   </div>
-  }
-
+  }@else{
   <mat-card class="form-card form-section">
     <mat-card-content>
-      <form [formGroup]="roleForm">
+      <form [formGroup]="mainForm">
         <!-- Role Details Section -->
         <div class="form-section">
           <h2 class="section-title">Role Details</h2>
-
           <div class="form-row">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Name</mat-label>
               <input matInput formControlName="name" placeholder="Enter role name" />
-              <mat-error *ngIf="roleForm.get('name')?.hasError('required')">
+              <mat-error *ngIf="mainForm.get('name')?.hasError('required')">
                 Name is required
               </mat-error>
             </mat-form-field>
@@ -100,20 +98,36 @@
                 <mat-option [value]="HolderTypeLvo.ACCOUNT">Account</mat-option>
                 <mat-option [value]="HolderTypeLvo.CORPORATE">Corporate</mat-option>
               </mat-select>
-              <mat-error *ngIf="roleForm.get('holderType')?.hasError('required')">
+              <mat-error *ngIf="mainForm.get('holderType')?.hasError('required')">
                 Holder type is required
               </mat-error>
             </mat-form-field>
           </div>
-
           <div class="form-row">
-            <mat-form-field appearance="outline" class="form-field-full">
+            <mat-form-field appearance="outline" class="form-field">
               <mat-label>Description</mat-label>
               <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
             </mat-form-field>
           </div>
         </div>
+        <div class="form-section">
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon>security</mat-icon>
+                Privileges
+              </ng-template>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon>people</mat-icon>
+                Users
+              </ng-template>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
+  }
 </div>

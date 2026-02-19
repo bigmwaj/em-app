@@ -3,9 +3,12 @@ package ca.bigmwaj.emapp.as.service.platform;
 import ca.bigmwaj.emapp.as.dao.platform.RoleDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.RoleDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
+import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
+import ca.bigmwaj.emapp.as.entity.platform.RoleEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -73,5 +76,21 @@ public class RoleService extends AbstractService {
         beforeUpdateHistEntity(entity);
         entity = dao.save(entity);
         return GlobalPlatformMapper.INSTANCE.toDto(entity);
+    }
+
+    public void beforeCreate(RoleEntity entity, RoleDto dto) {
+        beforeCreateHistEntity(entity);
+
+        var rolePrivileges = entity.getRolePrivileges();
+        if( rolePrivileges == null || rolePrivileges.isEmpty()){
+            return;
+        }
+
+        for(var rolePrivilege : rolePrivileges) {
+            if( rolePrivilege.getRole() != entity ){ // instance check
+                rolePrivilege.setRole(entity);
+            }
+            beforeCreateHistEntity(rolePrivilege);
+        }
     }
 }

@@ -16,18 +16,18 @@
     (initAdvancedSearch)="onInitAdvancedASearch()">
   </app-search-form>
 
-  @if (pageData.error && !pageData.loading) {
+  @if (pageData.error() && !pageData.loading()) {
 
   <div class="info-message">
     <mat-card>
       <mat-icon>info</mat-icon>
-      <p>{{ pageData.error }}</p>
+      <p>{{ pageData.error() }}</p>
     </mat-card>
   </div>
 
   }
 
-  @if (pageData.loading) {
+  @if (pageData.loading()) {
 
   <div class="loading-section">
     <mat-spinner></mat-spinner>
@@ -78,7 +78,7 @@
             Full Name
             }
           </th>
-          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactFullName(element)}}</td>
+          <td mat-cell *matCellDef="let element">{{AccountHelper.getPrimaryAccountContactFullName(element)}}</td>
         </ng-container>
         <ng-container matColumnDef="email">
           <th mat-header-cell *matHeaderCellDef>
@@ -90,7 +90,7 @@
             Email
             }
           </th>
-          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactEmail(element)?.email}}</td>
+          <td mat-cell *matCellDef="let element">{{AccountHelper.getPrimaryAccountContactEmail(element)?.email}}</td>
         </ng-container>
         <ng-container matColumnDef="phone">
           <th mat-header-cell *matHeaderCellDef>
@@ -102,7 +102,7 @@
             Phone
             }
           </th>
-          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactPhone(element)?.phone}}</td>
+          <td mat-cell *matCellDef="let element">{{AccountHelper.getPrimaryAccountContactPhone(element)?.phone}}</td>
         </ng-container>
         <ng-container matColumnDef="address">
           <th mat-header-cell *matHeaderCellDef>
@@ -114,7 +114,7 @@
             Address
             }
           </th>
-          <td mat-cell *matCellDef="let element">{{PlatformHelper.getPrimaryAccountContactAddress(element)?.address}}
+          <td mat-cell *matCellDef="let element">{{AccountHelper.getPrimaryAccountContactAddress(element)?.address}}
           </td>
         </ng-container>
         <ng-container matColumnDef="actions">

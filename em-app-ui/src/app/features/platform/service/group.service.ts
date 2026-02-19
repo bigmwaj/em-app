@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { GroupDto } from '../api.platform.model';
 import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { SharedHelper } from '../../shared/shared.helper';
+import { GroupHelper } from '../helper/group.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class GroupService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = SharedHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+      params = GroupHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<GroupDto>>(this.apiUrl, { params });

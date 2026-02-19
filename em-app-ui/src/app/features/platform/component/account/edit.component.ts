@@ -18,8 +18,9 @@ import {
   AccountContactDto,
   AccountContactRoleLvo,
 } from '../../api.platform.model';
-import { PlatformHelper } from '../../platform.helper';
 import { AbstractEditWithStatusComponent } from '../../../shared/component/abstract-edit-with-status.component';
+import { AccountHelper } from '../../helper/account.helper';
+import { ContactHelper } from '../../helper/contact.helper';
 
 @Component({
   selector: 'app-account-edit',
@@ -28,7 +29,6 @@ import { AbstractEditWithStatusComponent } from '../../../shared/component/abstr
   standalone: false
 })
 export class AccountEditComponent extends AbstractEditWithStatusComponent<AccountDto, AccountStatusLvo> {
-  accountForm!: FormGroup;
   primaryAccountContactForm!: FormGroup;
   adminUserForm!: FormGroup;
 
@@ -41,43 +41,27 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
   ) {
     super(fb, router, route, dialog);
     this.delete = (dto) => this.service.deleteAccount(dto);
-    this.changeStatus = (dto) => this.service.updateAccount(dto as AccountDto);
     this.create = (dto) => this.service.createAccount(dto);
     this.update = (dto) => this.service.updateAccount(dto);
+    this.changeStatus = (dto) => this.service.updateAccount(dto as AccountDto);
+    this.buildFormData = (dto) => AccountHelper.buildFormData(dto);
   }
 
   protected override getBaseRoute(): string {
     return '/accounts';
   }
 
-  protected duplicate(): AccountDto {
-    if (!this.dto) {
-      throw new Error('No account data to duplicate');
-    }
-    return PlatformHelper.duplicateAccount(this.dto)
-  }
-
-  protected disableAllForms(): void {
-    this.accountForm.disable();
-    this.primaryAccountContactForm.disable();
-    this.adminUserForm.disable();
-  }
-
-  protected enableAllForms(): void {
-    this.accountForm.enable();
-    this.primaryAccountContactForm.enable();
-    this.adminUserForm.enable();
-  }
-
-  get isInvalidForm(): boolean {
+  override get isInvalidForm(): boolean {
     return this.primaryAccountContactForm.invalid
-      || this.accountForm.invalid
+      || this.mainForm.invalid
       || (this.isCreateMode && this.adminUserForm.invalid);
   }
 
-  protected initializeForms(): void {
+  protected override initializeForms(): FormGroup[] {
     // Account Details Form
-    this.accountForm = this.fb.group({
+    this.mainForm = this.fb.group({
+      editAction: [this.editAction],
+      id: [],
       name: ['', Validators.required],
       description: [''],
       status: [AccountStatusLvo.ACTIVE, Validators.required]
@@ -102,19 +86,23 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
       adminUsername: ['', Validators.required],
       usernameType: [UsernameTypeLvo.EMAIL, Validators.required]
     });
+
+    return [this.mainForm, this.primaryAccountContactForm, this.adminUserForm];
   }
 
   protected override setupCreateMode(): void {
     // Initialize with default values for create mode
-    this.accountForm.patchValue({
+    this.mainForm.patchValue({
       status: AccountStatusLvo.ACTIVE
     });
+
     this.primaryAccountContactForm.patchValue({
       holderType: HolderTypeLvo.ACCOUNT,
       defaultEmailType: EmailTypeLvo.WORK,
       defaultPhoneType: PhoneTypeLvo.WORK,
       defaultAddressType: AddressTypeLvo.WORK
     });
+
     this.adminUserForm.patchValue({
       adminUsername: ''
     });
@@ -122,21 +110,21 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
 
   protected populateForms(account: AccountDto): void {
     // Populate account details
-    this.accountForm.patchValue({
+    this.mainForm.patchValue({
       name: account.name,
       description: account.description,
       status: account.status,
       adminUsername: account.adminUsername
     });
 
-    const primaryContact = PlatformHelper.getPrimaryAccountContact(account);
+    const primaryContact = AccountHelper.getPrimaryAccountContact(account);
 
     // Populate main contact
     if (primaryContact) {
 
-      const defaultEmail = PlatformHelper.getDefaultContactEmail(primaryContact);
-      const defaultPhone = PlatformHelper.getDefaultContactPhone(primaryContact);
-      const defaultAddress = PlatformHelper.getDefaultContactAddress(primaryContact);
+      const defaultEmail = ContactHelper.getDefaultContactEmail(primaryContact);
+      const defaultPhone = ContactHelper.getDefaultContactPhone(primaryContact);
+      const defaultAddress = ContactHelper.getDefaultContactAddress(primaryContact);
 
       this.primaryAccountContactForm.patchValue({
         firstName: primaryContact.firstName,
@@ -154,12 +142,14 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
   }
 
   protected buildDtoFromForms(): AccountDto {
-    const accountFormValue = this.accountForm.value;
+    const mainFormValue = this.mainForm.value;
     const contactFormValue = this.primaryAccountContactForm.value;
 
     const accountDto: AccountDto = {
-      name: accountFormValue.name,
-      description: accountFormValue.description,
+      editAction: this.editAction, // required for validation in service layer
+      id: mainFormValue.id,
+      name: mainFormValue.name,
+      description: mainFormValue.description,
       status: AccountStatusLvo.ACTIVE,
       adminUsername: this.adminUserForm.value.adminUsername,
       adminUsernameType: this.adminUserForm.value.usernameType

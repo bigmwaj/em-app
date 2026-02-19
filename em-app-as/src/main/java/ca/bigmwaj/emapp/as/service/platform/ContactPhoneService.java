@@ -4,21 +4,19 @@ import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactPhoneDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.ContactPhoneDto;
-import ca.bigmwaj.emapp.as.entity.platform.ContactPhoneEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
+import ca.bigmwaj.emapp.as.entity.platform.ContactPhoneEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class ContactPhoneService extends AbstractService {
+public class ContactPhoneService extends AbstractContactPointService<ContactPhoneEntity, ContactPhoneDto> {
     @Autowired
     private ContactPhoneDao dao;
 
@@ -30,11 +28,6 @@ public class ContactPhoneService extends AbstractService {
         probe.setContact(new ContactEntity());
         probe.getContact().setId(contactId);
         return Example.of(probe);
-    }
-
-    public List<ContactPhoneDto> findAll(Long contactId) {
-        var example = getCommonCriteria(contactId);
-        return dao.findAll(example).stream().map(GlobalPlatformMapper.INSTANCE::toDto).toList();
     }
 
     private Optional<ContactPhoneEntity> findEntityById(Long contactId, Long phoneId) {
@@ -55,29 +48,8 @@ public class ContactPhoneService extends AbstractService {
         });
     }
 
-    public ContactPhoneDto create(Long contactId, ContactPhoneDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeCreateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
-        entity.setContact(contactEntity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    public ContactPhoneDto update(Long contactId, ContactPhoneDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeUpdateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
-        entity.setContact(contactEntity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    public boolean isPhoneUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String phone) {
-        return !dao.existsByHolderTypeAndPhone(holderType, phone);
-    }
-
-    public void beforeCreate(ContactPhoneEntity entity, ContactPhoneDto dto) {
-        beforeCreateHistEntity(entity);
+    @Override
+    ContactPhoneDao getDao() {
+        return dao;
     }
 }

@@ -22,42 +22,42 @@
       }
       
       @if(showSaveButton){
-      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading || isInvalidForm">
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="pageData.loading() || isInvalidForm">
         <mat-icon>save</mat-icon>
         Save
       </button>
       }
       
       @if(showCreateButton){
-      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="loading">
+      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="pageData.loading()">
         <mat-icon>add</mat-icon>
         Create
       </button>
       }
 
       @if(showEditButton){
-      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="loading">
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="pageData.loading()">
         <mat-icon>edit</mat-icon>
         Edit
       </button>
       }
 
       @if(showDuplicateButton){
-      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="loading">
+      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="pageData.loading()">
         <mat-icon>content_copy</mat-icon>
         Duplicate
       </button>
       }
 
       @if(showDeleteButton){
-      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="loading">
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="pageData.loading()">
         <mat-icon>delete</mat-icon>
         Delete
       </button>
       }
 
       @if(showChangeStatusButton){
-      <button mat-raised-button (click)="onChangeStatus()" type="button">
+      <button mat-raised-button (click)="onChangeStatus()" type="button" [disabled]="pageData.loading()">
         <mat-icon>swap_horiz</mat-icon>Change Status
       </button>
       }
@@ -65,16 +65,16 @@
     </div>
   </div>
 
-  @if (error && !loading) {
+  @if (pageData.error() && !pageData.loading() ) {
   <div class="error-message">
     <mat-card>
       <mat-icon color="warn">error</mat-icon>
-      <p>{{ error }}</p>
+      <p>{{ pageData.error() }}</p>
     </mat-card>
   </div>
   }
 
-  @if (loading) {
+  @if (pageData.loading()) {
   <div class="loading-section">
     <mat-spinner></mat-spinner>
     <p>Saving account...</p>
@@ -82,7 +82,7 @@
   } @else {
   <mat-tab-group>
     <mat-tab label="Account Details">
-      <app-edit-account-details [form]="accountForm"></app-edit-account-details>
+      <app-edit-account-details [form]="mainForm"></app-edit-account-details>
       <app-edit-principal-account-contact [form]="primaryAccountContactForm"></app-edit-principal-account-contact>
       @if(isCreateMode){
       <app-edit-account-admin-user [form]="adminUserForm"></app-edit-account-admin-user>

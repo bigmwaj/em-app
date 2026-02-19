@@ -1,16 +1,13 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
-import ca.bigmwaj.emapp.as.dao.platform.ContactAddressDao;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
-import ca.bigmwaj.emapp.as.dao.platform.ContactEmailDao;
-import ca.bigmwaj.emapp.as.dao.platform.ContactPhoneDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.platform.*;
+import ca.bigmwaj.emapp.as.dto.platform.AbstractContactPointDto;
+import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
-import ca.bigmwaj.emapp.as.entity.platform.AbstractContactPointEntity;
-import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
+import ca.bigmwaj.emapp.as.entity.platform.*;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -18,13 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
@@ -34,19 +28,10 @@ public class ContactService extends AbstractService {
     private ContactDao dao;
 
     @Autowired
-    private ContactEmailDao emailDao;
-
-    @Autowired
     private ContactEmailService emailService;
 
     @Autowired
-    private ContactPhoneDao phoneDao;
-
-    @Autowired
     private ContactPhoneService phoneService;
-
-    @Autowired
-    private ContactAddressDao addressDao;
 
     @Autowired
     private ContactAddressService addressService;
@@ -81,9 +66,10 @@ public class ContactService extends AbstractService {
     }
 
     public ContactDto findById(Long contactId) {
+        String errorMessage = "Contact not found with id: ";
         return dao.findById(contactId)
                 .map(this::toDtoWithChildren)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
+                .orElseThrow(() -> new NoSuchElementException(errorMessage + contactId));
     }
 
     public void deleteById(Long contactId) {
@@ -99,64 +85,9 @@ public class ContactService extends AbstractService {
 
     public ContactDto update(ContactDto dto) {
         var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeUpdateHistEntity(entity);
-        initUpdateContactPoints(entity, entity.getEmails(), dto.getEmails(), this::deleteEmailIfApplicable);
-        initUpdateContactPoints(entity, entity.getPhones(), dto.getPhones(), this::deletePhoneIfApplicable);
-        initUpdateContactPoints(entity, entity.getAddresses(), dto.getAddresses(), this::deleteAddressIfApplicable);
+        beforeUpdate(entity, dto);
         entity = dao.save(entity);
         return findById(entity.getId());
-    }
-
-    private <D extends AbstractContactPointDto, T extends AbstractContactPointEntity>
-    void initUpdateContactPoints(ContactEntity entity, List<T> contactPoints, List<D> contactPointDtos, Consumer<D> deleteFunction) {
-        if (contactPoints != null) {
-            final List<Long> toDelete;
-            // Review this method and exclude deleted contact points that do not have an ID
-            // (i.e. new contact points that are added and marked for deletion in the same update)
-            if (contactPointDtos != null) {
-                toDelete = contactPointDtos.stream()
-                        .filter(AbstractContactPointDto::isToDelete)
-                        .peek(deleteFunction)
-                        .map(AbstractContactPointDto::getId)
-                        .filter(Objects::nonNull)
-                        .toList();
-            } else {
-                toDelete = Collections.emptyList();
-            }
-
-            UnaryOperator<T> setContact = e -> {
-                e.setContact(entity);
-                return e;
-            };
-
-            Predicate<T> isNotToDelete = e -> toDelete.isEmpty() || !toDelete.contains(e.getId());
-
-            contactPoints.stream()
-                    .filter(isNotToDelete)
-                    .map(setContact)
-                    .forEach(this::beforeUpdateHistEntity);
-        }
-    }
-
-    private void deleteEmailIfApplicable(ContactEmailDto email) {
-        if (email.isToDelete()) {
-            var entity = GlobalPlatformMapper.INSTANCE.toEntity(email);
-            emailDao.delete(entity);
-        }
-    }
-
-    private void deletePhoneIfApplicable(ContactPhoneDto phone) {
-        if (phone.isToDelete()) {
-            var entity = GlobalPlatformMapper.INSTANCE.toEntity(phone);
-            phoneDao.delete(entity);
-        }
-    }
-
-    private void deleteAddressIfApplicable(ContactAddressDto address) {
-        if (address.isToDelete()) {
-            var entity = GlobalPlatformMapper.INSTANCE.toEntity(address);
-            addressDao.delete(entity);
-        }
     }
 
     /**
@@ -184,36 +115,104 @@ public class ContactService extends AbstractService {
         return dto;
     }
 
-    public void beforeCreate(ContactEntity entity, ContactDto dto) {
+    void beforeCreate(ContactEntity entity, ContactDto dto) {
         beforeCreateHistEntity(entity);
-        var emails = entity.getEmails();
+        entity.setId(null);
+
+        List<ContactEmailEntity> emails = entity.getEmails();
         if (emails != null && !emails.isEmpty()) {
-            for (var email : emails) {
-                if( email.getContact() != entity ){ // instance check
-                    email.setContact(entity);
-                }
+            for (ContactEmailEntity email : emails) {
+                email.setContact(entity);
                 emailService.beforeCreate(email, null);
             }
         }
 
-        var phones = entity.getPhones();
+        List<ContactPhoneEntity> phones = entity.getPhones();
         if (phones != null && !phones.isEmpty()) {
-            for (var phone : phones) {
-                if( phone.getContact() != entity ){ // instance check
-                    phone.setContact(entity);
-                }
+            for (ContactPhoneEntity phone : phones) {
+                phone.setContact(entity);
                 phoneService.beforeCreate(phone, null);
             }
         }
 
-        var addresses = entity.getAddresses();
+        List<ContactAddressEntity> addresses = entity.getAddresses();
         if (addresses != null && !addresses.isEmpty()) {
-            for (var address : addresses) {
-                if( address.getContact() != entity ) { // instance check
-                    address.setContact(entity);
-                }
-                addressService.prepareCreation(address, null);
+            for (ContactAddressEntity address : addresses) {
+                address.setContact(entity);
+                addressService.beforeCreate(address, null);
             }
         }
+    }
+
+    void beforeUpdate(ContactEntity entity, ContactDto dto) {
+        String contactIdNullError = "Contact must be non-null for update";
+        String contactDtoNullError = "Contact DTO must be provided for update";
+
+        Objects.requireNonNull(entity.getId(), contactIdNullError);
+        Objects.requireNonNull(dto, contactDtoNullError);
+
+        beforeUpdateHistEntity(entity);
+
+        var emails = entity.getEmails();
+        if (emails != null && !emails.isEmpty()) {
+            var finals = synContactPoints(entity, entity.getEmails(), dto.getEmails(), emailService);
+            entity.setEmails(finals);
+        }
+
+        var phones = entity.getPhones();
+        if (phones != null && !phones.isEmpty()) {
+            var finals = synContactPoints(entity, entity.getPhones(), dto.getPhones(), phoneService);
+            entity.setPhones(finals);
+        }
+
+        var addresses = entity.getAddresses();
+        if (addresses != null && !addresses.isEmpty()) {
+            var finals = synContactPoints(entity, entity.getAddresses(), dto.getAddresses(), addressService);
+            entity.setAddresses(finals);
+        }
+    }
+
+    private <T extends AbstractContactPointEntity, D extends AbstractContactPointDto> List<T> synContactPoints(
+            ContactEntity entity,
+            List<T> contactPoints,
+            List<D> contactPointDtoLists,
+            AbstractContactPointService<T, D> service) {
+
+        String contactPointDtoNullError = "Contact Point DTO list must be provided for update " +
+                "when contact has existing contact points";
+        String contactPointSizeError = "Contact Point DTO list size must be equal to the existing " +
+                "Contact Point entities list size for update";
+        String editActionNullError = "Contact Point DTO Edit Action must be provided for update";
+
+        Objects.requireNonNull(contactPointDtoLists, contactPointDtoNullError);
+        List<T> finalContactPoints = new ArrayList<>();
+        int total = contactPoints.size();
+        if (contactPointDtoLists.size() != total) {
+            throw new IllegalArgumentException(contactPointSizeError);
+        }
+
+        for (int i = 0; i < total; i++) {
+            T t = contactPoints.get(i);
+            D d = contactPointDtoLists.get(i);
+            t.setContact(entity);
+            Objects.requireNonNull(d.getEditAction(), editActionNullError);
+            switch (d.getEditAction()) {
+                case CREATE:
+                    service.beforeCreate(t, d);
+                    finalContactPoints.add(t);
+                    break;
+
+                case UPDATE:
+                    finalContactPoints.add(service.beforeUpdate(t, d));
+                    break;
+
+                case DELETE:
+                    if (!d.isNew()) {
+                        service.delete(t, d);
+                    }
+                    break;
+            }
+        }
+        return finalContactPoints;
     }
 }

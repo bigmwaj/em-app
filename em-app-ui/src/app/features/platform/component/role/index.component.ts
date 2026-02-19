@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { RoleService } from '../../service/role.service';
 import { RoleDto } from '../../api.platform.model';
 import { SearchResult } from '../../../shared/api.shared.model';
-import { PlatformHelper } from '../../platform.helper';
 import { Observable } from 'rxjs';
 import { AbstractIndexComponent } from '../../../shared/component/abstract-index.component';
+import { RoleHelper } from '../../helper/role.helper';
 
 @Component({
   selector: 'app-role-index',
@@ -16,7 +16,7 @@ import { AbstractIndexComponent } from '../../../shared/component/abstract-index
 })
 export class RoleIndexComponent extends AbstractIndexComponent<RoleDto>  {
   displayedColumns: string[] = ['name', 'description', 'holderType', 'actions'];
-  PlatformHelper = PlatformHelper;
+  RoleHelper = RoleHelper;
 
   constructor(
     protected override router: Router,
@@ -25,16 +25,11 @@ export class RoleIndexComponent extends AbstractIndexComponent<RoleDto>  {
   ) {
     super(router, dialog);
 
-    const searchCriteria = PlatformHelper.createDefaultSearchCriteria();
-    searchCriteria.pageSize = 5;
-
-    this.searchCriteria = searchCriteria;
-
     this.delete = (dto) => this.service.deleteRole(dto);
   }
 
   protected override duplicateDto(dto: RoleDto): RoleDto {
-    return PlatformHelper.duplicateRole(dto);
+    return RoleHelper.buildFormData(dto);
   }
 
   protected override getBaseRoute(): string {

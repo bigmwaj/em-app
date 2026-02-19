@@ -8,7 +8,7 @@ import { AbstractStatusTrackingDto } from '../api.shared.model';
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-account-edit',
+  selector: 'app-abstract-edit-with-status',
   template: '',
   styles: [''],
   standalone: false

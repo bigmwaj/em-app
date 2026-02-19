@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { GroupService } from '../../service/group.service';
 import { GroupDto } from '../../api.platform.model';
 import { SearchResult } from '../../../shared/api.shared.model';
-import { PlatformHelper } from '../../platform.helper';
 import { Observable } from 'rxjs';
 import { AbstractIndexComponent } from '../../../shared/component/abstract-index.component';
+import { GroupHelper } from '../../helper/group.helper';
 
 @Component({
   selector: 'app-group-index',
@@ -16,7 +16,7 @@ import { AbstractIndexComponent } from '../../../shared/component/abstract-index
 })
 export class GroupIndexComponent extends AbstractIndexComponent<GroupDto>  {
   displayedColumns: string[] = ['name', 'description', 'holderType', 'actions'];
-  PlatformHelper = PlatformHelper;
+  GroupHelper = GroupHelper;
 
   constructor(
     protected override router: Router,
@@ -25,16 +25,11 @@ export class GroupIndexComponent extends AbstractIndexComponent<GroupDto>  {
   ) {
     super(router, dialog);
 
-    const searchCriteria = PlatformHelper.createDefaultSearchCriteria();
-    searchCriteria.pageSize = 5;
-
-    this.searchCriteria = searchCriteria;
-
     this.delete = (dto) => this.service.deleteGroup(dto);
   }
 
   protected override duplicateDto(dto: GroupDto): GroupDto {
-    return PlatformHelper.duplicateGroup(dto);
+    return GroupHelper.buildFormData(dto);
   }
 
   protected override getBaseRoute(): string {

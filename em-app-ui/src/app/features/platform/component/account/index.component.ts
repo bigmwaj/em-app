@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { AccountDto, AccountStatusLvo } from '../../api.platform.model';
 import { SearchResult } from '../../../shared/api.shared.model';
-import { PlatformHelper } from '../../platform.helper';
 import { Observable } from 'rxjs';
 import { AbstractIndexWithStatusComponent } from '../../../shared/component/abstract-index-with-status.component';
+import { AccountHelper } from '../../helper/account.helper';
 
 @Component({
   selector: 'app-account-index',
@@ -24,7 +24,7 @@ export class AccountIndexComponent extends AbstractIndexWithStatusComponent<Acco
 
   override textSearchableFields = ['name', 'firstName', 'lastName', 'phone', 'email', 'address'];
   
-  PlatformHelper = PlatformHelper;
+  AccountHelper = AccountHelper;
 
   constructor(
     protected override router: Router,
@@ -33,18 +33,14 @@ export class AccountIndexComponent extends AbstractIndexWithStatusComponent<Acco
   ) {
     super(router, dialog);
 
-    const accountSearchCriteria = PlatformHelper.createAccountSearchCriteria();
-    accountSearchCriteria.includeMainContact = true;
-    accountSearchCriteria.pageSize = 5;
-
-    this.searchCriteria = accountSearchCriteria;
+    this.searchCriteria = AccountHelper.createAccountSearchCriteria();
 
     this.delete = (dto) => this.service.deleteAccount(dto);
     this.changeStatus = (dto) => this.service.updateAccount(dto as AccountDto);
   }
 
   protected override duplicateDto(dto: AccountDto): AccountDto {
-    return PlatformHelper.duplicateAccount(dto);
+    return AccountHelper.buildFormData(dto);
   }
 
   protected override getBaseRoute(): string {

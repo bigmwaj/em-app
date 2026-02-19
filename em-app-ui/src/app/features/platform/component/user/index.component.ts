@@ -4,9 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../../service/user.service';
 import { UserDto, UserStatusLvo } from '../../api.platform.model';
 import { SearchResult } from '../../../shared/api.shared.model';
-import { PlatformHelper } from '../../platform.helper';
 import { Observable } from 'rxjs';
 import { AbstractIndexWithStatusComponent } from '../../../shared/component/abstract-index-with-status.component';
+import { UserHelper } from '../../helper/user.helper';
+import { ContactHelper } from '../../helper/contact.helper';
 
 @Component({
   selector: 'app-user-index',
@@ -22,7 +23,8 @@ export class UserIndexComponent extends AbstractIndexWithStatusComponent<UserSta
       ['status', 'status']
     ]);
 
-  PlatformHelper = PlatformHelper;
+  UserHelper = UserHelper;
+  ContactHelper = ContactHelper;
 
   constructor(
     protected override router: Router,
@@ -30,17 +32,12 @@ export class UserIndexComponent extends AbstractIndexWithStatusComponent<UserSta
     protected override dialog: MatDialog
   ) {
     super(router, dialog);
-
-    const accountSearchCriteria = PlatformHelper.createDefaultSearchCriteria();
-    accountSearchCriteria.pageSize = 5;
-
-    this.searchCriteria = accountSearchCriteria;
     this.delete = (dto) => this.service.deleteUser(dto);
     this.changeStatus = (dto) => this.service.updateUser(dto as UserDto);
   }
 
   protected override duplicateDto(dto: UserDto): UserDto {
-    return PlatformHelper.duplicateUser(dto);
+    return UserHelper.buildFormData(dto);
   }
 
   protected override getBaseRoute(): string {

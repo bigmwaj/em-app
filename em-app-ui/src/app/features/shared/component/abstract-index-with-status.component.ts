@@ -7,7 +7,7 @@ import { ChangeStatusDialogComponent, ChangeStatusDialogData } from './change-st
 import { AbstractStatusTrackingDto } from '../api.shared.model';
 
 @Component({
-  selector: 'app-account-index',
+  selector: 'app-abstract-index-with-status',
   template: '',
   styles: [''],
   standalone: false

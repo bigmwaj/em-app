@@ -1,5 +1,6 @@
 import { HttpParams } from "@angular/common/http";
 import { AbstractSearchCriteria, DefaultSearchCriteria, SortType, WhereClauseJoinOp } from "./api.shared.model";
+import { signal } from "@angular/core";
 
 export class SharedHelper {
 
@@ -13,7 +14,7 @@ export class SharedHelper {
         return {
             whereClauses: [],
             sortByClauses: [],
-            pageSize: 20,
+            pageSize: 5,
             pageIndex: 0,
             calculateStatTotal: true
         };
@@ -81,7 +82,10 @@ export class SharedHelper {
 }
 
 export class PageData {
-    error?: string | null;
-    loading: boolean = true;
-    message?: string | null;
+    constructor(loading:boolean = false)    {
+        this.loading.set(loading);
+    }
+    error = signal<string | null>(null);
+    loading = signal(false);
+    message = signal<string | null>(null);
 }

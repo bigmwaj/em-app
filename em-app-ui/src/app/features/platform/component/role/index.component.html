@@ -34,18 +34,18 @@
     </mat-card>
   </div>
 
-   @if (pageData.error && !pageData.loading) {
+  @if (pageData.error() && !pageData.loading()) {
 
   <div class="info-message">
     <mat-card>
       <mat-icon>info</mat-icon>
-      <p>{{ pageData.error }}</p>
+      <p>{{ pageData.error() }}</p>
     </mat-card>
   </div>
 
   }
 
-  @if (pageData.loading) {
+  @if (pageData.loading()) {
 
   <div class="loading-section">
     <mat-spinner></mat-spinner>

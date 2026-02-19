@@ -6,7 +6,6 @@ import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.ContactEmailDto;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEmailEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.Optional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class ContactEmailService extends AbstractService {
+public class ContactEmailService extends AbstractContactPointService<ContactEmailEntity, ContactEmailDto> {
     @Autowired
     private ContactEmailDao dao;
 
@@ -55,29 +54,9 @@ public class ContactEmailService extends AbstractService {
         });
     }
 
-    public ContactEmailDto create(Long contactId, ContactEmailDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeCreateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
-        entity.setContact(contactEntity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+    @Override
+    ContactEmailDao getDao() {
+        return dao;
     }
 
-    public ContactEmailDto update(Long contactId, ContactEmailDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeUpdateHistEntity(entity);
-        var contactEntity = contactDao.findById(contactId)
-                .orElseThrow(() -> new NoSuchElementException("Contact not found with id: " + contactId));
-        entity.setContact(contactEntity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-    }
-
-    public boolean isEmailUnique(ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo holderType, String email) {
-        return !dao.existsByHolderTypeAndEmail(holderType, email);
-    }
-
-    public void beforeCreate(ContactEmailEntity entity, ContactEmailDto dto) {
-        beforeCreateHistEntity(entity);
-    }
 }

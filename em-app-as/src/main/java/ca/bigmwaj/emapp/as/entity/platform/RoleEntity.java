@@ -21,7 +21,7 @@ public class RoleEntity extends AbstractChangeTrackingEntity {
     @EqualsAndHashCode.Include()
     private Short id;
 
-    @Column(name = "NAME", nullable = false, unique = true)
+    @Column(name = "NAME", nullable = false, unique = true, updatable = false)
     private String name;
 
     @Column(name = "DESCRIPTION")

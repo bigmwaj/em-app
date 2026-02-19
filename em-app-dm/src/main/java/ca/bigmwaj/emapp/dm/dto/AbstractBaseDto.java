@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Data
 public abstract class AbstractBaseDto {
 
@@ -17,6 +20,12 @@ public abstract class AbstractBaseDto {
     private Object key;
 
     private EditActionLvo editAction;
+
+    /**
+     * Map to hold the literals fields that have been changed during an update action,
+     * with the field name as the key and the new value as the value
+     */
+//    private Map<String, Object> changedFields = new HashMap<>();
 
     public boolean isCreateOrUpdateAction() {
         return isCreateAction() || isUpdateAction();

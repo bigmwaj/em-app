@@ -2,9 +2,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
+import { DefaultSearchCriteria, SearchResult } from '../../shared/api.shared.model';
 import { UserDto } from '../api.platform.model';
-import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { SharedHelper } from '../../shared/shared.helper';
+import { UserHelper } from '../helper/user.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class UserService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = SharedHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+      params = UserHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<UserDto>>(this.apiUrl, { params });

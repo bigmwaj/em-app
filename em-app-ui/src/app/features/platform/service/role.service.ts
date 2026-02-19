@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { RoleDto } from '../api.platform.model';
 import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { SharedHelper } from '../../shared/shared.helper';
+import { RoleHelper } from '../helper/role.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class RoleService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = SharedHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+      params = RoleHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<RoleDto>>(this.apiUrl, { params });

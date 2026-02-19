@@ -2,20 +2,20 @@ import { PageEvent } from '@angular/material/paginator';
 import { AbstractSearchCriteria, FilterOperator, SearchResult } from '../api.shared.model';
 import { CommonDataSource } from '../common.datasource';
 import { PageData, SharedHelper } from '../shared.helper';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent, DeleteDialogData } from './delete-dialog.component';
 
 @Component({
-  selector: 'app-account-index',
+  selector: 'app-abstract-index',
   template: '',
   styles: [''],
   standalone: false
 })
 export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> implements OnInit, OnDestroy {
-  
+
   SharedHelper = SharedHelper;
 
   searchResult: SearchResult<T> = {} as SearchResult<T>;
@@ -24,7 +24,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
 
   searchText = '';
 
-  pageData: PageData = new PageData();
+  pageData: PageData = new PageData(true);
 
   protected sortableFieldMap: Map<string, string> = new Map<string, string>();
 
@@ -36,7 +36,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
 
   protected abstract getBaseRoute(): string;
 
-  private destroy$ = new Subject<void>();
+  private destroy$? : Subscription;
 
   constructor(protected router: Router, protected dialog: MatDialog) {
     super();
@@ -51,8 +51,9 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    if( this.destroy$ ) {
+      this.destroy$.unsubscribe();
+    }
   }
 
   isSortable(fieldName: string): boolean {
@@ -82,23 +83,20 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   protected loadData(): void {
-    const pageData = this.pageData;
-    pageData.loading = true;
-    pageData.error = null;
 
-    this.search().pipe(takeUntil(this.destroy$)).subscribe({
+    this.destroy$ = this.search().subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
-        pageData.loading = false;
+        this.pageData.loading.set(false);
         this.setData(searchResult.data);
       },
       error: (err) => {
         console.error('Failed to load data:', err);
-        pageData.error = 'Failed to load data. Please try again.';
-        pageData.loading = false;
+        this.pageData.error.set('Failed to load data. Please try again.');
+        this.pageData.loading.set(false);
       },
       complete: () => {
-        pageData.loading = false;
+        this.pageData.loading.set(false);
       },
     })
   }
@@ -164,7 +162,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
 
   deleteAction(dto: T): void {
 
-    if(this.delete == null) {
+    if (this.delete == null) {
       throw new Error('Delete action is not implemented');
     }
 

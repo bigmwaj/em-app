@@ -136,7 +136,7 @@ export interface RoleDto extends AbstractChangeTrackingDto {
   name: string;
   description?: string;
   holderType: HolderTypeLvo;
-  rolePrivileges?: RolePrivilegeDto[];
+  privileges?: RolePrivilegeDto[];
 }
 
 export interface GroupRoleDto extends AbstractChangeTrackingDto {

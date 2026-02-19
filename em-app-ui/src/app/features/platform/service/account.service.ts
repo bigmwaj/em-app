@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { AccountDto, AccountSearchCriteria } from '../api.platform.model';
 import { SearchResult } from '../../shared/api.shared.model';
-import { PlatformHelper } from '../platform.helper';
+import { AccountHelper } from '../helper/account.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class AccountService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = PlatformHelper.mapAccountSearchCriteriaToHttpParams(searchCriteria);
+      params = AccountHelper.mapAccountSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<AccountDto>>(this.apiUrl, { params });

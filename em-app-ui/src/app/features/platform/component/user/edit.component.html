@@ -13,7 +13,7 @@
       <button mat-raised-button (click)="onBack()" type="button">
         <mat-icon>arrow_back</mat-icon>Back
       </button>
-      
+
       @if(showCancelButton){
       <button mat-raised-button color="primary" (click)="onCancel()">
         <mat-icon>cancel</mat-icon>
@@ -22,35 +22,35 @@
       }
 
       @if(showSaveButton){
-      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="loading || isInvalidForm">
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="pageData.loading() || isInvalidForm">
         <mat-icon>save</mat-icon>
         Save
       </button>
       }
-      
+
       @if(showCreateButton){
-      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="loading">
+      <button mat-raised-button color="primary" (click)="onCreate()" [disabled]="pageData.loading()">
         <mat-icon>add</mat-icon>
         Create
       </button>
       }
 
       @if(showEditButton){
-      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="loading">
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="pageData.loading()">
         <mat-icon>edit</mat-icon>
         Edit
       </button>
       }
 
       @if(showDuplicateButton){
-      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="loading">
+      <button mat-raised-button color="accent" (click)="onDuplicate()" [disabled]="pageData.loading()">
         <mat-icon>content_copy</mat-icon>
         Duplicate
       </button>
       }
 
       @if(showDeleteButton){
-      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="loading">
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="pageData.loading()">
         <mat-icon>delete</mat-icon>
         Delete
       </button>
@@ -64,16 +64,16 @@
     </div>
   </div>
 
-  @if (error && !loading) {
+  @if (pageData.error() && !pageData.loading()) {
   <div class="error-message">
     <mat-card>
       <mat-icon color="warn">error</mat-icon>
-      <p>{{ error }}</p>
+      <p>{{ pageData.error() }}</p>
     </mat-card>
   </div>
   }
 
-  @if (loading) {
+  @if (pageData.loading()) {
   <div class="loading-section">
     <mat-spinner></mat-spinner>
     <p>Saving user...</p>
@@ -86,12 +86,12 @@
       <mat-card-title>User Details</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form [formGroup]="userForm" class="user-form">
+      <form [formGroup]="mainForm" class="user-form">
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Username</mat-label>
             <input matInput formControlName="username" placeholder="Enter username">
-            @if(userForm.get('username')?.hasError('required')) {
+            @if(mainForm.get('username')?.hasError('required')) {
             <mat-error>Username is required</mat-error>
             }
           </mat-form-field>
@@ -103,7 +103,7 @@
               <mat-option [value]="UsernameTypeLvo.EMAIL">EMAIL</mat-option>
               <mat-option [value]="UsernameTypeLvo.PHONE">PHONE</mat-option>
             </mat-select>
-            @if(userForm.get('usernameType')?.hasError('required')) {
+            @if(mainForm.get('usernameType')?.hasError('required')) {
             <mat-error>Username type is required</mat-error>
             }
           </mat-form-field>
@@ -125,7 +125,7 @@
               <mat-option [value]="UserStatusLvo.ACTIVE">ACTIVE</mat-option>
               <mat-option [value]="UserStatusLvo.BLOCKED">BLOCKED</mat-option>
             </mat-select>
-            @if(userForm.get('status')?.hasError('required')) {
+            @if(mainForm.get('status')?.hasError('required')) {
             <mat-error>Status is required</mat-error>
             }
           </mat-form-field>
@@ -136,7 +136,7 @@
               <mat-option [value]="HolderTypeLvo.ACCOUNT">ACCOUNT</mat-option>
               <mat-option [value]="HolderTypeLvo.CORPORATE">CORPORATE</mat-option>
             </mat-select>
-            @if(userForm.get('holderType')?.hasError('required')) {
+            @if(mainForm.get('holderType')?.hasError('required')) {
             <mat-error>Holder type is required</mat-error>
             }
           </mat-form-field>
@@ -188,50 +188,79 @@
             <input matInput formControlName="birthDate" type="date" placeholder="Enter birth date">
           </mat-form-field>
         </div>
+      </form>
 
+      <form [formGroup]="defaultEmailForm" class="contact-form">
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email</mat-label>
-            <input matInput formControlName="defaultEmail" placeholder="Enter email">
+            <input matInput formControlName="email" placeholder="Enter email">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email Type</mat-label>
-            <mat-select formControlName="defaultEmailType">
+            <mat-select formControlName="type">
               <mat-option [value]="EmailTypeLvo.PERSONAL">PERSONAL</mat-option>
               <mat-option [value]="EmailTypeLvo.WORK">WORK</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
+      </form>
 
+      <form [formGroup]="defaultPhoneForm" class="contact-form">
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Phone</mat-label>
-            <input matInput formControlName="defaultPhone" placeholder="Enter phone">
+            <input matInput formControlName="phone" placeholder="Enter phone">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Phone Type</mat-label>
-            <mat-select formControlName="defaultPhoneType">
+            <mat-select formControlName="type">
               <mat-option [value]="PhoneTypeLvo.MOBILE">MOBILE</mat-option>
               <mat-option [value]="PhoneTypeLvo.HOME">HOME</mat-option>
               <mat-option [value]="PhoneTypeLvo.WORK">WORK</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
+        </div>        
+      </form>
 
+      <form [formGroup]="defaultAddressForm" class="contact-form">
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Address</mat-label>
-            <input matInput formControlName="defaultAddress" placeholder="Enter address">
+            <input matInput formControlName="address" placeholder="Enter address">
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Address Type</mat-label>
-            <mat-select formControlName="defaultAddressType">
+            <mat-select formControlName="type">
               <mat-option [value]="AddressTypeLvo.HOME">HOME</mat-option>
               <mat-option [value]="AddressTypeLvo.WORK">WORK</mat-option>
             </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="country">
+              @for (country of countries; track country) {
+              <mat-option [value]="country">{{ country }}</mat-option>
+              }
+            </mat-select>
+            <mat-error *ngIf="mainForm.get('country')?.hasError('required')">
+              Country is required
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Region</mat-label>
+            <input matInput formControlName="region" placeholder="Enter region" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city" placeholder="Enter city" />
           </mat-form-field>
         </div>
       </form>

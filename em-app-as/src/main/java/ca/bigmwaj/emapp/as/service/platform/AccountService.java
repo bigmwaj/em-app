@@ -6,6 +6,7 @@ import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
+import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.service.AbstractService;
 import jakarta.persistence.EntityManager;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -79,21 +81,14 @@ public class AccountService extends AbstractService {
     public void beforeCreate(AccountEntity entity, AccountDto dto) {
         beforeCreateHistEntity(entity);
 
-        var accountContacts = entity.getAccountContacts();
+        List<AccountContactEntity> accountContacts = entity.getAccountContacts();
         if( accountContacts == null || accountContacts.isEmpty()){
             return;
         }
 
-        for(var accountContact : accountContacts) {
-            if( accountContact.getAccount() != entity ){ // instance check
-                accountContact.setAccount(entity);
-            }
-            beforeCreateHistEntity(accountContact);
-
-            var contactToCreate = accountContact.getContact();
-            if (contactToCreate != null) {
-                accountContactService.beforeCreate(accountContact, null);
-            }
+        for(AccountContactEntity accountContact : accountContacts) {
+            accountContact.setAccount(entity);
+            accountContactService.beforeCreate(accountContact, null);
         }
     }
 
