@@ -4,6 +4,7 @@ import ca.bigmwaj.emapp.as.validator.xml.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class ValidationXmlParserTest {
 
     private static final String ACCOUNT_XML_PATH = "validator/platform/account.xml";

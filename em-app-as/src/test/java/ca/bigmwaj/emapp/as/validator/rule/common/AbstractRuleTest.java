@@ -4,8 +4,10 @@ import ca.bigmwaj.emapp.as.validator.xml.RuleFactory;
 import ca.bigmwaj.emapp.as.validator.xml.model.RuleConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class AbstractRuleTest {
 
     @Autowired
