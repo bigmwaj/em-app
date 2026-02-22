@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
+import { PageData } from '../../../features/shared/shared.helper';
 
 @Component({
   selector: 'app-login',
@@ -12,8 +13,7 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
-  isLoading = false;
-  errorMessage = '';
+  pageData = new PageData();
   hidePassword = true;
   private destroy$ = new Subject<void>();
 
@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.destroy$.unsubscribe();
   }
 
   /**
@@ -50,22 +49,22 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.pageData.loading.set(true);
+    this.pageData.error.set('');
 
     const { username, password } = this.loginForm.value;
 
     this.authService.loginWithCredentials(username, password).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.isLoading = false;
+        this.pageData.loading.set(false);
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        this.isLoading = false;
+        this.pageData.loading.set(false);
         if (error.status === 401) {
-          this.errorMessage = 'Invalid username or password';
+          this.pageData.error.set('Invalid username or password');
         } else {
-          this.errorMessage = 'An error occurred during login. Please try again.';
+          this.pageData.error.set('An error occurred during login. Please try again.');
         }
       }
     });

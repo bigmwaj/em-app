@@ -20,16 +20,24 @@
     </field>
 
     <field name="status">
-        <condition expression="true">
+        <condition expression="createAction">
+            <rule type="NonNullRule"/>
+            <rule type="EqualsRule" value="ACTIVE"/>
+        </condition>
+        <condition expression="changeStatusAction">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
-    <field name="adminUsername">
-        <condition expression="createAction">
-            <rule type="NotBlankRule"/>
-            <rule type="UniqueUsernameRule"/>
-            <rule type="MaxLengthRule" maxLength="16"/>
+    <field name="statusDate">
+        <condition expression="changeStatusAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="statusReason">
+        <condition expression="createAction or updateAction or changeStatusAction">
+            <rule type="MaxLengthRule" maxLength="100"/>
         </condition>
     </field>
 
@@ -39,9 +47,32 @@
         </condition>
     </field>
 
+    <field name="adminUsernameTypePhoneIndicative">
+        <condition expression="createAction and adminUsernameTypePhone">
+            <rule type="NotBlankRule"/>
+        </condition>
+    </field>
+
+    <field name="adminUsername">
+        <condition expression="createAction">
+            <rule type="NotBlankRule"/>
+            <rule type="MaxLengthRule" maxLength="16"/>
+            <rule type="UniqueUsernameRule"/>
+        </condition>
+        <condition expression="createAction and adminUsernameTypePhone">
+            <rule type="NotBlankRule"/>
+            <rule type="PhoneRule"/>
+        </condition>
+        <condition expression="createAction and adminUsernameTypeEmail">
+            <rule type="NotBlankRule"/>
+            <rule type="EmailRule"/>
+        </condition>
+    </field>
+
     <field name="accountContacts" type="dtoList">
         <condition expression="createAction">
             <rule type="NonEmptyRule"/>
+            <rule type="PrincipalAccountContactRule"/>
         </condition>
         <validationConfig ref="platform/account-contact"/>
     </field>

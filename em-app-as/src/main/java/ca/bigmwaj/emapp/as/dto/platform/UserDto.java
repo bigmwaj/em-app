@@ -8,10 +8,17 @@ import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ValidDto("platform/user")
+@NoArgsConstructor
+@SuperBuilder(toBuilder = true, setterPrefix = "with")
 public class UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
 
     private Short id;
@@ -38,4 +45,7 @@ public class UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
     private UserStatusLvo status;
 
     private HolderTypeLvo holderType;
+
+    @Singular
+    private List<UserRoleDto> userRoles;
 }

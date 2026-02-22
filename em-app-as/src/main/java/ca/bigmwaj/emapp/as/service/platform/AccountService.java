@@ -3,24 +3,20 @@ package ca.bigmwaj.emapp.as.service.platform;
 import ca.bigmwaj.emapp.as.dao.platform.AccountDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.as.dto.platform.AccountSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class AccountService extends AbstractService {
+public class AccountService extends AbstractMainService<AccountDto, AccountEntity, Short> {
 
     @Autowired
     private AccountDao dao;
@@ -31,33 +27,14 @@ public class AccountService extends AbstractService {
     @Autowired
     private UserService userService;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    protected SearchResultDto<AccountDto> searchAll() {
-        var r = dao.findAll().stream()
-                .map(this::toDtoWithChildren)
-                .toList();
-        return new SearchResultDto<>(r);
+    @Override
+    protected Function<AccountEntity, AccountDto> getEntityToDtoMapper() {
+        return GlobalPlatformMapper.INSTANCE::toDto;
     }
 
-    public SearchResultDto<AccountDto> search(AccountSearchCriteria sc) {
-        if (sc == null) {
-            return searchAll();
-        }
-
-        var searchStats = new SearchInfos(sc);
-
-        if (sc.isCalculateStatTotal()) {
-            var total = dao.countAllByCriteria(entityManager, sc);
-            searchStats.setTotal(total);
-        }
-        var r = dao.findAllByCriteria(entityManager, sc)
-                .stream()
-                .map(this::toDtoWithChildren)
-                .toList();
-
-        return new SearchResultDto<>(searchStats, r);
+    @Override
+    protected AccountDao getDao() {
+        return dao;
     }
 
     public AccountDto findById(Short accountId) {
@@ -95,7 +72,8 @@ public class AccountService extends AbstractService {
     public AccountDto update(AccountDto dto) {
         var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdateHistEntity(entity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+        entity = dao.saveAndFlush(entity);
+        return findById(entity.getId());
     }
 
     public AccountDto changeStatus(AccountDto dto) {

@@ -7,7 +7,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-@Mapper()
+@Mapper(componentModel = "spring",
+        builder = @org.mapstruct.Builder(disableBuilder = true))
 public interface GlobalPlatformMapper {
 
     GlobalPlatformMapper INSTANCE = Mappers.getMapper(GlobalPlatformMapper.class);
@@ -16,6 +17,7 @@ public interface GlobalPlatformMapper {
     @Mapping(target = "accountContacts", ignore = true)
     @Mapping(target = "adminUsername", ignore = true)
     @Mapping(target = "adminUsernameType", ignore = true)
+    @Mapping(target = "adminUsernameTypePhoneIndicative", ignore = true)
     AccountDto toDto(AccountEntity entity);
     @AnyDtoToAnyEntityMapping
     AccountEntity toEntity(AccountDto dto);
@@ -75,6 +77,7 @@ public interface GlobalPlatformMapper {
     PrivilegeEntity toEntity(PrivilegeDto dto);
 
     @Mapping(target = "rolePrivileges", ignore = true)
+    @Mapping(target = "roleUsers", ignore = true)
     @AnyEntityToAnyDtoMapping
     RoleDto toDto(RoleEntity entity);
     @AnyDtoToAnyEntityMapping
@@ -107,6 +110,14 @@ public interface GlobalPlatformMapper {
     @AnyDtoToAnyEntityMapping
     @Mapping(target = "user", source = "userId", qualifiedByName = "mapUserId")
     UserRoleEntity toEntity(UserRoleDto dto);
+
+    // There is no entity for RoleUserDto. It is a reverse for UserRole.
+    @AnyEntityToAnyDtoMapping
+    @Mapping(target = "roleId", source = "role", qualifiedByName = "mapRole")
+    RoleUserDto toVirtualDto(UserRoleEntity entity);
+    @AnyDtoToAnyEntityMapping
+    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRoleId")
+    UserRoleEntity toEntity(RoleUserDto dto);
 
     @Named("mapContact")
     default Long mapContact(ContactDto contact) {

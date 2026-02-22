@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(toBuilder = true, setterPrefix = "with")
 public class AccountSearchCriteria extends DefaultSearchCriteria {
 
     private boolean includeMainContact;

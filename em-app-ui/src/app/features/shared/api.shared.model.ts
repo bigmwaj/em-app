@@ -1,5 +1,3 @@
-import { HttpParams } from "@angular/common/http";
-
 export enum WhereClauseJoinOp {
   AND = 'AND',
   OR = 'OR'
@@ -38,9 +36,9 @@ export interface AbstractBaseDto {
 }
 
 export interface AbstractChangeTrackingDto extends AbstractBaseDto {
-  createdBy?: String;
+  createdBy?: string;
   createdDate?: Date;
-  updatedBy?: String;
+  updatedBy?: string;
   updatedDate?: Date;
 }
 

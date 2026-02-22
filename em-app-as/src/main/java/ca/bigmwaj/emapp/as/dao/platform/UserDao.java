@@ -2,6 +2,8 @@ package ca.bigmwaj.emapp.as.dao.platform;
 
 import ca.bigmwaj.emapp.as.dao.AbstractDao;
 import ca.bigmwaj.emapp.as.dao.shared.QueryConfig;
+import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.platform.UserSearchCriteria;
 import ca.bigmwaj.emapp.as.entity.platform.*;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +18,7 @@ public interface UserDao extends AbstractDao<UserEntity, Short> {
     }
 
     @Override
-    default String getQuery(String queryPart){
+    default String getQuery(String queryPart) {
         var root = UserEntity.class.getSimpleName();
         var c = ContactEntity.class.getSimpleName();
         var cp = ContactPhoneEntity.class.getSimpleName();
@@ -36,4 +38,12 @@ public interface UserDao extends AbstractDao<UserEntity, Short> {
     Optional<UserEntity> findByUsernameIgnoreCase(String email);
 
     boolean existsByUsername(String username);
+
+    @Override
+    default String getSpecialWhereClause(AbstractSearchCriteria sc) {
+        if (sc instanceof UserSearchCriteria usc && null != usc.getAssignableToRoleId()) {
+            return "not exists (select 1 from UserRoleEntity ur where ur.user = qRoot and ur.role.id = %d)".formatted(usc.getAssignableToRoleId());
+        }
+        return AbstractDao.super.getSpecialWhereClause(sc);
+    }
 }

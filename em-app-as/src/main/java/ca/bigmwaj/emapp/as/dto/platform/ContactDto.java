@@ -5,6 +5,9 @@ import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,6 +15,8 @@ import java.util.List;
 @ValidDto("platform/contact")
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
+@SuperBuilder(toBuilder = true, setterPrefix = "with")
 public class ContactDto extends AbstractChangeTrackingDto {
 
     private Long id;
@@ -24,9 +29,12 @@ public class ContactDto extends AbstractChangeTrackingDto {
 
     private HolderTypeLvo holderType;
 
+    @Singular
     private List<ContactEmailDto> emails;
 
+    @Singular
     private List<ContactPhoneDto> phones;
 
+    @Singular
     private List<ContactAddressDto> addresses;
 }

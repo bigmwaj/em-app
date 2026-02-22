@@ -30,6 +30,6 @@ public class MaxLengthRule extends AbstractRule {
 
     @Override
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
-        return String.format("The field '%s' must not exceed %s characters in length.", fieldName, parameters.get("maxLength"));
+        return "The field '%s' must not exceed %s characters in length.".formatted(fieldName, parameters.get("maxLength"));
     }
 }

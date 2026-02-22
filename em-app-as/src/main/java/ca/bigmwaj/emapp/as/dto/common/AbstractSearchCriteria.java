@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@SuperBuilder(setterPrefix = "with")
+@SuperBuilder(toBuilder = true, setterPrefix = "with")
 @Data
 @NoArgsConstructor
 public abstract class AbstractSearchCriteria {

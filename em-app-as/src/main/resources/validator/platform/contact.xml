@@ -9,6 +9,7 @@
     <field name="holderType">
         <condition expression="createAction">
             <rule type="NonNullRule"/>
+            <rule type="HolderTypeRule"/>
         </condition>
     </field>
 
@@ -89,9 +90,6 @@
     </field>
 
     <field name="addresses" type="dtoList">
-        <condition expression="createAction">
-            <rule type="NonEmptyRule"/>
-        </condition>
         <validationConfig>
             <field name="id">
                 <condition expression="updateAction">

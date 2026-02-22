@@ -1,5 +1,6 @@
+import { HttpParams } from "@angular/common/http";
 import { SharedHelper } from "../../shared/shared.helper";
-import { UserDto } from "../api.platform.model";
+import { UserDto, UserSearchCriteria } from "../api.platform.model";
 import { ContactHelper } from "./contact.helper";
 
 export class UserHelper extends SharedHelper {
@@ -35,6 +36,21 @@ export class UserHelper extends SharedHelper {
         }
 
         return duplicatedUser;
+    }
+
+    static createUserSearchCriteria(): UserSearchCriteria {
+        return {
+            ...SharedHelper.createDefaultSearchCriteria(),
+            assignableToRoleId: undefined
+        };
+    }
+
+    static mapUserSearchCriteriaToHttpParams(searchCriteria: UserSearchCriteria): HttpParams {
+        let params = SharedHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+        if (searchCriteria.assignableToRoleId !== undefined) {
+            params = params.set('assignableToRoleId', searchCriteria.assignableToRoleId.toString());
+        }
+        return params;
     }
 
 }

@@ -10,4 +10,6 @@ public interface RoleDao extends AbstractDao<RoleEntity, Short> {
     default Class<RoleEntity> getEntityClass() {
         return RoleEntity.class;
     }
+
+    boolean existsByNameIgnoreCase(String name);
 }

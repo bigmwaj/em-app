@@ -14,6 +14,10 @@ public abstract class AbstractRule {
 
     public abstract boolean isValid(Object value, Map<String, String> parameters);
 
+    public boolean isValid(Object dto, Object value, Map<String, String> parameters){
+        return isValid(value, parameters);
+    }
+
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
         if (parameters != null && parameters.containsKey("message")) {
             return parameters.get("message");
@@ -24,7 +28,7 @@ public abstract class AbstractRule {
     public boolean validate(ConstraintValidatorContext context, Object dto, String fieldName, Map<String, String> parameters) {
         BeanWrapper wrapper = new BeanWrapperImpl(dto);
         Object value = wrapper.getPropertyValue(fieldName);
-        boolean isValid = isValid(value, parameters);
+        boolean isValid = isValid(dto, value, parameters);
 
         if (!isValid) {
             context.buildConstraintViolationWithTemplate(getErrorMessage(fieldName, value, parameters))

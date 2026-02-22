@@ -25,6 +25,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -59,6 +60,10 @@ import { PhoneListComponent } from './features/platform/component/contact/phone/
 import { EmailListComponent } from './features/platform/component/contact/email/list.component';
 import { AddressListComponent } from './features/platform/component/contact/address/list.component';
 import { SearchFormComponent } from './features/shared/component/search-form.component';
+import { RolePrivilegeAssignedListComponent } from './features/platform/component/role/privilege/assigned.list.component';
+import { RolePrivilegeAssignListComponent } from './features/platform/component/role/privilege/assign.list.component';
+import { RoleUserAssignedListComponent } from './features/platform/component/role/user/assigned.list.component';
+import { RoleUserAssignListComponent } from './features/platform/component/role/user/assign.list.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +90,11 @@ import { SearchFormComponent } from './features/shared/component/search-form.com
     PhoneListComponent,
     EmailListComponent,
     AddressListComponent,
-    SearchFormComponent
+    SearchFormComponent,
+    RolePrivilegeAssignedListComponent,
+    RolePrivilegeAssignListComponent,
+    RoleUserAssignedListComponent,
+    RoleUserAssignListComponent
   ],
   imports: [
     BrowserModule,
@@ -113,7 +122,8 @@ import { SearchFormComponent } from './features/shared/component/search-form.com
     MatPaginatorModule,
     MatDatepickerModule,
     MatExpansionModule,
-    MatTabsModule
+    MatTabsModule,
+    MatCheckboxModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dao.shared;
 
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Query configuration builder for constructing dynamic JPQL queries.
- * 
+ *
  * <p>This class provides a fluent API for building complex database queries with:
  * <ul>
  *   <li>Dynamic WHERE clauses based on filter criteria</li>
@@ -21,12 +21,12 @@ import java.util.Map;
  *   <li>Support for multiple filter operators (like, eq, in, lt, lte, gt, gte, ne, ni, btw)</li>
  *   <li>Dynamic ORDER BY clauses</li>
  * </ul>
- * 
+ *
  * <h2>Usage Example:</h2>
  * <pre>{@code
  * QueryConfig.QueryConfigBuilder qb = QueryConfig.builder()
  *     .withBaseQuery("SELECT qRoot FROM User qRoot");
- *     
+ *
  * // Add filter: firstName like '%john%'
  * WhereClause filter = WhereClause.builder()
  *     .name("firstName")
@@ -34,17 +34,17 @@ import java.util.Map;
  *     .values(List.of("john"))
  *     .build();
  * QueryConfig.appendFilter(qb, filter);
- * 
+ *
  * // Add sorting: ORDER BY lastName ASC
  * SortByClause sort = SortByClause.builder()
  *     .name("lastName")
  *     .direction("asc")
  *     .build();
  * QueryConfig.appendSort(qb, sort);
- * 
+ *
  * QueryConfig config = qb.build();
  * }</pre>
- * 
+ *
  * @see WhereClause
  * @see SortByClause
  */
@@ -54,6 +54,8 @@ public class QueryConfig {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(QueryConfig.class);
 
     private WhereClauseJoinOp whereClauseJoinOp;
+
+    private String specialWhereClause;
 
     /**
      * Base JPQL query string (e.g., "SELECT qRoot FROM User qRoot").
@@ -89,7 +91,7 @@ public class QueryConfig {
 
     /**
      * Appends a filter condition to the query configuration.
-     * 
+     *
      * <p>Supports the following filter operators:
      * <ul>
      *   <li><b>like</b>: Case-insensitive pattern matching (e.g., firstName like '%john%')</li>
@@ -101,8 +103,8 @@ public class QueryConfig {
      *   <li><b>ne/ni</b>: Not equal or NOT IN clause (e.g., status not in ('DELETED'))</li>
      *   <li><b>btw</b>: Between (e.g., age between 18 and 65)</li>
      * </ul>
-     * 
-     * @param qb the query configuration builder to append to
+     *
+     * @param qb          the query configuration builder to append to
      * @param whereClause the filter criteria containing field name, operator, and values
      */
     public static void appendWhereClause(QueryConfig.QueryConfigBuilder qb, WhereClause whereClause) {
@@ -161,11 +163,11 @@ public class QueryConfig {
 
     /**
      * Appends a sort-by clause to the query configuration.
-     * 
+     *
      * <p>Creates an ORDER BY clause for the specified field with the given direction.
      * If no direction is specified, defaults to ascending (asc).
-     * 
-     * @param qb the query configuration builder to append to
+     *
+     * @param qb     the query configuration builder to append to
      * @param sortBy the sort criteria containing field name and direction (asc/desc)
      */
     public static void appendSortByClause(QueryConfig.QueryConfigBuilder qb, SortByClause sortBy) {
@@ -176,7 +178,7 @@ public class QueryConfig {
         if (sortBy.getEntityFieldName() != null && !sortBy.getEntityFieldName().isEmpty()) {
             dbFieldName = sortBy.getEntityFieldName();
         }
-        
+
         // Allow custom entity alias
         if (sortBy.getRootEntityName() != null && !sortBy.getRootEntityName().isEmpty()) {
             rootEntity = sortBy.getRootEntityName();
@@ -184,7 +186,7 @@ public class QueryConfig {
 
         // Default to ascending if no sort type specified
         SortByClause.sortType sortType = sortBy.getType();
-        if( sortType == null ){
+        if (sortType == null) {
             sortType = SortByClause.sortType.asc;
         }
 
@@ -193,24 +195,38 @@ public class QueryConfig {
 
     /**
      * Builds the final JPQL query string with WHERE and ORDER BY clauses.
-     * 
+     *
      * <p>Combines the base query with all accumulated WHERE clauses (joined with AND)
      * and ORDER BY clauses. Returns a complete JPQL query string ready for execution.
-     * 
+     *
      * <h3>Example output:</h3>
      * <pre>
-     * SELECT qRoot FROM User qRoot 
-     * WHERE qRoot.firstName like :firstName AND qRoot.age >= :age 
+     * SELECT qRoot FROM User qRoot
+     * WHERE qRoot.firstName like :firstName AND qRoot.age >= :age
      * ORDER BY qRoot.lastName asc
      * </pre>
-     * 
+     *
      * @return the complete JPQL query string
      */
     public String getQueryString() {
         var query = baseQuery;
+        var where = "";
         if (whereClauses != null && !whereClauses.isEmpty()) {
-            query += " where " + String.join(" " + whereClauseJoinOp + " ", whereClauses);
+            where = "(" + String.join(" " + whereClauseJoinOp + " ", whereClauses) + ")";
         }
+
+        if (specialWhereClause != null && !specialWhereClause.isEmpty()) {
+            if (!where.isEmpty()) {
+                where += " and ";
+            }
+            where += "(" + specialWhereClause + ")";
+        }
+
+        if (!where.isEmpty()) {
+            query += " where " + where;
+        }
+
+
         if (sortByClauses != null && !sortByClauses.isEmpty()) {
             query += " order by " + String.join(", ", sortByClauses);
         }

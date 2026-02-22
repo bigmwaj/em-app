@@ -1,16 +1,17 @@
 package ca.bigmwaj.emapp.as.validator.xml.platform;
 
-import ca.bigmwaj.emapp.as.builder.platform.ContactDtoBuilder;
+import ca.bigmwaj.emapp.as.builder.platform.TestContactDtoBuilder;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
+import ca.bigmwaj.emapp.as.validator.xml.common.AbstractDtoValidatorTest;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,49 +23,72 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 @SpringBootTest
 @ActiveProfiles("test")
-class ContactDtoValidatorTest {
+class ContactDtoValidatorTest extends AbstractDtoValidatorTest {
 
-    @Autowired
-    private Validator validator;
+    ContactDto validDto;
+
+    @BeforeEach
+    void setUp() {
+        validDto = TestContactDtoBuilder.builderWithAllDefaults().build();
+    }
 
     @Test
     void testContactDto_CreateWithValidData() {
-        ContactDto dto = ContactDtoBuilder.builderWithAllDefaults().build();
-        Set<ConstraintViolation<ContactDto>> violations = validator.validate(dto);
-        // Should have no violations for valid data
-        assertTrue(violations.isEmpty(), "Expected no violations for valid CREATE Contact");
+        var violations = validator.validate(validDto);
+        assertTrue(violations.isEmpty(), "Expected no violations for valid contact Contact");
+    }
+
+    @Test
+    void testContactDto_CreateWithDataWithNullAddressList() {
+        validDto.setAddresses(null);
+        assertNoViolations(validDto);
+    }
+
+    @Test
+    void testContactDto_CreateWithDataWithEmptyAddressList() {
+        validDto.setAddresses(Collections.emptyList());
+        assertNoViolations(validDto);
+    }
+
+    @Test
+    void testContactDto_CreateWithDataWithNullEmailList() {
+        validDto.setEmails(null);
+        assertViolationsOnField(validDto, "emails");
+    }
+
+    @Test
+    void testContactDto_CreateWithDataWithEmptyEmailList() {
+        validDto.setEmails(Collections.emptyList());
+        assertViolationsOnField(validDto, "emails");
+    }
+
+    @Test
+    void testContactDto_CreateWithDataWithNullPhoneList() {
+        validDto.setPhones(null);
+        assertViolationsOnField(validDto, "phones");
+    }
+
+    @Test
+    void testContactDto_CreateWithDataWithEmptyPhoneList() {
+        validDto.setPhones(Collections.emptyList());
+        assertViolationsOnField(validDto, "phones");
     }
 
     @Test
     void testContactDto_CreateWithMissingFirstName() {
-        ContactDto dto = ContactDtoBuilder.builderWithAllDefaults().build();
-        dto.setFirstName(null); // Missing required field
-
-        Set<ConstraintViolation<ContactDto>> violations = validator.validate(dto);
-        // Should have violation for missing name
-        assertFalse(violations.isEmpty(), "Expected violations for missing name");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "firstName".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'firstName' field");
+        validDto.setFirstName(null); // Missing required field
+        assertViolationsOnField(validDto, "firstName");
     }
 
     @Test
     void testContactDto_CreateWithNameTooLong() {
-        ContactDto dto = ContactDtoBuilder.builderWithAllDefaults().build();
-        dto.setFirstName("A".repeat(50)); // Exceeds max length of 32
-
-        Set<ConstraintViolation<ContactDto>> violations = validator.validate(dto);
-
-        // Should have violation for name too long
-        assertFalse(violations.isEmpty(), "Expected violations for name too long");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "firstName".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'firstName' field");
+        validDto.setFirstName("A".repeat(50)); // Exceeds max length of 32
+        assertViolationsOnField(validDto, "firstName");
     }
 
     @Test
     void testContactDto_UpdateWithoutId() {
-        ContactDto dto = ContactDtoBuilder.builder().withDefaults().build();
+        ContactDto dto = TestContactDtoBuilder.withDefaults().build();
         dto.setEditAction(EditActionLvo.UPDATE);
         dto.setId(null); // Missing required ID for update
 
@@ -79,7 +103,7 @@ class ContactDtoValidatorTest {
 
     @Test
     void testContactDto_UpdateWithValidData() {
-        ContactDto dto = ContactDtoBuilder.builder().withDefaults().build();
+        ContactDto dto = TestContactDtoBuilder.withDefaults().build();
         dto.setEditAction(EditActionLvo.UPDATE);
         dto.setId(1L);
 
@@ -91,7 +115,7 @@ class ContactDtoValidatorTest {
 
     @Test
     void testContactDto_BirthDateTooYoung() {
-        ContactDto dto = ContactDtoBuilder.builder().withDefaults().build();
+        ContactDto dto = TestContactDtoBuilder.withDefaults().build();
         dto.setBirthDate(LocalDate.now().minusYears(10)); // Exceeds max length of 100
 
         Set<ConstraintViolation<ContactDto>> violations = validator.validate(dto);

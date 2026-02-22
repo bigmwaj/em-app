@@ -87,9 +87,11 @@
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Name</mat-label>
               <input matInput formControlName="name" placeholder="Enter role name" />
-              <mat-error *ngIf="mainForm.get('name')?.hasError('required')">
+              @if(mainForm.get('name')?.hasError('required')) {
+              <mat-error>
                 Name is required
               </mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field">
@@ -98,9 +100,11 @@
                 <mat-option [value]="HolderTypeLvo.ACCOUNT">Account</mat-option>
                 <mat-option [value]="HolderTypeLvo.CORPORATE">Corporate</mat-option>
               </mat-select>
-              <mat-error *ngIf="mainForm.get('holderType')?.hasError('required')">
+              @if(mainForm.get('holderType')?.hasError('required')) {
+              <mat-error>
                 Holder type is required
               </mat-error>
+              }
             </mat-form-field>
           </div>
           <div class="form-row">
@@ -117,12 +121,54 @@
                 <mat-icon>security</mat-icon>
                 Privileges
               </ng-template>
+              @if(isCreateMode || isEditMode) {
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>security</mat-icon>
+                    Assigned Privileges
+                  </ng-template>
+                  <app-role-privilege-assigned-list [dto]="dto"
+                    (onPrivilegeRemoved)="privilegeRemoved($event)"></app-role-privilege-assigned-list>
+                </mat-tab>
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>add</mat-icon>
+                    Assign new Privileges
+                  </ng-template>
+                  <app-role-privilege-assign-list [dto]="dto"></app-role-privilege-assign-list>
+                </mat-tab>
+              </mat-tab-group>
+              }@else {
+              <app-role-privilege-assigned-list [dto]="dto"></app-role-privilege-assigned-list>
+              }
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
                 <mat-icon>people</mat-icon>
                 Users
               </ng-template>
+              @if(isCreateMode || isEditMode) {
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>security</mat-icon>
+                    Assigned Users
+                  </ng-template>
+                  <app-role-user-assigned-list [dto]="dto"
+                    (onUserRemoved)="userRemoved($event)"></app-role-user-assigned-list>
+                </mat-tab>
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>add</mat-icon>
+                    Assign new Users
+                  </ng-template>
+                  <app-role-user-assign-list [dto]="dto"></app-role-user-assign-list>
+                </mat-tab>
+              </mat-tab-group>
+              }@else {
+              <app-role-user-assigned-list [dto]="dto"></app-role-user-assigned-list>
+              }
             </mat-tab>
           </mat-tab-group>
         </div>

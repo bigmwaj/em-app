@@ -11,28 +11,11 @@
     </button>
   </div>
 
-  <div class="search-section">
-    <mat-card>
-      <mat-card-content>
-        <form class="search-form">
-          <mat-form-field appearance="outline" class="search-field">
-            <mat-label>Search</mat-label>
-            <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter filter">
-            <mat-icon matPrefix>search</mat-icon>
-          </mat-form-field>
-          <button mat-raised-button color="primary" (click)="onSearch()" type="button"
-            class="search-button search-button-submit">
-            <mat-icon>search</mat-icon>
-            Search
-          </button>
-          <button mat-raised-button (click)="onClearSearch()" type="button" class="search-button search-button-clear">
-            <mat-icon>clear</mat-icon>
-            Clear
-          </button>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  </div>
+  <app-search-form 
+    (search)="onSearch($event)" 
+    (clearSearch)="onClearSearch()" 
+    (initAdvancedSearch)="onInitAdvancedSearch()">
+  </app-search-form>
 
   @if (pageData.error() && !pageData.loading()) {
 
@@ -109,7 +92,7 @@
     </mat-card-content>
 
     <mat-card-footer>
-      <mat-paginator style="background-color: transparent;" [pageSizeOptions]="[5, 10, 20]"
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
         (page)="handlePageEvent($event)" [length]="searchResult.searchInfos.total"
         [pageIndex]="searchCriteria.pageIndex" [pageSize]="searchCriteria.pageSize" showFirstLastButtons
         aria-label="Select page of periodic elements">

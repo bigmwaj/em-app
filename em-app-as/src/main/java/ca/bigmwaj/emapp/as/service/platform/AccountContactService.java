@@ -7,14 +7,14 @@ import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
+import ca.bigmwaj.emapp.as.service.AbstractBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class AccountContactService extends AbstractService {
+public class AccountContactService extends AbstractBaseService<AccountContactDto, AccountContactEntity> {
 
     @Autowired
     private AccountContactDao dao;
@@ -24,15 +24,6 @@ public class AccountContactService extends AbstractService {
 
     @Autowired
     private ContactDao contactDao;
-//
-//    public AccountContactDto create(AccountContactDto dto) {
-//        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-//        var contact = contactService.create(dto.getContact());
-//        var contactEntity = contactDao.getReferenceById(contact.getId());
-//        entity.setContact(contactEntity);
-//        beforeCreateHistEntity(entity);
-//        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
-//    }
 
     public void beforeCreate(AccountContactEntity entity, AccountContactDto dto) {
         beforeCreateHistEntity(entity);

@@ -2,11 +2,13 @@ package ca.bigmwaj.emapp.as.api.shared.search;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder(setterPrefix = "with")
 @Data
+@NoArgsConstructor
 public class WhereClauseInput extends AbstractClauseInput {
 
     private String oper;

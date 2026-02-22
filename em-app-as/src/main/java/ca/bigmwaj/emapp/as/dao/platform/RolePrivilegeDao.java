@@ -1,14 +1,15 @@
 package ca.bigmwaj.emapp.as.dao.platform;
 
-import ca.bigmwaj.emapp.as.dao.AbstractDao;
 import ca.bigmwaj.emapp.as.entity.platform.RolePrivilegeEntity;
 import ca.bigmwaj.emapp.as.entity.platform.RolePrivilegePK;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface RolePrivilegeDao extends AbstractDao<RolePrivilegeEntity, RolePrivilegePK> {
+import java.util.List;
 
-    default Class<RolePrivilegeEntity> getEntityClass() {
-        return RolePrivilegeEntity.class;
-    }
+@Repository
+public interface RolePrivilegeDao extends JpaRepository<RolePrivilegeEntity, RolePrivilegePK> {
+
+    List<RolePrivilegeEntity> findByRoleId(Short roleId);
+
 }

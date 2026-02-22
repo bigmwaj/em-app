@@ -96,6 +96,8 @@ export interface ContactEmailDto extends AbstractContactPointDto {
 export interface ContactPhoneDto extends AbstractContactPointDto {
   phone: string;
   type: PhoneTypeLvo;
+  indicative?: string;
+  extension?: string;
 }
 
 export interface UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
@@ -113,6 +115,15 @@ export interface UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
 export interface AccountSearchCriteria extends AbstractSearchCriteria {
   includeMainContact?: boolean;
   includeContactRoles?: boolean;
+}
+
+export interface UserSearchCriteria extends AbstractSearchCriteria {
+  assignableToRoleId?: number;
+}
+
+
+export interface PrivilegeSearchCriteria extends AbstractSearchCriteria {
+  assignableToRoleId?: number;
 }
 
 export interface GroupDto extends AbstractChangeTrackingDto {
@@ -136,25 +147,32 @@ export interface RoleDto extends AbstractChangeTrackingDto {
   name: string;
   description?: string;
   holderType: HolderTypeLvo;
-  privileges?: RolePrivilegeDto[];
+  rolePrivileges?: RolePrivilegeDto[];
+  roleUsers?: RoleUserDto[];
 }
 
 export interface GroupRoleDto extends AbstractChangeTrackingDto {
   groupId?: number;
-  roleId?: number;
+  role?: RoleDto;
 }
 
 export interface GroupUserDto extends AbstractChangeTrackingDto {
   groupId?: number;
-  userId?: number;
+  user?: UserDto;
 }
 
 export interface RolePrivilegeDto extends AbstractChangeTrackingDto {
   roleId?: number;
-  privilegeId?: number;
+  privilege?: PrivilegeDto;
 }
 
 export interface UserRoleDto extends AbstractChangeTrackingDto {
   userId?: number;
-  roleId?: number;
+  role?: RoleDto;
 }
+
+export interface RoleUserDto extends AbstractChangeTrackingDto {
+  roleId?: number;
+  user?: UserDto;
+}
+

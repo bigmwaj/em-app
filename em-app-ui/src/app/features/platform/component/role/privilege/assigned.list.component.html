@@ -1,0 +1,53 @@
+@if (pageData.error() && !pageData.loading()) {
+<div class="info-message">
+  <mat-card>
+    <mat-icon>info</mat-icon>
+    <p>{{ pageData.error() }}</p>
+  </mat-card>
+</div>
+}
+
+@if (pageData.loading()) { <div class="loading-section">
+  <mat-spinner></mat-spinner>
+  <p>Loading privileges...</p>
+</div>
+
+} @else {
+  <mat-card class="main-table">
+    <mat-card-content>
+      <table mat-table [dataSource]="data" class="mat-elevation-z8 contacts-table">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{element?.privilege?.name}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let element">{{element?.privilege?.description}}</td>
+        </ng-container>        
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element">{{element?.editAction}}</td>
+        </ng-container>
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-button color="primary" (click)="removePrivilege(element)">
+              @if(isDeleted(element)) {
+              <mat-icon>undo</mat-icon>
+              } @else if(isCreated(element)) {
+              <mat-icon>close</mat-icon>
+              } @else {
+              <mat-icon>delete</mat-icon> 
+              }
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+}

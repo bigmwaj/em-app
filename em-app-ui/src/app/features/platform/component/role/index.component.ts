@@ -14,8 +14,9 @@ import { RoleHelper } from '../../helper/role.helper';
   styleUrls: ['./index.component.scss'],
   standalone: false
 })
-export class RoleIndexComponent extends AbstractIndexComponent<RoleDto>  {
+export class RoleIndexComponent extends AbstractIndexComponent<RoleDto> {
   displayedColumns: string[] = ['name', 'description', 'holderType', 'actions'];
+
   RoleHelper = RoleHelper;
 
   constructor(
@@ -38,5 +39,21 @@ export class RoleIndexComponent extends AbstractIndexComponent<RoleDto>  {
 
   override search(): Observable<SearchResult<RoleDto>> {
     return this.service.getRoles(this.searchCriteria);
+  }
+
+  protected override prepareEdit(dto: RoleDto): RoleDto {
+    if (!dto.rolePrivileges) {
+      if (!dto.rolePrivileges) {
+        dto.rolePrivileges = [];
+      }
+    }
+    return dto;
+  }
+
+  protected override prepareView(dto: RoleDto): RoleDto {
+    if (!dto.rolePrivileges) {
+      dto.rolePrivileges = [];
+    }
+    return dto;
   }
 }

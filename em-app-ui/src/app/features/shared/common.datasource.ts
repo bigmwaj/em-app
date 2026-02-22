@@ -10,12 +10,17 @@ export abstract class CommonDataSource<E> extends MatTableDataSource<E> {
 
     @ViewChild(MatTable)
     public table!: MatTable<E>;
+
     selection = new SelectionModel<E>(true, []);
 
     abstract getKeyLabel(bean: E): string | number;
 
     constructor() {
         super();
+    }
+
+    getItemReference(bean: E): E | undefined {
+        return this.data.find(b => this.equals(b, bean));
     }
 
     appendItem(bean: E) {
@@ -34,8 +39,12 @@ export abstract class CommonDataSource<E> extends MatTableDataSource<E> {
         }
     }
 
+    equals(bean1: E, bean2: E): boolean {
+        return this.getKeyLabel(bean1) === this.getKeyLabel(bean2);
+    }
+
     removeItem(bean: E) {
-        const tmp = this.data.filter(b => b != bean);
+        const tmp = this.data.filter(b => !this.equals(b, bean));
         this.data.length = 0
 
         this.data.push(...tmp)
@@ -46,7 +55,7 @@ export abstract class CommonDataSource<E> extends MatTableDataSource<E> {
     }
 
     replaceItemWith(bean: E, _with: E) {
-        const index = this.data.findIndex(b => b == bean);
+        const index = this.data.findIndex(b => this.equals(b, bean));
         const tmp: Array<E> = [];
         if (index > 0) {
             tmp.push(...this.data.slice(0, index))

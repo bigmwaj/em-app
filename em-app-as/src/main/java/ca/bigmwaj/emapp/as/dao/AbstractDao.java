@@ -28,7 +28,14 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
         return builder.build();
     }
 
+    default String getSpecialWhereClause(AbstractSearchCriteria sc){
+        return null;
+    }
+
     default <T> TypedQuery<T> prepareQuery(EntityManager em, Class<T> klass, QueryConfig.QueryConfigBuilder builder, AbstractSearchCriteria sc) {
+
+        builder.withSpecialWhereClause(getSpecialWhereClause(sc));
+
         var queryConfig = prepareQueryConfig(builder, sc);
 
         TypedQuery<T> query = em.createQuery(queryConfig.getQueryString(), klass);

@@ -29,7 +29,7 @@ class SpringDtoValidatorIntegrationTest {
 
     @Test
     void testAccountDto_CreateWithValidData() {
-        AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
+        AccountDto dto = TestAccountDtoBuilder.builderWithAllDefaults().build();
         Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
         // Should have no violations for valid data
         assertTrue(violations.isEmpty(), "Expected no violations for valid CREATE account");

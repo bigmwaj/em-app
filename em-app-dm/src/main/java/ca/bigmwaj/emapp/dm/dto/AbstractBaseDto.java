@@ -2,15 +2,15 @@ package ca.bigmwaj.emapp.dm.dto;
 
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@NoArgsConstructor
+@SuperBuilder(toBuilder = true, setterPrefix = "with")
 public abstract class AbstractBaseDto {
 
     @Getter(AccessLevel.NONE)
@@ -21,36 +21,42 @@ public abstract class AbstractBaseDto {
 
     private EditActionLvo editAction;
 
-    /**
-     * Map to hold the literals fields that have been changed during an update action,
-     * with the field name as the key and the new value as the value
-     */
-//    private Map<String, Object> changedFields = new HashMap<>();
-
+    @JsonIgnore
     public boolean isCreateOrUpdateAction() {
         return isCreateAction() || isUpdateAction();
     }
 
+    @JsonIgnore
     public boolean isCreateAction() {
         return EditActionLvo.CREATE.equals(getEditAction());
     }
 
+    @JsonIgnore
     public boolean isUpdateAction() {
         return EditActionLvo.UPDATE.equals(getEditAction());
     }
 
+    @JsonIgnore
+    public boolean isDeleteAction() {
+        return EditActionLvo.DELETE.equals(getEditAction());
+    }
+
+    @JsonIgnore
     public boolean isUpdateOrChangeStatusAction() {
         return isUpdateAction() || isChangeStatusAction();
     }
 
+    @JsonIgnore
     public boolean isChangeStatusAction() {
         return EditActionLvo.CHANGE_STATUS.equals(getEditAction());
     }
 
+    @JsonIgnore
     public boolean isNew() {
         return _new;
     }
 
+    @JsonIgnore
     public void setNew(boolean _new) {
         this._new = _new;
     }

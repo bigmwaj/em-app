@@ -2,15 +2,16 @@ package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dto.platform.AbstractContactPointDto;
 import ca.bigmwaj.emapp.as.entity.platform.AbstractContactPointEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
+import ca.bigmwaj.emapp.as.service.AbstractBaseService;
+import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Objects;
 
-public  abstract class AbstractContactPointService<E extends AbstractContactPointEntity, D extends AbstractContactPointDto>
-        extends AbstractService {
+public  abstract class AbstractContactPointService<D extends AbstractContactPointDto, E extends AbstractContactPointEntity>
+        extends AbstractBaseService<D, E> {
 
-    abstract JpaRepository<E, Long> getDao();
+    protected abstract JpaRepository<E, Long> getDao();
 
     void beforeCreate(E entity, D dto) {
         entity.setId(null);

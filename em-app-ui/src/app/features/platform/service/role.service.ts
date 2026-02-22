@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { RoleDto } from '../api.platform.model';
+import { RoleDto, RolePrivilegeDto, RoleUserDto, UserRoleDto } from '../api.platform.model';
 import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
 import { RoleHelper } from '../helper/role.helper';
 
@@ -26,6 +26,14 @@ export class RoleService {
 
   getRole(id: number): Observable<RoleDto> {
     return this.http.get<RoleDto>(`${this.apiUrl}/id/${id}`);
+  }
+  
+  getRolePrivileges(id: number): Observable<SearchResult<RolePrivilegeDto>> {
+    return this.http.get<SearchResult<RolePrivilegeDto>>(`${this.apiUrl}/id/${id}/privileges`);
+  }
+  
+  getRoleUsers(id: number): Observable<SearchResult<RoleUserDto>> {
+    return this.http.get<SearchResult<RoleUserDto>>(`${this.apiUrl}/id/${id}/users`);
   }
 
   createRole(role: RoleDto): Observable<RoleDto> {

@@ -2,13 +2,13 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
+import ca.bigmwaj.emapp.as.dto.platform.*;
 import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.platform.RoleDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
@@ -119,6 +119,30 @@ public class RoleController extends AbstractBaseAPI {
             @Parameter(description = "The role's ID", required = true)
             @Positive @PathVariable Short roleId) {
         return ResponseEntity.ok(new ResponseMessage<>(service.findById(roleId)));
+    }
+
+    @Operation(
+            summary = "Get role privilege by role ID",
+            description = "",
+            tags = {"role", "privilege"}
+    )
+    @GetMapping("/id/{roleId}/privileges")
+    public ResponseEntity<SearchResultDto<RolePrivilegeDto>> getRolePrivileges(
+            @Parameter(description = "The role's ID", required = true)
+            @Positive @PathVariable Short roleId) {
+        return ResponseEntity.ok(service.findRolePrivileges(roleId));
+    }
+
+    @Operation(
+            summary = "Get role user by role ID",
+            description = "",
+            tags = {"role", "user"}
+    )
+    @GetMapping("/id/{roleId}/users")
+    public ResponseEntity<SearchResultDto<RoleUserDto>> getUserRoles(
+            @Parameter(description = "The role's ID", required = true)
+            @Positive @PathVariable Short roleId) {
+        return ResponseEntity.ok(service.findRoleUsers(roleId));
     }
 
     @PostMapping

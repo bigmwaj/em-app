@@ -81,7 +81,6 @@ public class ValidationXmlParser {
                 config.getFields().add(field);
             }
         }
-
         return config;
     }
 

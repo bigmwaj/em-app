@@ -34,14 +34,15 @@
         <mat-error>Password must be at least 6 characters</mat-error>
         }
       </mat-form-field>
-
-      <div class="error-message" *ngIf="errorMessage">
+      @if(pageData.error()) {
+      <div class="error-message">
         <mat-icon>error</mat-icon>
-        <span>{{ errorMessage }}</span>
+        <span>{{ pageData.error() }}</span>
       </div>
+      }
+      <button mat-raised-button color="primary" type="submit" class="login-button" [disabled]="pageData.loading()">
 
-      <button mat-raised-button color="primary" type="submit" class="login-button" [disabled]="isLoading">
-        @if(!isLoading) {
+        @if(!pageData.loading()) {
         <span>Sign In</span>
         }@else {
         <mat-spinner diameter="20"></mat-spinner>
@@ -63,16 +64,6 @@
       <button mat-raised-button class="oauth-button github" (click)="loginWithOAuth('github')">
         <mat-icon>code</mat-icon>
         <span>Sign in with GitHub</span>
-      </button>
-
-      <button mat-raised-button class="oauth-button facebook" (click)="loginWithOAuth('facebook')">
-        <mat-icon>facebook</mat-icon>
-        <span>Sign in with Facebook</span>
-      </button>
-
-      <button mat-raised-button class="oauth-button tiktok" (click)="loginWithOAuth('tiktok')">
-        <mat-icon>music_note</mat-icon>
-        <span>Sign in with TikTok</span>
       </button>
     </div>
 

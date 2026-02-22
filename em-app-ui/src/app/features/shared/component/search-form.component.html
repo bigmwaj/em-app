@@ -1,24 +1,24 @@
-<div class="search-section">
-  <mat-card>
-    <mat-card-content>
-      <form class="search-form">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-label>Search</mat-label>
-          <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter filter">
-          <mat-icon matPrefix>search</mat-icon>
-        </mat-form-field>
-        <button mat-raised-button color="primary" (click)="onSearch()" class="search-button search-button-submit"
-          type="button">
-          <mat-icon>search</mat-icon>Search
-        </button>
-        <button mat-raised-button (click)="onClearSearch()" type="button" class="search-button search-button-clear">
-          <mat-icon>clear</mat-icon>Clear
-        </button>
-        <button mat-raised-button (click)="onInitAdvancedASearch()" type="button"
-          class="search-button search-button-advanced">
-          <mat-icon>open_in_new</mat-icon>Advanced Search
-        </button>
-      </form>
-    </mat-card-content>
-  </mat-card>
-</div>
+<mat-card class="search-section">
+  <mat-card-content>
+    <form class="search-form">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search</mat-label>
+        <input matInput [(ngModel)]="searchText" name="searchText" placeholder="Enter filter">
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="onSearch()" class="search-button search-button-submit"
+        type="button">
+        <mat-icon>search</mat-icon>Search
+      </button>
+      <button mat-raised-button (click)="onClearSearch()" type="button" class="search-button search-button-clear">
+        <mat-icon>clear</mat-icon>Clear
+      </button>
+      @if(showAdvancedSearchButton) {
+      <button mat-raised-button (click)="onInitAdvancedASearch()" type="button"
+        class="search-button search-button-advanced">
+        <mat-icon>open_in_new</mat-icon>Advanced Search
+      </button>
+      }
+    </form>
+  </mat-card-content>
+</mat-card>

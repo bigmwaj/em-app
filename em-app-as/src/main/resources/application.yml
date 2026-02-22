@@ -40,20 +40,6 @@ spring:
               - email
               - public_profile
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-          tiktok:
-            client-id: ${TIKTOK_CLIENT_ID}
-            client-secret: ${TIKTOK_CLIENT_SECRET}
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope:
-              - user.info.basic
-        provider:
-          tiktok:
-            authorization-uri: https://www.tiktok.com/v2/auth/authorize/
-            token-uri: https://open.tiktokapis.com/v2/oauth/token/
-            user-info-uri: https://open.tiktokapis.com/v2/user/info/
-            user-name-attribute: data.user.open_id
-
 server:
   port: 8080
 

@@ -14,5 +14,4 @@ export class RoleHelper extends SharedHelper {
         delete duplicatedRole.id;
         return duplicatedRole;
     }
-
 }

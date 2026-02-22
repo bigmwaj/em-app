@@ -13,9 +13,10 @@
     </field>
 
     <field name="name">
-        <condition expression="createOrUpdateAction">
+        <condition expression="createAction">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
+            <rule type="RoleNameUniqueRule"/>
         </condition>
     </field>
 
@@ -24,4 +25,41 @@
             <rule type="MaxLengthRule" maxLength="128"/>
         </condition>
     </field>
+
+    <field name="rolePrivileges" type="dtoList">
+        <validationConfig>
+            <field name="privilege" type="dto">
+                <condition expression="true">
+                    <rule type="NonNullRule"/>
+                </condition>
+                <validationConfig>
+                    <field name="id">
+                        <condition expression="true">
+                            <rule type="NonNullRule"/>
+                            <rule type="PrivilegeExistsRule"/>
+                        </condition>
+                    </field>
+                </validationConfig>
+            </field>
+        </validationConfig>
+    </field>
+
+    <field name="roleUsers" type="dtoList">
+        <validationConfig>
+            <field name="user" type="dto">
+                <condition expression="true">
+                    <rule type="NonNullRule"/>
+                </condition>
+                <validationConfig>
+                    <field name="id">
+                        <condition expression="true">
+                            <rule type="NonNullRule"/>
+                            <rule type="UserExistsRule"/>
+                        </condition>
+                    </field>
+                </validationConfig>
+            </field>
+        </validationConfig>
+    </field>
+
 </validation>

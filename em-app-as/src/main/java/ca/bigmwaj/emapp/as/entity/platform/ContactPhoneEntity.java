@@ -18,4 +18,10 @@ public class ContactPhoneEntity extends AbstractContactPointEntity {
     @Column(name = "TYPE", nullable = false)
     private PhoneTypeLvo type;
 
+    @Column(name = "INDICATIVE", nullable = false)
+    private String indicative;
+
+    @Column(name = "EXTENSION")
+    private String extension;
+
 }

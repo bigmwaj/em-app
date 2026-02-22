@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class ContactPhoneService extends AbstractContactPointService<ContactPhoneEntity, ContactPhoneDto> {
+public class ContactPhoneService extends AbstractContactPointService<ContactPhoneDto, ContactPhoneEntity> {
     @Autowired
     private ContactPhoneDao dao;
 
@@ -49,7 +49,7 @@ public class ContactPhoneService extends AbstractContactPointService<ContactPhon
     }
 
     @Override
-    ContactPhoneDao getDao() {
+    protected ContactPhoneDao getDao() {
         return dao;
     }
 }

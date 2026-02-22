@@ -2,6 +2,7 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
+import ca.bigmwaj.emapp.as.dto.platform.UserSearchCriteria;
 import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
@@ -26,6 +27,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,6 +76,9 @@ public class UserController extends AbstractBaseAPI {
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
 
+            @PositiveOrZero
+            Short assignableToRoleId,
+
             @ValidWhereClausePatterns(
                     supportedFields = {
                             @WhereClauseSupportedField(name = "status", type = UserStatusLvo.class),
@@ -115,13 +120,15 @@ public class UserController extends AbstractBaseAPI {
             List<SortByClause> sortByClauses
     ) {
 
-        var builder = DefaultSearchCriteria.builder()
+        var builder = UserSearchCriteria.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
                 .withWhereClauseJoinOp(whereClauseJoinOp)
                 .withWhereClauses(whereClauses)
-                .withSortByClauses(sortByClauses);
+                .withSortByClauses(sortByClauses)
+                .withAssignableToRoleId(assignableToRoleId);
+
 
         return ResponseEntity.ok(service.search(builder.build()));
     }

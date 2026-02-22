@@ -1,14 +1,15 @@
 package ca.bigmwaj.emapp.as.dao.platform;
 
-import ca.bigmwaj.emapp.as.dao.AbstractDao;
 import ca.bigmwaj.emapp.as.entity.platform.UserRoleEntity;
 import ca.bigmwaj.emapp.as.entity.platform.UserRolePK;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRoleDao extends AbstractDao<UserRoleEntity, UserRolePK> {
+import java.util.List;
 
-    default Class<UserRoleEntity> getEntityClass() {
-        return UserRoleEntity.class;
-    }
+@Repository
+public interface UserRoleDao extends JpaRepository<UserRoleEntity, UserRolePK> {
+
+    List<UserRoleEntity> findByRoleId(Short roleId);
+
 }

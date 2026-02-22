@@ -1,0 +1,31 @@
+package ca.bigmwaj.emapp.as.builder.platform;
+
+import ca.bigmwaj.emapp.as.builder.common.TestConstant;
+import ca.bigmwaj.emapp.as.dto.platform.RoleUserDto;
+import ca.bigmwaj.emapp.as.dto.platform.UserRoleDto;
+import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@SuperBuilder(toBuilder = true, setterPrefix = "with")
+public class TestUserRoleDtoBuilder extends UserRoleDto {
+
+    /**
+     * The associated user is supposed to have been created either in DB on in
+     * the current transaction and it ID should have been updated in this building.
+     */
+    public static TestUserRoleDtoBuilder.TestUserRoleDtoBuilderBuilder withDefaults() {
+        var existingRole = TestRoleDtoBuilder.withDefaults().build();
+        // create it or get it from DB and update the ID in the builder
+        return TestUserRoleDtoBuilder.builder()
+                .withCreatedBy(TestConstant.TEST_USER)
+                .withUpdatedBy(TestConstant.TEST_USER)
+                .withCreatedDate(LocalDateTime.now())
+                .withUpdatedDate(LocalDateTime.now())
+                .withEditAction(EditActionLvo.CREATE)
+                .withRole(existingRole);
+    }
+}

@@ -127,7 +127,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
     this.loadData();
   }
 
-  onInitAdvancedASearch(): void {
+  onInitAdvancedSearch(): void {
     alert('Advanced search is not implemented yet.');
   }
 
@@ -137,15 +137,23 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
     });
   }
 
+  protected prepareEdit(dto: T): T {
+    return dto;
+  }
+
   editAction(dto: T): void {
     this.router.navigate([this.getBaseRoute() + '/edit', 'edit'], {
-      state: { mode: 'edit', dto: dto }
+      state: { mode: 'edit', dto: this.prepareEdit(dto) }
     });
+  }
+
+  protected prepareView(dto: T): T {
+    return dto;
   }
 
   viewAction(dto: T): void {
     this.router.navigate([this.getBaseRoute() + '/edit', 'view'], {
-      state: { mode: 'view', dto: dto }
+      state: { mode: 'view', dto: this.prepareView(dto) }
     });
   }
 

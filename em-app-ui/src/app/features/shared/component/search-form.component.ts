@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-search-form',
@@ -11,6 +11,17 @@ export class SearchFormComponent {
   @Output() clearSearch = new EventEmitter<void>();
   @Output() initAdvancedSearch = new EventEmitter<void>();
   @Output() search = new EventEmitter<string>();
+
+  private _showAdvancedSearchButton = false;
+
+  get showAdvancedSearchButton(): boolean {
+    return this._showAdvancedSearchButton;
+  }
+
+  @Input()
+  set showAdvancedSearchButton(value: boolean) {
+    this._showAdvancedSearchButton = value;
+  }
 
   onClearSearch(): void {
     this.clearSearch.emit();

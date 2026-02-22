@@ -10,7 +10,4 @@ import java.util.List;
 @Repository
 public interface ContactAddressDao extends JpaRepository<ContactAddressEntity, Long> {
 
-    List<ContactAddressEntity> findAllByContactId(Long id);
-    
-    boolean existsByHolderTypeAndAddress(HolderTypeLvo holderType, String address);
 }

@@ -124,7 +124,7 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadFormData();
+    this.setup();
     this.addGlobalEventsListeners();
   }
 
@@ -194,7 +194,7 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
     });
   }
 
-  protected loadFormData(): void {
+  protected setup(): void {
     // Get navigation state data
     const navigation = this.router.getCurrentNavigation();
     const state = navigation?.extras?.state || history.state;

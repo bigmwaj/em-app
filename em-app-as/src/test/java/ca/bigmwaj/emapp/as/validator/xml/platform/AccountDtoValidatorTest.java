@@ -1,140 +1,197 @@
 package ca.bigmwaj.emapp.as.validator.xml.platform;
 
-import ca.bigmwaj.emapp.as.builder.platform.AccountDtoBuilder;
-import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
+import ca.bigmwaj.emapp.as.builder.platform.TestAccountContactDtoBuilder;
+import ca.bigmwaj.emapp.as.builder.platform.TestAccountDtoBuilder;
+import ca.bigmwaj.emapp.as.dao.platform.AccountDao;
+import ca.bigmwaj.emapp.as.service.platform.AccountService;
+import ca.bigmwaj.emapp.as.validator.xml.common.AbstractDtoValidatorTest;
+import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.time.LocalDateTime;
 
 /**
  * Integration test for AccountDto XML-driven validation.
  * Tests the complete flow from DTO annotation to validation execution.
  */
+@Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-class AccountDtoValidatorTest {
+class AccountDtoValidatorTest extends AbstractDtoValidatorTest {
 
     @Autowired
-    private Validator validator;
+    private AccountService accountService;
 
-    @Test
-    void testAccountDto_CreateWithValidData() {
-        AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-        // Should have no violations for valid data
-        assertTrue(violations.isEmpty(), "Expected no violations for valid CREATE account");
+    @Autowired
+    private AccountDao accountDao;
+
+    @BeforeEach
+    void setUp(){
+        accountDao.deleteAll();
     }
 
     @Test
-    void testAccountDto_ChangeStatusWithFullValidData() {
-        AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
-        dto.setEditAction(EditActionLvo.CHANGE_STATUS);
-        dto.setId((short)1);
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-        // Should have no violations for valid data
-        assertTrue(violations.isEmpty(), "Expected no violations for full valid account");
+    void testAccountDto_CreateFieldsValidation() {
+        // The field 'name' is required and should have a max length of 32 characters
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withName(null).build(), "name");
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withName("").build(), "name");
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withName("A".repeat(33)).build(), "name");
+
+        // The field 'description' is optional, but if provided, it should not exceed 256 characters
+        assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults().withDescription(null).build());
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withDescription("A".repeat(257)).build(), "description");
+
+        // The field 'status' is required and should not be 'ACTIVE'
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withStatus(null).build(), "status");
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withStatus(AccountStatusLvo.BLOCKED).build(), "status");
+
+        // The field 'adminUsernameType' is required
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsernameType(null).build(), "adminUsernameType");
+
+        // When the 'adminUsernameType' is 'PHONE', the 'adminUsernamePhoneIndicative' field is required
+        // and should be supported by the platform
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsernameType(UsernameTypeLvo.PHONE)
+                .withAdminUsernameTypePhoneIndicative(null).build(), "adminUsernameTypePhoneIndicative");
+        assertThrowValidationConfigurationException(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsernameType(UsernameTypeLvo.PHONE)
+                .withAdminUsernameTypePhoneIndicative("+44")
+                .build(), "The indicative '+44' is not supported by PhoneRule yet");
+
+        // When the 'adminUsernameType' is 'PHONE', the 'adminUsername' field should be a valid phone
+        // number based on the provided 'adminUsernamePhoneIndicative'
+        assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsernameType(UsernameTypeLvo.PHONE)
+                .withAdminUsername("4182552407").withAdminUsernameTypePhoneIndicative("+1").build());
+
+        // When the 'adminUsernameType' is 'EMAIL', the 'adminUsername' field should be a valid email address
+        assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsername("a@test.com").build());
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsername("no-email").build(), "adminUsername");
+
+        // The field 'adminUsername' is required and should have a max length of 16 characters
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsername(null).build(), "adminUsername");
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsername("A".repeat(17)).build(), "adminUsername");
+
+        // The field 'adminUsername' should be unique. The user with username 'admin' already
+        // exists in the system, so it should trigger a violation.
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAdminUsername("admin").withAdminUsernameType(UsernameTypeLvo.BASIC)
+                .build(), "adminUsername");
+
+        // The field 'accountContacts' is required and should not be empty. The role of the first should be 'PRINCIPAL'
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .clearAccountContacts().build(), "accountContacts");
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAccountContact(TestAccountContactDtoBuilder.withDefaults()
+                        .withRole(null).build()).build(), "role");
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .clearAccountContacts().withAccountContact(TestAccountContactDtoBuilder.withDefaults()
+                        .withRole(AccountContactRoleLvo.AGENT).build()).build(), "accountContacts");
+
+        assertViolationsOnField(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withStatusReason("A".repeat(255)).build(), "statusReason");
+
+
+    }
+
+    @Transactional
+    @Test
+    void testAccountDto_Create() {
+        var accountDto = TestAccountDtoBuilder.builderWithAllDefaults().build();
+        var dto = accountService.create(accountDto);
+        Assertions.assertNotNull(dto);
     }
 
     @Test
-    void testAccountDto_ChangeStatusWithMinimumValidData() {
-        AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.CHANGE_STATUS);
-        dto.setId((short)1);
-        dto.setStatus(AccountStatusLvo.ACTIVE);
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-        // Should have no violations for valid data
-        assertTrue(violations.isEmpty(), "Expected no violations for minimum valid account");
+    void testAccountDto_ChangeStatusFieldsValidation() {
+        // Full data
+        assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withId((short) 1)
+                .withEditAction(EditActionLvo.CHANGE_STATUS).build());
+
+        // Only required data
+        assertNoViolations(TestAccountDtoBuilder.builder()
+                .withId((short) 1)
+                .withEditAction(EditActionLvo.CHANGE_STATUS)
+                .withStatus(AccountStatusLvo.ACTIVE)
+                .withStatusDate(LocalDateTime.now()).build());
+
+        // Missing status
+        assertViolationsOnField(TestAccountDtoBuilder.builder()
+                .withId((short) 1)
+                .withEditAction(EditActionLvo.CHANGE_STATUS)
+                .withStatus(null).build(), "status");
+
+        // Missing ID
+        assertViolationsOnField(TestAccountDtoBuilder.builder()
+                .withId(null).withEditAction(EditActionLvo.CHANGE_STATUS)
+                .withStatus(AccountStatusLvo.ACTIVE).build(), "id");
+
+        // Missing status date
+        assertViolationsOnField(TestAccountDtoBuilder.builder()
+                .withId((short) 1)
+                .withEditAction(EditActionLvo.CHANGE_STATUS)
+                .withStatusDate(null).build(), "statusDate");
     }
+
 
     @Test
-    void testAccountDto_CreateWithMissingName() {
-        AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
-        dto.setName(null); // Missing required field
+    void testAccountDto_UpdateFieldsValidation() {
+        // Full data
+        assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults()
+                .withId((short) 1)
+                .withEditAction(EditActionLvo.UPDATE).build());
 
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-        // Should have violation for missing name
-        assertFalse(violations.isEmpty(), "Expected violations for missing name");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "name".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'name' field");
+        // Only account data
+        assertNoViolations(TestAccountDtoBuilder.withDefaults()
+                .withId((short) 1)
+                .withEditAction(EditActionLvo.UPDATE).build());
+
+        // Let create an account for testing update
+        var initialDto = TestAccountDtoBuilder.builderWithAllDefaults()
+                .withAccountContact(TestAccountContactDtoBuilder.builderWithAllDefaults().build()).build();
+
+        Assertions.assertEquals(2, initialDto.getAccountContacts().size());
+        var createdDto = accountService.create(initialDto);
+
+
+
+
+        createdDto.setName("newName");
+        createdDto.setDescription("newDescription");
+        createdDto.setEditAction(EditActionLvo.UPDATE);
+        assertNoViolations(createdDto);
+
+        var updatedDto = accountService.update(createdDto);
+
+        Assertions.assertNotEquals(initialDto.getName(), updatedDto.getName());
+        Assertions.assertNotEquals(initialDto.getDescription(), updatedDto.getDescription());
+
+        //Assertions.assertEquals(2, updatedDto.getAccountContacts().size());
+
     }
 
-    @Test
-    void testAccountDto_CreateWithNameTooLong() {
-        AccountDto dto = AccountDtoBuilder.builderWithAllDefaults().build();
-        dto.setName("A".repeat(50)); // Exceeds max length of 32
 
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-
-        // Should have violation for name too long
-        assertFalse(violations.isEmpty(), "Expected violations for name too long");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "name".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'name' field");
-    }
-
-    @Test
-    void testAccountDto_UpdateWithoutId() {
-        AccountDto dto = AccountDtoBuilder.builder().withDefaults().build();
-        dto.setEditAction(EditActionLvo.UPDATE);
-        dto.setId(null); // Missing required ID for update
-
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-
-        // Should have violation for missing ID
-        assertFalse(violations.isEmpty(), "Expected violations for missing ID on UPDATE");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "id".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'id' field");
-    }
-
-    @Test
-    void testAccountDto_UpdateWithValidData() {
-        AccountDto dto = AccountDtoBuilder.builder().withDefaults().build();
-        dto.setEditAction(EditActionLvo.UPDATE);
-        dto.setId((short)1);
-
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-
-        // Should have no violations for valid update
-        assertTrue(violations.isEmpty(), "Expected no violations for valid UPDATE account");
-    }
-
-    @Test
-    void testAccountDto_MissingStatus() {
-        AccountDto dto = AccountDtoBuilder.builder().withDefaults().build();
-        dto.setStatus(null); // Missing required status
-
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-
-        // Should have violation for missing status
-        assertFalse(violations.isEmpty(), "Expected violations for missing status");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "status".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'status' field");
-    }
-
-    @Test
-    void testAccountDto_DescriptionTooLong() {
-        AccountDto dto = AccountDtoBuilder.builder().withDefaults().build();
-        dto.setDescription("A".repeat(150)); // Exceeds max length of 100
-
-        Set<ConstraintViolation<AccountDto>> violations = validator.validate(dto);
-
-        // Should have violation for description too long
-        assertFalse(violations.isEmpty(), "Expected violations for description too long");
-        assertTrue(violations.stream()
-                        .anyMatch(v -> "description".equals(v.getPropertyPath().toString())),
-                "Expected violation on 'description' field");
-    }
 }

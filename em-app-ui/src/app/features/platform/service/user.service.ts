@@ -18,7 +18,7 @@ export class UserService {
     let params = new HttpParams();
 
     if (searchCriteria) {
-      params = UserHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
+      params = UserHelper.mapUserSearchCriteriaToHttpParams(searchCriteria);
     }
 
     return this.http.get<SearchResult<UserDto>>(this.apiUrl, { params });

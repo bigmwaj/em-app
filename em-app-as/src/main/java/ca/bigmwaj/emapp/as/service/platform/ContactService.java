@@ -2,13 +2,10 @@ package ca.bigmwaj.emapp.as.service.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.AbstractContactPointDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.*;
-import ca.bigmwaj.emapp.as.service.AbstractService;
+import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Function;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class ContactService extends AbstractService {
+public class ContactService extends AbstractMainService<ContactDto, ContactEntity, Long> {
 
     @Autowired
     private ContactDao dao;
@@ -39,30 +37,14 @@ public class ContactService extends AbstractService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    protected SearchResultDto<ContactDto> searchAll() {
-        var r = dao.findAll().stream()
-                .map(this::toDtoWithChildren)
-                .toList();
-        return new SearchResultDto<>(r);
+    @Override
+    protected Function<ContactEntity, ContactDto> getEntityToDtoMapper() {
+        return GlobalPlatformMapper.INSTANCE::toDto;
     }
 
-    public SearchResultDto<ContactDto> search(DefaultSearchCriteria sc) {
-        if (sc == null) {
-            return searchAll();
-        }
-
-        var searchStats = new SearchInfos(sc);
-
-        if (sc.isCalculateStatTotal()) {
-            var total = dao.countAllByCriteria(entityManager, sc);
-            searchStats.setTotal(total);
-        }
-        var r = dao.findAllByCriteria(entityManager, sc)
-                .stream()
-                .map(this::toDtoWithChildren)
-                .toList();
-
-        return new SearchResultDto<>(searchStats, r);
+    @Override
+    protected ContactDao getDao() {
+        return dao;
     }
 
     public ContactDto findById(Long contactId) {
@@ -76,18 +58,21 @@ public class ContactService extends AbstractService {
         dao.deleteById(contactId);
     }
 
-    public ContactDto create(ContactDto dto) {
+    public ContactEntity createAndReturnEntity(ContactDto dto) {
         var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreate(entity, dto);
-        entity = dao.save(entity);
-        return findById(entity.getId());
+        return dao.save(entity);
+    }
+
+    public ContactDto create(ContactDto dto) {
+        var entity = createAndReturnEntity(dto);
+        return GlobalPlatformMapper.INSTANCE.toDto(entity);
     }
 
     public ContactDto update(ContactDto dto) {
         var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeUpdate(entity, dto);
-        entity = dao.save(entity);
-        return findById(entity.getId());
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     /**
@@ -179,11 +164,11 @@ public class ContactService extends AbstractService {
         }
     }
 
-    private <T extends AbstractContactPointEntity, D extends AbstractContactPointDto> List<T> synContactPoints(
+    private <E extends AbstractContactPointEntity, D extends AbstractContactPointDto> List<E> synContactPoints(
             ContactEntity entity,
-            List<T> contactPoints,
+            List<E> contactPoints,
             List<D> contactPointDtoLists,
-            AbstractContactPointService<T, D> service) {
+            AbstractContactPointService<D, E> service) {
 
         String contactPointDtoNullError = "Contact Point DTO list must be provided for update " +
                 "when contact has existing contact points";
@@ -192,30 +177,30 @@ public class ContactService extends AbstractService {
         String editActionNullError = "Contact Point DTO Edit Action must be provided for update";
 
         Objects.requireNonNull(contactPointDtoLists, contactPointDtoNullError);
-        List<T> finalContactPoints = new ArrayList<>();
+        List<E> finalContactPoints = new ArrayList<>();
         int total = contactPoints.size();
         if (contactPointDtoLists.size() != total) {
             throw new IllegalArgumentException(contactPointSizeError);
         }
 
         for (int i = 0; i < total; i++) {
-            T t = contactPoints.get(i);
+            E e = contactPoints.get(i);
             D d = contactPointDtoLists.get(i);
-            t.setContact(entity);
+            e.setContact(entity);
             Objects.requireNonNull(d.getEditAction(), editActionNullError);
             switch (d.getEditAction()) {
                 case CREATE:
-                    service.beforeCreate(t, d);
-                    finalContactPoints.add(t);
+                    service.beforeCreate(e, d);
+                    finalContactPoints.add(e);
                     break;
 
                 case UPDATE:
-                    finalContactPoints.add(service.beforeUpdate(t, d));
+                    finalContactPoints.add(service.beforeUpdate(e, d));
                     break;
 
                 case DELETE:
                     if (!d.isNew()) {
-                        service.delete(t, d);
+                        service.delete(e, d);
                     }
                     break;
             }

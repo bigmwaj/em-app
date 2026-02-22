@@ -1,15 +1,21 @@
 spring:
   application:
     name: em-app-as-test
+
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:jdbc:mysql://localhost:3306/em_app_db_test}
+    username: ${DB_USERNAME:media_db_user}
+    password: ${DB_PASSWORD:media_db_pswd}
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: update
+#      ddl-auto: create-drop
+#    database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     properties:
       hibernate:

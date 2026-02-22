@@ -9,6 +9,7 @@ import ca.bigmwaj.emapp.as.validator.xml.ValidationXmlParser;
 import ca.bigmwaj.emapp.as.validator.xml.model.FieldValidation;
 import ca.bigmwaj.emapp.as.validator.xml.model.RuleConfig;
 import ca.bigmwaj.emapp.as.validator.xml.model.ValidationConfig;
+import ca.bigmwaj.emapp.dm.dto.AbstractBaseDto;
 import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -75,10 +76,10 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
         } catch (ValidationConfigurationException e) {
             logger.error("Validation configuration error for namespace: {}", namespace, e);
             // In case of configuration error, fail gracefully
-            return false;
+            throw e;
         } catch (Exception e) {
             logger.error("Unexpected error during validation for namespace: {}", namespace, e);
-            return false;
+            throw new ValidationException("Unexpected error during validation", e);
         }
     }
 
@@ -108,7 +109,7 @@ public class SpringDtoValidator implements ConstraintValidator<ValidDto, Object>
             var wrapper = new BeanWrapperImpl(dto);
             var nestedObject = wrapper.getPropertyValue(fieldValidation.getName());
             if (nestedObject != null) {
-                if (nestedObject instanceof AbstractChangeTrackingDto) {
+                if (nestedObject instanceof AbstractBaseDto) {
                     isValid = nestedConfig.getFields().stream()
                             .allMatch(fv -> validateField(nestedObject, fv, context));
                 } else {

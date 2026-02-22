@@ -1,6 +1,7 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @SuperBuilder(setterPrefix = "with")
 @Data
+@NoArgsConstructor
 public abstract class AbstractClauseInput {
 
     private String name;

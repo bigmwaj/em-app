@@ -9,6 +9,7 @@
     <field name="holderType">
         <condition expression="createAction">
             <rule type="NonNullRule"/>
+            <rule type="HolderTypeRule"/>
         </condition>
     </field>
 
@@ -44,5 +45,23 @@
             <rule type="NonNullRule"/>
         </condition>
         <validationConfig ref="platform/contact"/>
+    </field>
+
+    <field name="userRoles" type="dtoList">
+        <validationConfig>
+            <field name="role" type="dto">
+                <condition expression="true">
+                    <rule type="NonNullRule"/>
+                </condition>
+                <validationConfig>
+                    <field name="id">
+                        <condition expression="true">
+                            <rule type="NonNullRule"/>
+                            <rule type="RoleExistsRule"/>
+                        </condition>
+                    </field>
+                </validationConfig>
+            </field>
+        </validationConfig>
     </field>
 </validation>

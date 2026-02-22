@@ -3,23 +3,18 @@ package ca.bigmwaj.emapp.as.service.platform;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUserGrantedAuthority;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.UserEntity;
-import ca.bigmwaj.emapp.as.service.AbstractService;
+import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import ca.bigmwaj.emapp.as.service.ServiceException;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,10 +31,11 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Function;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
-public class UserService extends AbstractService implements AuthenticationManager {
+public class UserService extends AbstractMainService<UserDto, UserEntity, Short> implements AuthenticationManager {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UserService.class);
 
@@ -55,34 +51,6 @@ public class UserService extends AbstractService implements AuthenticationManage
     //    @Autowired
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    protected SearchResultDto<UserDto> searchAll() {
-        var r = dao.findAll().stream().map(this::toDtoWithChildren).toList();
-        return new SearchResultDto<>(r);
-    }
-
-    public SearchResultDto<UserDto> search(DefaultSearchCriteria sc) {
-        if (sc == null) {
-            return searchAll();
-        }
-
-        var searchStats = new SearchInfos(sc);
-
-        if (sc.isCalculateStatTotal()) {
-            var total = dao.countAllByCriteria(entityManager, sc);
-            searchStats.setTotal(total);
-        }
-        var r = dao.findAllByCriteria(entityManager, sc)
-                .stream()
-                .map(this::toDtoWithChildren)
-                .toList();
-
-        return new SearchResultDto<>(searchStats, r);
-
-    }
-
     public UserDto findById(Short userId) {
         return dao.findById(userId)
                 .map(this::toDtoWithChildren)
@@ -93,30 +61,21 @@ public class UserService extends AbstractService implements AuthenticationManage
         dao.deleteById(userId);
     }
 
-    private ContactEntity getContact(UserDto dto) {
-        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto.getContact());
-        if (entity.getId() == null) {
-
-            beforeCreateHistEntity(entity);
-            entity = contactDao.save(entity);
-        } else {
-            entity = contactDao.getReferenceById(entity.getId());
-        }
-
-        return entity;
-    }
-
     public UserDto create(UserDto dto) {
         UserEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        entity.setContact(getContact(dto));
-
         // Hash password if provided
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-
         beforeCreateHistEntity(entity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+        ContactEntity contactEntity = contactService.createAndReturnEntity(dto.getContact());
+        entity.setContact(contactEntity);
+
+        entity = dao.save(entity);
+        dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
+        dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
+
+        return dto;
     }
 
     public UserDto create(AccountEntity accountEntity, String username, UsernameTypeLvo usernameType) {
@@ -196,5 +155,15 @@ public class UserService extends AbstractService implements AuthenticationManage
         }else{
             throw new BadCredentialsException("Bad credentials");
         }
+    }
+
+    @Override
+    protected Function<UserEntity, UserDto> getEntityToDtoMapper() {
+        return GlobalPlatformMapper.INSTANCE::toDto;
+    }
+
+    @Override
+    protected UserDao getDao() {
+        return dao;
     }
 }
