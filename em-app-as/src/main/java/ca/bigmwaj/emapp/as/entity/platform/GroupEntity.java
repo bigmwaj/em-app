@@ -37,7 +37,6 @@ public class GroupEntity extends AbstractChangeTrackingEntity {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupUserEntity> groupUsers = new ArrayList<>();
 
-
     public Object getDefaultKey() {
         return id;
     }

@@ -2,21 +2,11 @@
   (initAdvancedSearch)="onInitAdvancedSearch()">
 </app-search-form>
 
-@if (pageData.error() && !pageData.loading()) {
-<div class="info-message">
-  <mat-card>
-    <mat-icon>info</mat-icon>
-    <p>{{ pageData.error() }}</p>
-  </mat-card>
-</div>
-}
+<app-message [pageData]="pageData"></app-message>
 
-@if (pageData.loading()) { <div class="loading-section">
-  <mat-spinner></mat-spinner>
-  <p>Loading privileges...</p>
-</div>
+<app-loading [pageData]="pageData"></app-loading>
 
-} @else {
+@if (!pageData.loading()) {
 <div>
   <mat-card class="main-table">
     <mat-card-content>
@@ -37,19 +27,13 @@
         </ng-container>
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox 
-                (change)="$event ? toggleAllRows() : null"
-                [checked]="selection.hasValue() && isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()"
-                [aria-label]="checkboxLabel()">
+            <mat-checkbox (change)="$event ? toggleAllRows() : null" [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
             </mat-checkbox>
           </th>
           <td mat-cell *matCellDef="let element">
-            <mat-checkbox 
-              (click)="$event.stopPropagation()" 
-              (change)="$event ? selection.toggle(element) : null"
-              [checked]="selection.isSelected(element)" 
-              [aria-label]="checkboxLabel(element)">
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(element) : null"
+              [checked]="selection.isSelected(element)" [aria-label]="checkboxLabel(element)">
             </mat-checkbox>
           </td>
         </ng-container>
@@ -60,8 +44,7 @@
     <mat-card-footer>
       <mat-paginator style="background-color: transparent;" [pageSizeOptions]="[5, 10, 20]"
         (page)="handlePageEvent($event)" [length]="searchResult.searchInfos.total"
-        [pageIndex]="searchCriteria.pageIndex" [pageSize]="searchCriteria.pageSize" showFirstLastButtons
-        aria-label="Select page of periodic elements">
+        [pageIndex]="searchCriteria.pageIndex" [pageSize]="searchCriteria.pageSize" showFirstLastButtons>
       </mat-paginator>
     </mat-card-footer>
   </mat-card>

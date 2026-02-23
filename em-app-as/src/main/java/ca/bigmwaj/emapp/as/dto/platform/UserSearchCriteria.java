@@ -14,4 +14,6 @@ public class UserSearchCriteria extends DefaultSearchCriteria {
 
     private Short assignableToRoleId;
 
+    private Short assignableToGroupId;
+
 }

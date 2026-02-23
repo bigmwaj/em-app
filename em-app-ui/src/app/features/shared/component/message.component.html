@@ -1,0 +1,8 @@
+@if (pageData.error() && !pageData.loading()) {
+<div class="warn-message">
+  <mat-card>
+    <mat-icon>warn</mat-icon>
+    <div [innerHTML]="pageData.error()"></div>
+  </mat-card>
+</div>
+}

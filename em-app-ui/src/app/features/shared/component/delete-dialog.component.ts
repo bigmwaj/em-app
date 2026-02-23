@@ -1,6 +1,7 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { PageData } from '../shared.helper';
 
 export interface DeleteDialogData<T> {
   title?: string;
@@ -19,8 +20,8 @@ export class DeleteDialogComponent<T> implements OnDestroy {
   title = 'Confirm Deletion';
   warningMessage = 'Are you sure you want to delete this element? This action cannot be undone.';
   deleteAction?: (dto: T) => Observable<void>;
-  loading = false;
-  error: string | null = null;
+
+  pageData = new PageData();
   dto!: T; // Keep dto for backward compatibility, can be used in custom deleteAction
   private destroy$ = new Subject<void>();
 
@@ -53,12 +54,12 @@ export class DeleteDialogComponent<T> implements OnDestroy {
 
   onConfirmDelete(): void {
     if (!this.data.dto) {
-      this.error = 'DTO is missing';
+      this.pageData.error.set('DTO is missing');
       return;
     }
 
-    this.loading = true;
-    this.error = null;
+    this.pageData.loading.set(true);
+    this.pageData.error.set(null);
 
     if (!this.deleteAction) {
       throw new Error('Delete action is not provided');
@@ -66,13 +67,13 @@ export class DeleteDialogComponent<T> implements OnDestroy {
 
     this.deleteAction(this.data.dto).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
-        this.loading = false;
+        this.pageData.loading.set(false);
         this.dialogRef.close(true); // Return success
       },
       error: (err) => {
         console.error('Failed to delete element:', err);
-        this.error = 'Failed to delete element. Please try again.';
-        this.loading = false;
+        this.pageData.error.set('Failed to delete element. Please try again.');
+        this.pageData.loading.set(false);
       }
     });
   }

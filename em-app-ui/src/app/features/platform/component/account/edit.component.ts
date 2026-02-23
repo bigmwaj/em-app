@@ -20,7 +20,6 @@ import {
 } from '../../api.platform.model';
 import { AbstractEditWithStatusComponent } from '../../../shared/component/abstract-edit-with-status.component';
 import { AccountHelper } from '../../helper/account.helper';
-import { ContactHelper } from '../../helper/contact.helper';
 
 @Component({
   selector: 'app-account-edit',
@@ -88,57 +87,6 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
     });
 
     return [this.mainForm, this.primaryAccountContactForm, this.adminUserForm];
-  }
-
-  protected override setupCreateMode(): void {
-    // Initialize with default values for create mode
-    this.mainForm.patchValue({
-      status: AccountStatusLvo.ACTIVE
-    });
-
-    this.primaryAccountContactForm.patchValue({
-      holderType: HolderTypeLvo.ACCOUNT,
-      defaultEmailType: EmailTypeLvo.WORK,
-      defaultPhoneType: PhoneTypeLvo.WORK,
-      defaultAddressType: AddressTypeLvo.WORK
-    });
-
-    this.adminUserForm.patchValue({
-      adminUsername: ''
-    });
-  }
-
-  protected populateForms(account: AccountDto): void {
-    // Populate account details
-    this.mainForm.patchValue({
-      name: account.name,
-      description: account.description,
-      status: account.status,
-      adminUsername: account.adminUsername
-    });
-
-    const primaryContact = AccountHelper.getPrimaryAccountContact(account);
-
-    // Populate main contact
-    if (primaryContact) {
-
-      const defaultEmail = ContactHelper.getDefaultContactEmail(primaryContact);
-      const defaultPhone = ContactHelper.getDefaultContactPhone(primaryContact);
-      const defaultAddress = ContactHelper.getDefaultContactAddress(primaryContact);
-
-      this.primaryAccountContactForm.patchValue({
-        firstName: primaryContact.firstName,
-        lastName: primaryContact.lastName,
-        birthDate: primaryContact.birthDate,
-        holderType: primaryContact.holderType,
-        defaultEmail: defaultEmail?.email,
-        defaultEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
-        defaultPhone: defaultPhone?.phone,
-        defaultPhoneType: defaultPhone?.type || PhoneTypeLvo.WORK,
-        defaultAddress: defaultAddress?.address,
-        defaultAddressType: defaultAddress?.type || AddressTypeLvo.WORK
-      });
-    }
   }
 
   protected buildDtoFromForms(): AccountDto {

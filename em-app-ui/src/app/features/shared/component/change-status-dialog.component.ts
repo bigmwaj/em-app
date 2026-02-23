@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { AbstractStatusTrackingDto, EditActionLvo } from '../api.shared.model';
+import { PageData } from '../shared.helper';
 
 export interface ChangeStatusDialogData<S> {
   dto: AbstractStatusTrackingDto<S>;
@@ -22,11 +23,11 @@ export class ChangeStatusDialogComponent<S> implements OnInit, OnDestroy {
   changeStatusAction?: (dto: AbstractStatusTrackingDto<S>) => Observable<AbstractStatusTrackingDto<S>>;
   statuses?: S[];
 
+  pageData = new PageData();
+
   form!: FormGroup;
   dto!: AbstractStatusTrackingDto<S>;
-  loading = false;
   private destroy$ = new Subject<void>();
-  error: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -69,24 +70,24 @@ export class ChangeStatusDialogComponent<S> implements OnInit, OnDestroy {
 
   onConfirm(): void {
     if (this.form.invalid) {
-      this.error = 'Please fill in all required fields in User Change Status form.';
+      this.pageData.error.set('Please fill in all required fields in User Change Status form.');
       return;
     }
-    this.loading = true;
-    this.error = null;
+    this.pageData.loading.set(true);
+    this.pageData.error.set(null);
     if (!this.changeStatusAction) {
       throw new Error('Change status action is not provided');
     }
 
     this.changeStatusAction(this.buildUserDto()).pipe(takeUntil(this.destroy$)).subscribe({
       next: (dto) => {
-        this.loading = false;
+        this.pageData.loading.set(false);
         this.dialogRef.close(dto);
       },
       error: (err) => {
         console.error('Failed to change the user status:', err);
-        this.error = 'Failed to change user status. Please try again.';
-        this.loading = false;
+        this.pageData.error.set('Failed to change user status. Please try again.');
+        this.pageData.loading.set(false);
       }
     });
 

@@ -62,21 +62,11 @@
     </div>
   </div>
 
-  @if (pageData.error() && !pageData.loading() ) {
-  <div class="error-section">
-    <mat-card>
-      <mat-icon color="warn">error</mat-icon>
-      <p>{{ pageData.error() }}</p>
-    </mat-card>
-  </div>
-  }
+  <app-message [pageData]="pageData"></app-message>
 
-  @if (pageData.loading()) {
-  <div class="loading-section">
-    <mat-spinner></mat-spinner>
-    <p>Processing...</p>
-  </div>
-  }@else {
+  <app-loading [pageData]="pageData"></app-loading>
+
+  @if (!pageData.loading()) {
 
   <mat-card class="form-card form-section">
     <mat-card-content>

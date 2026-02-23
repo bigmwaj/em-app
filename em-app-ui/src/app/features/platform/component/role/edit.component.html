@@ -62,14 +62,7 @@
     </div>
   </div>
 
-  @if (pageData.error() && !pageData.loading()) {
-  <div class="error-section">
-    <mat-card>
-      <mat-icon color="warn">error</mat-icon>
-      <p>{{ pageData.error() }}</p>
-    </mat-card>
-  </div>
-  }
+  <app-message [pageData]="pageData"></app-message>
 
   @if (pageData.loading()) {
   <div class="loading-section">
@@ -128,7 +121,7 @@
                     <mat-icon>security</mat-icon>
                     Assigned Privileges
                   </ng-template>
-                  <app-role-privilege-assigned-list [dto]="dto"
+                  <app-role-privilege-assigned-list [dto]="dto" [isViewMode]="isViewMode"
                     (onPrivilegeRemoved)="privilegeRemoved($event)"></app-role-privilege-assigned-list>
                 </mat-tab>
                 <mat-tab>
@@ -140,7 +133,8 @@
                 </mat-tab>
               </mat-tab-group>
               }@else {
-              <app-role-privilege-assigned-list [dto]="dto"></app-role-privilege-assigned-list>
+              <app-role-privilege-assigned-list [dto]="dto"
+                [isViewMode]="isViewMode"></app-role-privilege-assigned-list>
               }
             </mat-tab>
             <mat-tab>
@@ -155,19 +149,22 @@
                     <mat-icon>security</mat-icon>
                     Assigned Users
                   </ng-template>
-                  <app-role-user-assigned-list [dto]="dto"
-                    (onUserRemoved)="userRemoved($event)"></app-role-user-assigned-list>
+                  <app-shared-user-assigned-list [searchEndPoint]="searchRoleUsersEndPoint" [ownerId]="dto?.id"
+                    [isViewMode]="isViewMode" (onUserRemoved)="userRemoved($event)">
+                  </app-shared-user-assigned-list>
                 </mat-tab>
                 <mat-tab>
                   <ng-template mat-tab-label>
                     <mat-icon>add</mat-icon>
                     Assign new Users
                   </ng-template>
-                  <app-role-user-assign-list [dto]="dto"></app-role-user-assign-list>
+                  <app-shared-user-assign-list [ownerId]="dto?.id"></app-shared-user-assign-list>
                 </mat-tab>
               </mat-tab-group>
               }@else {
-              <app-role-user-assigned-list [dto]="dto"></app-role-user-assigned-list>
+              <app-shared-user-assigned-list [searchEndPoint]="searchRoleUsersEndPoint" [ownerId]="dto?.id"
+                [isViewMode]="isViewMode">
+              </app-shared-user-assigned-list>
               }
             </mat-tab>
           </mat-tab-group>

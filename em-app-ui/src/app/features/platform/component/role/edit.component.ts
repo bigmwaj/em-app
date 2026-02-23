@@ -9,9 +9,9 @@ import { RoleHelper } from '../../helper/role.helper';
 import { RolePrivilegeAssignListComponent } from './privilege/assign.list.component';
 import { RolePrivilegeAssignedListComponent } from './privilege/assigned.list.component';
 import { SelectionChange } from '@angular/cdk/collections';
-import { EditActionLvo } from '../../../shared/api.shared.model';
-import { RoleUserAssignedListComponent } from './user/assigned.list.component';
-import { RoleUserAssignListComponent } from './user/assign.list.component';
+import { EditActionLvo, SearchResult } from '../../../shared/api.shared.model';
+import { SharedUserAssignedListComponent } from '../shared/user/assigned.list.component';
+import { SharedUserAssignListComponent } from '../shared/user/assign.list.component';
 
 @Component({
   selector: 'app-role-edit',
@@ -31,11 +31,13 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   @ViewChild(RolePrivilegeAssignListComponent)
   private assignPrivilegesTable?: RolePrivilegeAssignListComponent;
 
-  @ViewChild(RoleUserAssignedListComponent)
-  private assignedUsersTable!: RoleUserAssignedListComponent;
+  @ViewChild(SharedUserAssignedListComponent)
+  private assignedUsersTable!: SharedUserAssignedListComponent;
 
-  @ViewChild(RoleUserAssignListComponent)
-  private assignUsersTable?: RoleUserAssignListComponent;
+  @ViewChild(SharedUserAssignListComponent)
+  private assignUsersTable?: SharedUserAssignListComponent;
+
+  searchRoleUsersEndPoint = (ownerId: number) => this.service.getRoleUsers(ownerId);
 
   constructor(
     protected override fb: FormBuilder,
@@ -51,24 +53,26 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
     this.update = (dto) => this.service.updateRole(dto);
     this.buildFormData = (dto) => RoleHelper.buildFormData(dto);
   }
-  
+
   ngAfterViewInit(): void {
     this.setupSyncBetweenTables();
   }
 
   private setupSyncBetweenTables() {
     if (this.assignPrivilegesTable && this.assignPrivilegesTable.selection) {
-      this.assignPrivilegesTable.selection.changed.subscribe((sc: SelectionChange<PrivilegeDto>) => {
+      this.subscription$.push(this.assignPrivilegesTable.selection.changed
+        .subscribe((sc: SelectionChange<PrivilegeDto>) => {
         sc.added.map(p => this.mapPrivilege(p)).forEach(p => this.privilegeChecked(p));
         sc.removed.map(p => this.mapPrivilege(p)).forEach(p => this.privilegeUnchecked(p));
-      });
+      }));
     }
 
     if (this.assignUsersTable && this.assignUsersTable.selection) {
-      this.assignUsersTable.selection.changed.subscribe((sc: SelectionChange<UserDto>) => {
+      this.subscription$.push(this.assignUsersTable.selection.changed
+        .subscribe((sc: SelectionChange<UserDto>) => {
         sc.added.map(u => this.mapUser(u)).forEach(u => this.userChecked(u));
         sc.removed.map(u => this.mapUser(u)).forEach(u => this.userUnchecked(u));
-      });
+      }));
     }
   }
 
@@ -111,7 +115,7 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   }
 
   public privilegeRemoved(rp: RolePrivilegeDto) {
-    if (!this.assignPrivilegesTable?.selection || !rp.privilege)  return;
+    if (!this.assignPrivilegesTable?.selection || !rp.privilege) return;
     this.assignPrivilegesTable.selection.deselect(rp.privilege);
   }
 
@@ -146,38 +150,15 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
     return '/roles';
   }
 
-  protected override setupCreateMode(): void {
-    // Initialize with default values for create mode
-    this.mainForm.patchValue({
-      holderType: HolderTypeLvo.ACCOUNT
-    });
-  }
-
   protected override initializeForms(): FormGroup[] {
     this.mainForm = this.fb.group({
       id: [this.dto?.id],
       name: [this.dto?.name, [Validators.required, Validators.maxLength(32)]],
       description: [this.dto?.description, Validators.maxLength(256)],
-      holderType: [this.dto?.holderType, Validators.required],
-      rolePrivileges: this.fb.array(this.dto?.rolePrivileges?.map(rp => this.initializePrivilege(rp)) || [])
+      holderType: [this.dto?.holderType, Validators.required]
     });
+    this.bindFormEvents();
     return [this.mainForm];
-  }
-
-  private initializePrivilege(rp?: RolePrivilegeDto): FormGroup {
-    return this.fb.group({
-      roleId: [rp?.roleId],
-      //privilegeId: [rp?.privilegeId]
-    });
-  }
-
-  protected populateForms(): void {
-    this.mainForm.patchValue({
-      id: this.dto?.id,
-      name: this.dto?.name,
-      description: this.dto?.description,
-      holderType: this.dto?.holderType
-    });
   }
 
   protected buildDtoFromForms(): RoleDto {
@@ -193,5 +174,17 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
       roleUsers: this.assignedUsersTable.data
     };
     return dto;
+  }
+
+  private bindFormEvents() {
+    // The role name should always be uppercase, so we listen to changes and transform the value before saving it in the form control
+    this.subscription$.push(
+      this.mainForm.get('name')?.valueChanges.subscribe(value => {
+        const upperCaseValue = value ? value.toUpperCase() : value;
+        if (value !== upperCaseValue) {
+          this.mainForm.get('name')?.setValue(upperCaseValue, { emitEvent: false });
+        }
+      }) as any
+    );
   }
 }

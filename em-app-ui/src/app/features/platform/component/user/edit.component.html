@@ -64,21 +64,11 @@
     </div>
   </div>
 
-  @if (pageData.error() && !pageData.loading()) {
-  <div class="error-message">
-    <mat-card>
-      <mat-icon color="warn">error</mat-icon>
-      <p>{{ pageData.error() }}</p>
-    </mat-card>
-  </div>
-  }
+  <app-message [pageData]="pageData"></app-message>
 
-  @if (pageData.loading()) {
-  <div class="loading-section">
-    <mat-spinner></mat-spinner>
-    <p>Saving user...</p>
-  </div>
-  } @else {
+  <app-loading [pageData]="pageData"></app-loading>
+  
+  @if (!pageData.loading()) {
 
   <!-- Section 1: User Details -->
   <mat-card class="form-section">
@@ -222,7 +212,7 @@
               <mat-option [value]="PhoneTypeLvo.WORK">WORK</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>        
+        </div>
       </form>
 
       <form [formGroup]="defaultAddressForm" class="contact-form">

@@ -1,18 +1,22 @@
 package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
-import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.dto.platform.*;
-import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
+import ca.bigmwaj.emapp.as.api.shared.Constants;
+import ca.bigmwaj.emapp.as.api.shared.Message;
+import ca.bigmwaj.emapp.as.api.shared.ResponseMessage;
+import ca.bigmwaj.emapp.as.dto.platform.RoleDto;
+import ca.bigmwaj.emapp.as.dto.platform.RolePrivilegeDto;
+import ca.bigmwaj.emapp.as.dto.platform.RoleSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.platform.RoleUserDto;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.RoleService;
+import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
+import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
+import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,6 +76,9 @@ public class RoleController extends AbstractBaseAPI {
             @RequestParam(value = "calculateStatTotal", required = false)
             boolean calculateStatTotal,
 
+            @PositiveOrZero
+            Short assignableToGroupId,
+
             @ValidWhereClausePatterns(
                     supportedFields = {
                             @WhereClauseSupportedField(name = "name", type = String.class),
@@ -95,16 +102,16 @@ public class RoleController extends AbstractBaseAPI {
                             @SortByClauseSupportedField(name = "holderType"),
                     })
             @RequestParam(value = "sortBy", required = false)
-            List<SortByClause> sortByClauses
-    ) {
+            List<SortByClause> sortByClauses) {
 
-        var builder = DefaultSearchCriteria.builder()
+        var builder = RoleSearchCriteria.builder()
                 .withCalculateStatTotal(calculateStatTotal)
                 .withPageSize(pageSize)
                 .withPageIndex(pageIndex)
                 .withWhereClauseJoinOp(whereClauseJoinOp)
                 .withWhereClauses(whereClauses)
-                .withSortByClauses(sortByClauses);
+                .withSortByClauses(sortByClauses)
+                .withAssignableToGroupId(assignableToGroupId);
 
         return ResponseEntity.ok(service.search(builder.build()));
     }
@@ -122,7 +129,7 @@ public class RoleController extends AbstractBaseAPI {
     }
 
     @Operation(
-            summary = "Get role privilege by role ID",
+            summary = "Get role privileges by role ID",
             description = "",
             tags = {"role", "privilege"}
     )
@@ -134,7 +141,7 @@ public class RoleController extends AbstractBaseAPI {
     }
 
     @Operation(
-            summary = "Get role user by role ID",
+            summary = "Get role users by role ID",
             description = "",
             tags = {"role", "user"}
     )

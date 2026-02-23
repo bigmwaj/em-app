@@ -12,6 +12,7 @@ public class TestConstant {
 
     public static final String TEST_PASSWORD = "TEST_PASSWORD";
     public static final String TEST_ROLE = "TEST_ROLE";
+    public static final String TEST_GROUP = "TEST_GROUP";
 
     /**
      * This role is supposed to always exist in DB and should not be deleted in commited transaction.

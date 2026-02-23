@@ -113,7 +113,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
     });
 
     // Make country required when address is provided
-    this.defaultAddressForm.get('address')?.valueChanges.pipe(takeUntil(this.destroy$))
+    const subscription$ = this.defaultAddressForm.get('address')?.valueChanges
       .subscribe((address) => {
         const countryControl = this.defaultAddressForm.get('country');
         if (address && address.trim()) {
@@ -123,56 +123,11 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
         }
         countryControl?.updateValueAndValidity();
       });
+    if (subscription$) {
+      this.subscription$.push(subscription$);
+    }
 
     return [this.mainForm, this.contactForm, this.defaultEmailForm, this.defaultPhoneForm, this.defaultAddressForm];
-  }
-
-
-  protected setupCreateMode(): void {
-    // Initialize with default values for create mode
-    this.mainForm.patchValue({
-      status: UserStatusLvo.ACTIVE,
-      usernameType: UsernameTypeLvo.EMAIL,
-      holderType: HolderTypeLvo.ACCOUNT,
-      provider: 'LOCAL'
-    });
-    this.contactForm.patchValue({
-      defaultEmailType: EmailTypeLvo.WORK,
-      defaultPhoneType: PhoneTypeLvo.WORK,
-      defaultAddressType: AddressTypeLvo.WORK
-    });
-  }
-
-  protected populateForms(user: UserDto): void {
-    // Populate user details
-    this.mainForm.patchValue({
-      username: user.username,
-      usernameType: user.usernameType,
-      password: user.password,
-      provider: user.provider,
-      picture: user.picture,
-      status: user.status,
-      holderType: user.holderType
-    });
-
-    // Populate contact
-    if (user.contact) {
-      const defaultEmail = ContactHelper.getDefaultContactEmail(user.contact);
-      const defaultPhone = ContactHelper.getDefaultContactPhone(user.contact);
-      const defaultAddress = ContactHelper.getDefaultContactAddress(user.contact);
-
-      this.contactForm.patchValue({
-        firstName: user.contact.firstName,
-        lastName: user.contact.lastName,
-        birthDate: user.contact.birthDate,
-        defaultEmail: defaultEmail?.email,
-        defaultEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
-        defaultPhone: defaultPhone?.phone,
-        defaultPhoneType: defaultPhone?.type || PhoneTypeLvo.WORK,
-        defaultAddress: defaultAddress?.address,
-        defaultAddressType: defaultAddress?.type || AddressTypeLvo.WORK
-      });
-    }
   }
 
   protected buildDtoFromForms(): UserDto {

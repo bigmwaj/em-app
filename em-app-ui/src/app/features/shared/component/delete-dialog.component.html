@@ -6,27 +6,15 @@
 <mat-dialog-content>
   <p>{{ warningMessage }}</p>
   <p class="warning-text">This action cannot be undone.</p>
-  
-  @if (error && !loading) {
-    <div class="error-message">
-      <mat-icon color="warn">error</mat-icon>
-      <span>{{ error }}</span>
-    </div>
-  }
-
-  @if (loading) {
-    <div class="loading-section">
-      <mat-spinner diameter="40"></mat-spinner>
-      <p>Deleting ...</p>
-    </div>
-  }
+  <app-message [pageData]="pageData"></app-message>
+  <app-loading [pageData]="pageData"></app-loading>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-raised-button (click)="onCancel()" [disabled]="loading">
+  <button mat-raised-button (click)="onCancel()" [disabled]="pageData.loading()">
     <mat-icon>cancel</mat-icon>Cancel
   </button>
-  <button mat-raised-button color="warn" (click)="onConfirmDelete()" [disabled]="loading">
+  <button mat-raised-button color="warn" (click)="onConfirmDelete()" [disabled]="pageData.loading()">
     <mat-icon>delete</mat-icon>Delete
   </button>
 </mat-dialog-actions>

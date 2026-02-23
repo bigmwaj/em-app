@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component("UserExistsRule")
+@Component("RoleExistsRule")
 public class RoleExistsRule extends AbstractRule {
 
     @Autowired

@@ -36,7 +36,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
 
   protected abstract getBaseRoute(): string;
 
-  private destroy$? : Subscription;
+  private subscriptions$: Subscription[] = [];
 
   constructor(protected router: Router, protected dialog: MatDialog) {
     super();
@@ -51,9 +51,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   ngOnDestroy(): void {
-    if( this.destroy$ ) {
-      this.destroy$.unsubscribe();
-    }
+    this.subscriptions$.forEach(sub => sub.unsubscribe());
   }
 
   isSortable(fieldName: string): boolean {
@@ -84,7 +82,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
 
   protected loadData(): void {
 
-    this.destroy$ = this.search().subscribe({
+    this.subscriptions$.push(this.search().subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.pageData.loading.set(false);
@@ -98,7 +96,7 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
       complete: () => {
         this.pageData.loading.set(false);
       },
-    })
+    }));
   }
 
   onSearch($event?: string): void {
@@ -132,8 +130,8 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   createAction(): void {
-    this.router.navigate([this.getBaseRoute() + '/edit', 'create'], {
-      state: { mode: 'create' }
+    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.CREATE], {
+      state: { mode: SharedHelper.EditMode.CREATE }
     });
   }
 
@@ -142,8 +140,8 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   editAction(dto: T): void {
-    this.router.navigate([this.getBaseRoute() + '/edit', 'edit'], {
-      state: { mode: 'edit', dto: this.prepareEdit(dto) }
+    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.EDIT], {
+      state: { mode: SharedHelper.EditMode.EDIT, dto: this.prepareEdit(dto) }
     });
   }
 
@@ -152,8 +150,8 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   viewAction(dto: T): void {
-    this.router.navigate([this.getBaseRoute() + '/edit', 'view'], {
-      state: { mode: 'view', dto: this.prepareView(dto) }
+    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.VIEW], {
+      state: { mode: SharedHelper.EditMode.VIEW, dto: this.prepareView(dto) }
     });
   }
 
@@ -163,8 +161,8 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
     const duplicatedDto = this.duplicateDto(dto);
 
     // Navigate to create mode with duplicated data
-    this.router.navigate([this.getBaseRoute() + '/edit', 'create'], {
-      state: { mode: 'create', dto: duplicatedDto }
+    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.CREATE], {
+      state: { mode: SharedHelper.EditMode.CREATE, dto: duplicatedDto }
     });
   }
 

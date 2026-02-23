@@ -52,6 +52,7 @@ public interface GlobalPlatformMapper {
 
     @AnyEntityToAnyDtoMapping
     @Mapping(target = "picture", ignore = true)
+    @Mapping(target = "userRoles", ignore = true)
     UserDto toDto(UserEntity entity);
     @AnyDtoToAnyEntityMapping
     UserEntity toEntity(UserDto dto);

@@ -151,7 +151,7 @@ class RoleServiceIntegrationTest extends AbstractDtoValidatorTest {
         // Role name is always unique no matter the case
         roleDto = buildRoleDto(existingPrivilege, existingUser);
 
-        assertViolationsOnField(roleDto, "name", "The rule '%s' is already.".formatted(roleDto.getName()));
+        assertViolationsOnField(roleDto, "name", "The role '%s' already exists.".formatted(roleDto.getName()));
     }
 
     @Test

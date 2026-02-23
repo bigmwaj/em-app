@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { GroupDto } from '../api.platform.model';
+import { GroupDto, GroupRoleDto, GroupUserDto } from '../api.platform.model';
 import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
 import { GroupHelper } from '../helper/group.helper';
 
@@ -12,7 +12,7 @@ import { GroupHelper } from '../helper/group.helper';
 export class GroupService {
   private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/group`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getGroups(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<GroupDto>> {
     let params = new HttpParams();
@@ -38,5 +38,13 @@ export class GroupService {
 
   deleteGroup(group: GroupDto): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${group.id}`);
+  }
+
+  getGroupRoles(id: number): Observable<SearchResult<GroupRoleDto>> {
+    return this.http.get<SearchResult<GroupRoleDto>>(`${this.apiUrl}/id/${id}/roles`);
+  }
+
+  getGroupUsers(id: number): Observable<SearchResult<GroupUserDto>> {
+    return this.http.get<SearchResult<GroupUserDto>>(`${this.apiUrl}/id/${id}/users`);
   }
 }

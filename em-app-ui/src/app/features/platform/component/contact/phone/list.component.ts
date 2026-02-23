@@ -15,11 +15,6 @@ export class PhoneListComponent extends CommonDataSource<ContactPhoneDto> implem
   @Input()
   contact?: ContactDto;
 
-  constructor(
-  ) {
-    super();
-  }
-
   override getKeyLabel(bean: ContactPhoneDto): string | number {
     throw new Error('Method not implemented.');
   }

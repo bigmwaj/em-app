@@ -64,6 +64,7 @@ public class RoleService extends AbstractMainService<RoleDto, RoleEntity, Short>
     }
 
     public SearchResultDto<RoleUserDto> findRoleUsers(Short roleId) {
+        Objects.requireNonNull(roleId, "Role ID cannot be null for finding role users.");
         List<RoleUserDto> result = userRoleDao.findByRoleId(roleId).stream()
                 .map(GlobalPlatformMapper.INSTANCE::toVirtualDto)
                 .toList();
@@ -118,7 +119,11 @@ public class RoleService extends AbstractMainService<RoleDto, RoleEntity, Short>
 
     private RolePrivilegeEntity init(RolePrivilegeDto dto) {
         RolePrivilegeEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
+        Objects.requireNonNull(entity.getPrivilege(), "Privilege cannot be null.");
+
         Short privilegeId = entity.getPrivilege().getId();
+        Objects.requireNonNull(privilegeId, "Privilege ID cannot be null.");
+
         PrivilegeEntity privilege = privilegeDao.findById(privilegeId)
                 .orElseThrow(() -> new NoSuchElementException("Privilege not found with id: " + privilegeId));
         entity.setPrivilege(privilege);
@@ -179,7 +184,7 @@ public class RoleService extends AbstractMainService<RoleDto, RoleEntity, Short>
                                     .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
                             userRoleEntity.setUser(userEntity);
                             userRoleEntity.setRole(entity);
-                            beforeUpdateHistEntity(userRoleEntity);
+                            beforeCreateHistEntity(userRoleEntity);
                             userRoleDao.save(userRoleEntity);
                             break;
 
@@ -193,7 +198,7 @@ public class RoleService extends AbstractMainService<RoleDto, RoleEntity, Short>
             return GlobalPlatformMapper.INSTANCE.toDto(entity);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new ServiceException("Failed to create Role: " + e.getMessage(), e);
+            throw new ServiceException("Failed to update Role: " + e.getMessage(), e);
         }
     }
 }

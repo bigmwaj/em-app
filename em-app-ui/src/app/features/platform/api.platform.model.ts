@@ -119,11 +119,15 @@ export interface AccountSearchCriteria extends AbstractSearchCriteria {
 
 export interface UserSearchCriteria extends AbstractSearchCriteria {
   assignableToRoleId?: number;
+  assignableToGroupId?: number;
 }
-
 
 export interface PrivilegeSearchCriteria extends AbstractSearchCriteria {
   assignableToRoleId?: number;
+}
+
+export interface RoleSearchCriteria extends AbstractSearchCriteria {
+  assignableToGroupId?: number;
 }
 
 export interface GroupDto extends AbstractChangeTrackingDto {
@@ -156,9 +160,12 @@ export interface GroupRoleDto extends AbstractChangeTrackingDto {
   role?: RoleDto;
 }
 
-export interface GroupUserDto extends AbstractChangeTrackingDto {
-  groupId?: number;
+export interface UserAssignableDto extends AbstractChangeTrackingDto{
   user?: UserDto;
+}
+
+export interface GroupUserDto extends UserAssignableDto {
+  groupId?: number;
 }
 
 export interface RolePrivilegeDto extends AbstractChangeTrackingDto {
@@ -171,8 +178,7 @@ export interface UserRoleDto extends AbstractChangeTrackingDto {
   role?: RoleDto;
 }
 
-export interface RoleUserDto extends AbstractChangeTrackingDto {
+export interface RoleUserDto extends UserAssignableDto {
   roleId?: number;
-  user?: UserDto;
 }
 

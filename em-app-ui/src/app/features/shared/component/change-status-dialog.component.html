@@ -2,21 +2,10 @@
 
 <mat-dialog-content>
   <p><strong>{{ title }}</strong></p>
-  @if (error && !loading) {
-  <div class="error-message">
-    <mat-card>
-      <mat-icon color="warn">error</mat-icon>
-      <p>{{ error }}</p>
-    </mat-card>
-  </div>
-  }
+  <app-message [pageData]="pageData"></app-message>
 
-  @if (loading) {
-  <div class="loading-section">
-    <mat-spinner></mat-spinner>
-    <p>Changing status...</p>
-  </div>
-  } @else {
+  <app-loading [pageData]="pageData"></app-loading>
+  @if (!pageData.loading()) {
   <form [formGroup]="form" class="change-status-form">
 
     <mat-form-field appearance="outline" class="form-field full-width">

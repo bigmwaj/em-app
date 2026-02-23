@@ -41,7 +41,8 @@ export class UserHelper extends SharedHelper {
     static createUserSearchCriteria(): UserSearchCriteria {
         return {
             ...SharedHelper.createDefaultSearchCriteria(),
-            assignableToRoleId: undefined
+            assignableToRoleId: undefined,
+            assignableToGroupId: undefined
         };
     }
 

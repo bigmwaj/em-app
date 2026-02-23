@@ -40,13 +40,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<String> handleValidationException(HandlerMethodValidationException ex) {
-        logger.error("Erreur de validation", ex);
+        logger.error("Erreur de validation\n", ex);
         var msg = Arrays.stream(ex.getDetailMessageArguments())
                 .map(Object::toString)
                 .collect(Collectors.joining());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Erreur de validation de votre requête:\n" + msg);
+                .body("- Erreur de validation de votre requête:\n" + msg);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -58,11 +58,12 @@ public class GlobalExceptionHandler {
 
         var msg = ex.getFieldErrors().stream()
                 .map(errorToMessage)
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining("\n", "<li>", "</li>"));
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body("Erreur de validation de votre requête:\n" + msg);
+                .body("<b>Erreur de validation de votre requête:</b><ul>%s</ul>".formatted(msg));
     }
+
     @ExceptionHandler(MethodArgumentConversionNotSupportedException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentConversionNotSupportedException ex) {
         logger.error("Erreur de conversion du champ {}. Message {}", ex.getName(), ex.getLocalizedMessage(), ex);

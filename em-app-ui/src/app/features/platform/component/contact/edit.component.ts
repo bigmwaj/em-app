@@ -53,16 +53,6 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
     return '/contacts';
   }
 
-  protected override setupCreateMode(): void {
-    // Initialize with default values for create mode
-    this.mainForm.patchValue({
-      holderType: HolderTypeLvo.ACCOUNT,
-      defaultEmailType: EmailTypeLvo.WORK,
-      defaultPhoneType: PhoneTypeLvo.WORK,
-      defaultAddressType: AddressTypeLvo.WORK
-    });
-  }
-
   protected override initializeForms(): FormGroup[] {
     this.mainForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -130,7 +120,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
     };
 
     // Add ID if editing
-    if (this.mode === SharedHelper.EditMode.EDIT && this.dto?.id) {
+    if (this.isEditMode && this.dto?.id) {
       contactDto.id = this.dto.id;
     }
 
@@ -146,7 +136,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
       ];
 
       // Preserve ID if editing
-      if (this.mode === SharedHelper.EditMode.EDIT) {
+      if (this.isEditMode) {
         const existingEmail = ContactHelper.getDefaultContactEmail(this.dto!);
         if (existingEmail?.id) {
           contactDto.emails[0].id = existingEmail.id;
@@ -167,7 +157,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
       ];
 
       // Preserve ID if editing
-      if (this.mode === SharedHelper.EditMode.EDIT) {
+      if (this.isEditMode) {
         const existingPhone = ContactHelper.getDefaultContactPhone(this.dto!);
         if (existingPhone?.id) {
           contactDto.phones[0].id = existingPhone.id;
@@ -191,7 +181,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
       ];
 
       // Preserve ID if editing
-      if (this.mode === SharedHelper.EditMode.EDIT) {
+      if (this.isEditMode) {
         const existingAddress = ContactHelper.getDefaultContactAddress(this.dto!);
         if (existingAddress?.id) {
           contactDto.addresses[0].id = existingAddress.id;

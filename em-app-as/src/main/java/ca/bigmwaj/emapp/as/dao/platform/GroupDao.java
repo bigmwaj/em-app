@@ -10,4 +10,6 @@ public interface GroupDao extends AbstractDao<GroupEntity, Short> {
     default Class<GroupEntity> getEntityClass() {
         return GroupEntity.class;
     }
+
+    boolean existsByNameIgnoreCase(String string);
 }

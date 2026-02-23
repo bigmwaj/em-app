@@ -15,11 +15,6 @@ export class EmailListComponent extends CommonDataSource<ContactEmailDto> implem
   @Input()
   contact?: ContactDto;
 
-  constructor(
-  ) {
-    super();
-  }
-
   override getKeyLabel(bean: ContactEmailDto): string | number {
     throw new Error('Method not implemented.');
   }

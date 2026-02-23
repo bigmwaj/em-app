@@ -3,8 +3,8 @@ import { PageData, SharedHelper } from '../shared.helper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent, DeleteDialogData } from './delete-dialog.component';
-import { Observable, Subject } from 'rxjs';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { EditActionLvo } from '../api.shared.model';
 
 @Component({
@@ -15,8 +15,10 @@ import { EditActionLvo } from '../api.shared.model';
 })
 export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
 
-  mode = SharedHelper.EditMode.VIEW;
+  protected mode = SharedHelper.EditMode.VIEW;
+
   dto?: T;
+
   protected delete?: (dto: T) => Observable<void>;
   protected create?: (dto: T) => Observable<T>;
   protected update?: (dto: T) => Observable<T>;
@@ -24,7 +26,8 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
 
   pageData: PageData = new PageData();
 
-  protected destroy$ = new Subject<void>();
+  protected subscription$: Subscription[] = [];
+
   private forms!: FormGroup[];
   protected mainForm!: FormGroup; // Will handle main entity fields
 
@@ -36,10 +39,6 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
   ) { }
 
   protected abstract getBaseRoute(): string;
-
-  protected abstract populateForms(dto: T): void;
-
-  protected abstract setupCreateMode(): void;
 
   protected abstract buildDtoFromForms(): T;
 
@@ -129,8 +128,7 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.subscription$.forEach(sub => sub.unsubscribe());
   }
 
   onCancel(): void {
@@ -142,16 +140,17 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
   }
 
   onCreate(): void {
-    this.router.navigate([this.getBaseRoute(), 'edit', 'create'], {
-      state: { mode: 'create' }
-    });
+    this.router.navigateByUrl('/', { skipLocationChange: true })
+    .then(() => this.router.navigate([this.getBaseRoute(), 'edit', SharedHelper.EditMode.CREATE], {
+      state: { mode: SharedHelper.EditMode.CREATE }
+    }));
   }
 
   onEdit(): void {
-    if (this.isViewMode) {
-      this.mode = SharedHelper.EditMode.EDIT;
-      this.enableAllForms();
-    }
+    this.router.navigateByUrl('/', { skipLocationChange: true })
+    .then(() => this.router.navigate([this.getBaseRoute(), 'edit', SharedHelper.EditMode.EDIT], {
+      state: { mode: SharedHelper.EditMode.EDIT, dto: this.dto }
+    }));
   }
 
   onDuplicate(): void {
@@ -167,10 +166,11 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
 
     const duplicated = this.buildFormData(this.dto);
 
-    // Navigate to create mode with duplicated data
-    this.router.navigate([this.getBaseRoute(), 'edit', 'create'], {
-      state: { mode: 'create', dto: duplicated }
-    });
+    this.router.navigateByUrl('/', { skipLocationChange: true })
+    .then(() => this.router.navigate([this.getBaseRoute(), 'edit', SharedHelper.EditMode.CREATE], {
+      state: { mode: SharedHelper.EditMode.CREATE, dto: duplicated }
+    }));
+    
   }
 
   onDelete(): void {
@@ -203,39 +203,28 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       const modeParam = params['mode'] || state.mode;
 
-      if (modeParam === 'create') {
+      if (modeParam === SharedHelper.EditMode.CREATE) {
         this.mode = SharedHelper.EditMode.CREATE;
         // Check if we have a duplicated account to populate
         if (state.dto) {
           this.dto = state.dto;
-          if (this.dto) {
-            //this.populateForms(this.dto);
-          }
         } else {
-
           if (!this.buildFormData) {
             throw new Error("BuildFormData function is not defined");
           }
           this.dto = this.buildFormData()
-          //this.setupCreateMode();
         }
         this.forms = this.initializeForms();
         this.enableAllForms();
 
-      } else if (modeParam === 'edit' && state.dto) {
+      } else if (modeParam === SharedHelper.EditMode.EDIT && state.dto) {
         this.mode = SharedHelper.EditMode.EDIT;
         this.dto = state.dto;
-        if (this.dto) {
-          //this.populateForms(this.dto);
-        }
         this.forms = this.initializeForms();
         this.enableAllForms();
-      } else if (modeParam === 'view' && state.dto) {
+      } else if (modeParam === SharedHelper.EditMode.VIEW && state.dto) {
         this.mode = SharedHelper.EditMode.VIEW;
         this.dto = state.dto;
-        if (!this.dto) {
-          //this.populateForms(this.dto);
-        }
         this.forms = this.initializeForms();
         this.disableAllForms();
       } else {
@@ -260,47 +249,35 @@ export abstract class AbstractEditComponent<T> implements OnInit, OnDestroy {
 
     const dto = this.buildDtoFromForms();
 
-    if (this.isCreateMode) {
+    let saveObservable: Observable<T>;
 
+    if (this.isCreateMode) {
       if (this.create === undefined) {
         throw new Error('Create function is not defined');
       }
+      saveObservable = this.create(dto);
 
-      this.create(dto).subscribe({
-        next: (newDto) => {
-          this.pageData.loading.set(false);
-          this.router.navigate([this.getBaseRoute()], {
-            state: { mode: 'view', dto: newDto }
-          });
-        },
-        error: (err) => {
-          console.error('Failed to create data:', err);
-          this.pageData.error.set('Failed to create data. Please try again.');
-          this.pageData.loading.set(false);
-        }
-      });
     } else if (this.isEditMode && this.dto) {
-
       if (this.update === undefined) {
         throw new Error('Update function is not defined');
       }
-
-      this.update(dto).subscribe({
-        next: (updatedDto) => {
-          this.pageData.loading.set(false);
-          this.router.navigate([this.getBaseRoute()], {
-            state: { mode: 'view', dto: updatedDto }
-          });
-        },
-        error: (err) => {
-          console.error('Failed to update data:', err);
-          this.pageData.error.set('Failed to update data. Please try again.');
-          this.pageData.loading.set(false);
-        },
-        complete: () => {
-          this.pageData.loading.set(false);
-        },
-      });
+      saveObservable = this.update(dto);
+    } else {
+      throw new Error('Invalid mode or missing data');
     }
+
+    this.subscription$.push(saveObservable.subscribe({
+      next: (savedDto) => {
+        this.pageData.loading.set(false);
+        this.router.navigate([this.getBaseRoute()], {
+          state: { mode: SharedHelper.EditMode.VIEW, dto: savedDto }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to create data:', err);
+        this.pageData.error.set(err.error || 'An error occurred while saving. Please try again.');
+        this.pageData.loading.set(false);
+      }
+    }));
   }
 }

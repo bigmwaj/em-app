@@ -23,6 +23,6 @@ public class RoleNameUniqueRule extends AbstractRule {
 
     @Override
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
-        return "The rule '%s' is already." .formatted(value.toString());
+        return "The role '%s' already exists." .formatted(value.toString());
     }
 }

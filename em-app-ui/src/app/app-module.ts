@@ -25,7 +25,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -62,12 +63,18 @@ import { AddressListComponent } from './features/platform/component/contact/addr
 import { SearchFormComponent } from './features/shared/component/search-form.component';
 import { RolePrivilegeAssignedListComponent } from './features/platform/component/role/privilege/assigned.list.component';
 import { RolePrivilegeAssignListComponent } from './features/platform/component/role/privilege/assign.list.component';
-import { RoleUserAssignedListComponent } from './features/platform/component/role/user/assigned.list.component';
-import { RoleUserAssignListComponent } from './features/platform/component/role/user/assign.list.component';
+import { GroupRoleAssignListComponent } from './features/platform/component/group/role/assign.list.component';
+import { GroupRoleAssignedListComponent } from './features/platform/component/group/role/assigned.list.component';
+import { SharedUserAssignListComponent } from './features/platform/component/shared/user/assign.list.component';
+import { SharedUserAssignedListComponent } from './features/platform/component/shared/user/assigned.list.component';
+import { MessageComponent } from './features/shared/component/message.component';
+import { LoadingComponent } from './features/shared/component/loading.component';
 
 @NgModule({
   declarations: [
     App,
+    MessageComponent,
+    LoadingComponent,
     LayoutComponent,
     LoginComponent,
     OauthCallbackComponent,
@@ -93,8 +100,10 @@ import { RoleUserAssignListComponent } from './features/platform/component/role/
     SearchFormComponent,
     RolePrivilegeAssignedListComponent,
     RolePrivilegeAssignListComponent,
-    RoleUserAssignedListComponent,
-    RoleUserAssignListComponent
+    GroupRoleAssignedListComponent,
+    GroupRoleAssignListComponent,
+    SharedUserAssignedListComponent,
+    SharedUserAssignListComponent,
   ],
   imports: [
     BrowserModule,
@@ -123,7 +132,8 @@ import { RoleUserAssignListComponent } from './features/platform/component/role/
     MatDatepickerModule,
     MatExpansionModule,
     MatTabsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSortModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

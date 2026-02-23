@@ -79,6 +79,9 @@ public class UserController extends AbstractBaseAPI {
             @PositiveOrZero
             Short assignableToRoleId,
 
+            @PositiveOrZero
+            Short assignableToGroupId,
+
             @ValidWhereClausePatterns(
                     supportedFields = {
                             @WhereClauseSupportedField(name = "status", type = UserStatusLvo.class),
@@ -127,7 +130,8 @@ public class UserController extends AbstractBaseAPI {
                 .withWhereClauseJoinOp(whereClauseJoinOp)
                 .withWhereClauses(whereClauses)
                 .withSortByClauses(sortByClauses)
-                .withAssignableToRoleId(assignableToRoleId);
+                .withAssignableToRoleId(assignableToRoleId)
+                .withAssignableToGroupId(assignableToGroupId);
 
 
         return ResponseEntity.ok(service.search(builder.build()));

@@ -1,56 +1,53 @@
-<div class="">
-
-  <div class="main-header">
-    <h1 class="title">
-      <mat-icon mat-card-avatar>person</mat-icon>
-      <span>Contact Addresss</span>
-    </h1>
-    <button mat-raised-button color="primary">
-      <mat-icon>add</mat-icon>
-      Add Contact Address
-    </button>
-  </div>
-  <mat-card class="main-table">
-    <mat-card-content>
-      <table mat-table [dataSource]="data" class="mat-elevation-z8 contacts-table">
-        <!-- Address Column -->
-        <ng-container matColumnDef="address">
-          <th mat-header-cell *matHeaderCellDef>Address</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary">
-              {{element.address}}
-            </button>
-          </td>
-        </ng-container>
-        <!-- Type Column -->
-        <ng-container matColumnDef="type">
-          <th mat-header-cell *matHeaderCellDef>Type</th>
-          <td mat-cell *matCellDef="let element">{{element.type}}</td>
-        </ng-container>
-        <ng-container matColumnDef="city">
-          <th mat-header-cell *matHeaderCellDef>City</th>
-          <td mat-cell *matCellDef="let element">{{element.city}}</td>
-        </ng-container>
-        <ng-container matColumnDef="country">
-          <th mat-header-cell *matHeaderCellDef>Country</th>
-          <td mat-cell *matCellDef="let element">{{element.country}}</td>
-        </ng-container>
-        <ng-container matColumnDef="region">
-          <th mat-header-cell *matHeaderCellDef>Region</th>
-          <td mat-cell *matCellDef="let element">{{element.region}}</td>
-        </ng-container>
-        <!-- Actions Column -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-button color="primary">
-              <mat-icon>edit</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-    </mat-card-content>
-  </mat-card>
+<div class="main-header">
+  <h1 class="title">
+    <mat-icon mat-card-avatar>person</mat-icon>
+    <span>Contact Addresss</span>
+  </h1>
+  <button mat-raised-button color="primary">
+    <mat-icon>add</mat-icon>
+    Add Contact Address
+  </button>
 </div>
+<mat-card class="main-table">
+  <mat-card-content>
+    <table mat-table [dataSource]="data" class="mat-elevation-z8 contacts-table">
+      <!-- Address Column -->
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef>Address</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary">
+            {{element.address}}
+          </button>
+        </td>
+      </ng-container>
+      <!-- Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let element">{{element.type}}</td>
+      </ng-container>
+      <ng-container matColumnDef="city">
+        <th mat-header-cell *matHeaderCellDef>City</th>
+        <td mat-cell *matCellDef="let element">{{element.city}}</td>
+      </ng-container>
+      <ng-container matColumnDef="country">
+        <th mat-header-cell *matHeaderCellDef>Country</th>
+        <td mat-cell *matCellDef="let element">{{element.country}}</td>
+      </ng-container>
+      <ng-container matColumnDef="region">
+        <th mat-header-cell *matHeaderCellDef>Region</th>
+        <td mat-cell *matCellDef="let element">{{element.region}}</td>
+      </ng-container>
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

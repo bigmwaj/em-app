@@ -62,14 +62,7 @@
     </div>
   </div>
 
-  @if (pageData.error() && !pageData.loading()) {
-  <div class="error-section">
-    <mat-card>
-      <mat-icon color="warn">error</mat-icon>
-      <p>{{ pageData.error() }}</p>
-    </mat-card>
-  </div>
-  }
+  <app-message [pageData]="pageData"></app-message>
 
   @if (pageData.loading()) {
   <div class="loading-section">
@@ -88,9 +81,11 @@
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Name</mat-label>
               <input matInput formControlName="name" placeholder="Enter group name" />
-              <mat-error *ngIf="mainForm.get('name')?.hasError('required')">
+              @if(mainForm.get('name')?.hasError('required')) {
+              <mat-error>
                 Name is required
               </mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field">
@@ -99,9 +94,11 @@
                 <mat-option [value]="HolderTypeLvo.ACCOUNT">Account</mat-option>
                 <mat-option [value]="HolderTypeLvo.CORPORATE">Corporate</mat-option>
               </mat-select>
-              <mat-error *ngIf="mainForm.get('holderType')?.hasError('required')">
+              @if(mainForm.get('holderType')?.hasError('required')) {
+              <mat-error>
                 Holder type is required
               </mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -111,6 +108,68 @@
               <textarea matInput formControlName="description" placeholder="Enter description" rows="3"></textarea>
             </mat-form-field>
           </div>
+        </div>
+
+        <div class="form-section">
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon>security</mat-icon>
+                roles
+              </ng-template>
+              @if(isCreateMode || isEditMode) {
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>security</mat-icon>
+                    Assigned roles
+                  </ng-template>
+                  <app-group-role-assigned-list [dto]="dto" [isViewMode]="isViewMode"
+                    (onRoleRemoved)="roleRemoved($event)"></app-group-role-assigned-list>
+                </mat-tab>
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>add</mat-icon>
+                    Assign new roles
+                  </ng-template>
+                  <app-group-role-assign-list [dto]="dto"></app-group-role-assign-list>
+                </mat-tab>
+              </mat-tab-group>
+              }@else {
+              <app-group-role-assigned-list [dto]="dto" [isViewMode]="isViewMode"></app-group-role-assigned-list>
+              }
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <mat-icon>people</mat-icon>
+                Users
+              </ng-template>
+              @if(isCreateMode || isEditMode) {
+              <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>security</mat-icon>
+                    Assigned Users
+                  </ng-template>
+                  <app-shared-user-assigned-list [ownerId]="dto?.id" [isViewMode]="isViewMode"
+                    [searchEndPoint]="searchGroupUsersEndPoint" (onUserRemoved)="userRemoved($event)">
+                  </app-shared-user-assigned-list>
+                </mat-tab>
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <mat-icon>add</mat-icon>
+                    Assign new Users
+                  </ng-template>
+                  <app-shared-user-assign-list [ownerId]="dto?.id"></app-shared-user-assign-list>
+                </mat-tab>
+              </mat-tab-group>
+              }@else {
+              <app-shared-user-assigned-list [ownerId]="dto?.id" [isViewMode]="isViewMode"
+                [searchEndPoint]="searchGroupUsersEndPoint">
+              </app-shared-user-assigned-list>
+              }
+            </mat-tab>
+          </mat-tab-group>
         </div>
       </form>
     </mat-card-content>

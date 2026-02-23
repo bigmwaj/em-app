@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { RoleDto, UserDto, UserSearchCriteria } from "../../../api.platform.model";
+import { UserDto, UserSearchCriteria } from "../../../api.platform.model";
 import { AbstractIndexComponent } from "../../../../shared/component/abstract-index.component";
 import { Observable } from "rxjs";
 import { SearchResult } from "../../../../shared/api.shared.model";
@@ -7,19 +7,22 @@ import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { UserService } from "../../../service/user.service";
 import { UserHelper } from "../../../helper/user.helper";
+import { ContactHelper } from "../../../helper/contact.helper";
 
 @Component({
-  selector: 'app-role-user-assign-list',
+  selector: 'app-shared-user-assign-list',
   templateUrl: './assign.list.component.html',
   styleUrls: ['./assign.list.component.scss'],
   standalone: false
 })
-export class RoleUserAssignListComponent extends AbstractIndexComponent<UserDto> {
+export class SharedUserAssignListComponent extends AbstractIndexComponent<UserDto> {
 
-  displayedColumns: string[] = ['actions', 'username'];
+  displayedColumns: string[] = ['select', 'fullName', 'username', 'defaultEmail', 'defaultPhone', 'defaultAddress'];
 
   @Input()
-  dto?: RoleDto;
+  ownerId?: number;
+  
+  ContactHelper = ContactHelper;
 
   constructor(
     protected override router: Router,
@@ -31,7 +34,7 @@ export class RoleUserAssignListComponent extends AbstractIndexComponent<UserDto>
 
   override search(): Observable<SearchResult<UserDto>> {
     const sc = this.searchCriteria as UserSearchCriteria;
-    sc.assignableToRoleId = this.dto?.id;
+    sc.assignableToRoleId = this.ownerId;
     return this.service.getUsers(this.searchCriteria);
   }
 
@@ -49,14 +52,5 @@ export class RoleUserAssignListComponent extends AbstractIndexComponent<UserDto>
 
   override equals(dto1: UserDto, dto2: UserDto): boolean {
     return dto1 === dto2 || (dto1.id === dto2.id);
-  }
-
-  override ngOnInit(): void {
-    super.ngOnInit();
-    if (this.dto) {
-      this.dto.roleUsers?.map(rp => rp.user)
-        .filter(u => u !== undefined)
-        .forEach(u => this.selection.setSelection(u));
-    }
   }
 }

@@ -45,12 +45,12 @@ export class RolePrivilegeAssignListComponent extends AbstractIndexComponent<Pri
     throw new Error("Method not implemented.");
   }
 
-  override getKeyLabel(bean: PrivilegeDto): string | number {
-    return bean.id || '';
+  override getKeyLabel(dto: PrivilegeDto): string | number {
+    return dto.id || '';
   }
 
-  override equals(bean1: PrivilegeDto, bean2: PrivilegeDto): boolean {
-    return bean1 === bean2 || (bean1.id === bean2.id);
+  override equals(dto1: PrivilegeDto, dto2: PrivilegeDto): boolean {
+    return dto1 === dto2 || (dto1.id === dto2.id);
   }
 
   override ngOnInit(): void {

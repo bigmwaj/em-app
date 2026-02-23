@@ -2,13 +2,13 @@ package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
 import ca.bigmwaj.emapp.as.api.shared.*;
+import ca.bigmwaj.emapp.as.dto.platform.*;
 import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.platform.GroupDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
@@ -119,6 +119,30 @@ public class GroupController extends AbstractBaseAPI {
             @Parameter(description = "The group's ID", required = true)
             @Positive @PathVariable Short groupId) {
         return ResponseEntity.ok(new ResponseMessage<>(service.findById(groupId)));
+    }
+
+    @Operation(
+            summary = "Get group roles by group ID",
+            description = "",
+            tags = {"group", "role"}
+    )
+    @GetMapping("/id/{groupId}/roles")
+    public ResponseEntity<SearchResultDto<GroupRoleDto>> getGroupRoles(
+            @Parameter(description = "The group's ID", required = true)
+            @Positive @PathVariable Short groupId) {
+        return ResponseEntity.ok(service.findGroupRoles(groupId));
+    }
+
+    @Operation(
+            summary = "Get group users by group ID",
+            description = "",
+            tags = {"group", "user"}
+    )
+    @GetMapping("/id/{groupId}/users")
+    public ResponseEntity<SearchResultDto<GroupUserDto>> getGroupUsers(
+            @Parameter(description = "The group's ID", required = true)
+            @Positive @PathVariable Short groupId) {
+        return ResponseEntity.ok(service.findGroupUsers(groupId));
     }
 
     @PostMapping

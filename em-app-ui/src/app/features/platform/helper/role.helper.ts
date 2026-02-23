@@ -1,5 +1,5 @@
 import { SharedHelper } from "../../shared/shared.helper";
-import { RoleDto } from "../api.platform.model";
+import { RoleDto, RoleSearchCriteria } from "../api.platform.model";
 
 export class RoleHelper extends SharedHelper {
 
@@ -13,5 +13,12 @@ export class RoleHelper extends SharedHelper {
         // Clear identifier fields
         delete duplicatedRole.id;
         return duplicatedRole;
+    }
+
+    static createRoleSearchCriteria(): RoleSearchCriteria {
+        return {
+            ...SharedHelper.createDefaultSearchCriteria(),
+            assignableToGroupId: undefined
+        };
     }
 }
