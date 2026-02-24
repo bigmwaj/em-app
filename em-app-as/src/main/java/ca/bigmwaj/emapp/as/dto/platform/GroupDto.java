@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class GroupDto extends AbstractChangeTrackingDto {
 
     private String description;
 
-    private HolderTypeLvo holderType;
+    private OwnerTypeLvo ownerType;
 
     @Singular
     private List<GroupRoleDto> groupRoles;

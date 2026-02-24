@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.builder.common.TestConstant;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
@@ -24,7 +24,7 @@ public class TestUserDtoBuilder extends UserDto {
                 .withEditAction(EditActionLvo.CREATE)
                 .withUsername(TestConstant.TEST_USER)
                 .withPassword(TestConstant.TEST_PASSWORD)
-                .withHolderType(HolderTypeLvo.CORPORATE)
+                .withHolderType(OwnerTypeLvo.CORPORATE)
                 .withStatus(UserStatusLvo.ACTIVE)
                 .withUsernameType(UsernameTypeLvo.BASIC);
     }
@@ -44,6 +44,6 @@ public class TestUserDtoBuilder extends UserDto {
     public static TestUserDtoBuilderBuilder builderWithAllDefaults() {
         return (TestUserDtoBuilderBuilder) TestUserDtoBuilder.withDefaults()
                 .withUserRole(TestUserRoleDtoBuilder.withDefaults().build())
-                .withContact(TestContactDtoBuilder.builderWithAllDefaults(HolderTypeLvo.CORPORATE).build());
+                .withContact(TestContactDtoBuilder.builderWithAllDefaults(OwnerTypeLvo.CORPORATE).build());
     }
 }

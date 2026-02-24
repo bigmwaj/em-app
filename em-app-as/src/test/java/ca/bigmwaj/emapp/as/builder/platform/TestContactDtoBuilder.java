@@ -4,7 +4,7 @@ import ca.bigmwaj.emapp.as.dto.platform.ContactAddressDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactEmailDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactPhoneDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -19,21 +19,21 @@ public class TestContactDtoBuilder extends ContactDto {
                 .withEditAction(EditActionLvo.CREATE)
                 .withFirstName("Test First Name")
                 .withLastName("Test Last Name")
-                .withHolderType(HolderTypeLvo.ACCOUNT)
+                .withHolderType(OwnerTypeLvo.ACCOUNT)
                 .withBirthDate(LocalDate.now().minusYears(21));
     }
 
     public static TestContactDtoBuilderBuilder builderWithAllDefaults() {
-        return builderWithAllDefaults(HolderTypeLvo.ACCOUNT);
+        return builderWithAllDefaults(OwnerTypeLvo.ACCOUNT);
     }
 
-    public static TestContactDtoBuilderBuilder builderWithAllDefaults(HolderTypeLvo holderType) {
+    public static TestContactDtoBuilderBuilder builderWithAllDefaults(OwnerTypeLvo ownerType) {
         return (TestContactDtoBuilderBuilder) TestContactDtoBuilder
                 .withDefaults()
-                .withHolderType(holderType)
-                .withAddress((ContactAddressDto) TestContactAddressDtoBuilder.withDefaults().withHolderType(holderType).build())
-                .withEmail((ContactEmailDto) TestContactEmailDtoBuilder.withDefaults().withHolderType(holderType).build())
-                .withPhone((ContactPhoneDto) TestContactPhoneDtoBuilder.withDefaults().withHolderType(holderType).build());
+                .withHolderType(ownerType)
+                .withAddress((ContactAddressDto) TestContactAddressDtoBuilder.withDefaults().withHolderType(ownerType).build())
+                .withEmail((ContactEmailDto) TestContactEmailDtoBuilder.withDefaults().withHolderType(ownerType).build())
+                .withPhone((ContactPhoneDto) TestContactPhoneDtoBuilder.withDefaults().withHolderType(ownerType).build());
     }
 
 }

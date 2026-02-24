@@ -38,21 +38,16 @@ import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
 
 // Feature Components
-import { LoadingComponent } from './features/shared/component/loading.component';
-import { MessageComponent } from './features/shared/component/message.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
-import { PlatformModule } from './features/platform/platform.module';
 
 // Feature Modules
 
 @NgModule({
   declarations: [
     App,
-    MessageComponent,
-    LoadingComponent,
     LayoutComponent,
     LoginComponent,
     OauthCallbackComponent,
@@ -88,8 +83,6 @@ import { PlatformModule } from './features/platform/platform.module';
     MatTabsModule,
     MatCheckboxModule,
     MatSortModule,
-
-    PlatformModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

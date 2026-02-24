@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ContactService } from '../../service/contact.service';
 import {
   ContactDto,
-  HolderTypeLvo,
+  OwnerTypeLvo,
   EmailTypeLvo,
   PhoneTypeLvo,
   AddressTypeLvo,
@@ -26,7 +26,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
   ContactHelper = ContactHelper;
 
   // Enums for dropdowns
-  HolderTypeLvo = HolderTypeLvo;
+  OwnerTypeLvo = OwnerTypeLvo;
   EmailTypeLvo = EmailTypeLvo;
   PhoneTypeLvo = PhoneTypeLvo;
   AddressTypeLvo = AddressTypeLvo;
@@ -58,7 +58,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       birthDate: [''],
-      holderType: [HolderTypeLvo.ACCOUNT, Validators.required],
+      ownerType: [OwnerTypeLvo.ACCOUNT, Validators.required],
       defaultEmail: [''],
       defaultEmailType: [EmailTypeLvo.WORK],
       defaultPhone: [''],
@@ -96,7 +96,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
       firstName: this.dto!.firstName,
       lastName: this.dto!.lastName,
       birthDate: this.dto!.birthDate,
-      holderType: this.dto!.holderType,
+      ownerType: this.dto!.ownerType,
       defaultEmail: defaultEmail?.email || '',
       defaultEmailType: defaultEmail?.type || EmailTypeLvo.WORK,
       defaultPhone: defaultPhone?.phone || '',
@@ -116,7 +116,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
       firstName: formValue.firstName,
       lastName: formValue.lastName,
       birthDate: formValue.birthDate,
-      holderType: formValue.holderType,
+      ownerType: formValue.ownerType,
     };
 
     // Add ID if editing
@@ -130,7 +130,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
         {
           email: formValue.defaultEmail,
           type: formValue.defaultEmailType,
-          holderType: formValue.holderType,
+          ownerType: formValue.ownerType,
           defaultContactPoint: true,
         },
       ];
@@ -151,7 +151,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
         {
           phone: formValue.defaultPhone,
           type: formValue.defaultPhoneType,
-          holderType: formValue.holderType,
+          ownerType: formValue.ownerType,
           defaultContactPoint: true,
         },
       ];
@@ -172,7 +172,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
         {
           address: formValue.defaultAddress,
           type: formValue.defaultAddressType,
-          holderType: formValue.holderType,
+          ownerType: formValue.ownerType,
           defaultContactPoint: true,
           country: formValue.country,
           region: formValue.region,

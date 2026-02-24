@@ -25,7 +25,7 @@ export enum EmailTypeLvo {
   WORK = 'WORK'
 }
 
-export enum HolderTypeLvo {
+export enum OwnerTypeLvo {
   CORPORATE = 'CORPORATE',
   ACCOUNT = 'ACCOUNT'
 }
@@ -61,7 +61,7 @@ export interface ContactDto extends AbstractChangeTrackingDto {
   firstName: string;
   lastName: string;
   birthDate?: Date;
-  holderType: HolderTypeLvo;
+  ownerType: OwnerTypeLvo;
   emails?: ContactEmailDto[];
   phones?: ContactPhoneDto[];
   addresses?: ContactAddressDto[];
@@ -76,7 +76,7 @@ export interface AccountContactDto extends AbstractChangeTrackingDto {
 export interface AbstractContactPointDto extends AbstractBaseDto {
   id?: number;
   contactId?: number;
-  holderType: HolderTypeLvo;
+  ownerType: OwnerTypeLvo;
   defaultContactPoint: boolean;
 }
 
@@ -108,7 +108,7 @@ export interface UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
   usernameType: UsernameTypeLvo;
   password?: string;
   contact?: ContactDto;
-  holderType: HolderTypeLvo;
+  ownerType: OwnerTypeLvo;
   usernameVerified?: boolean;
 }
 
@@ -134,7 +134,7 @@ export interface GroupDto extends AbstractChangeTrackingDto {
   id?: number;
   name: string;
   description?: string;
-  holderType: HolderTypeLvo;
+  ownerType: OwnerTypeLvo;
   groupRoles?: GroupRoleDto[];
   groupUsers?: GroupUserDto[];
 
@@ -150,7 +150,7 @@ export interface RoleDto extends AbstractChangeTrackingDto {
   id?: number;
   name: string;
   description?: string;
-  holderType: HolderTypeLvo;
+  ownerType: OwnerTypeLvo;
   rolePrivileges?: RolePrivilegeDto[];
   roleUsers?: RoleUserDto[];
 }

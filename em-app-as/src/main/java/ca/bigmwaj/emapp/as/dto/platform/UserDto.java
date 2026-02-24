@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import ca.bigmwaj.emapp.dm.dto.AbstractStatusTrackingDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -44,7 +44,7 @@ public class UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {
 
     private UserStatusLvo status;
 
-    private HolderTypeLvo holderType;
+    private OwnerTypeLvo ownerType;
 
     @Singular
     private List<UserRoleDto> userRoles;

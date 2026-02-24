@@ -36,8 +36,8 @@
 
         <mat-form-field appearance="outline" class="form-field half-width">
           <mat-label>Holder Type</mat-label>
-          <mat-select formControlName="holderType">
-            @for (type of holderTypes; track $index) {
+          <mat-select formControlName="ownerType">
+            @for (type of ownerTypes; track $index) {
             <mat-option [value]="type">{{ type }}</mat-option>
             }
           </mat-select>

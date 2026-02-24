@@ -6,7 +6,7 @@ import { AccountService } from '../../service/account.service';
 import {
   AccountDto,
   AccountStatusLvo,
-  HolderTypeLvo,
+  OwnerTypeLvo,
   EmailTypeLvo,
   PhoneTypeLvo,
   AddressTypeLvo,
@@ -71,7 +71,7 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       birthDate: [''],
-      holderType: [HolderTypeLvo.ACCOUNT, Validators.required],
+      ownerType: [OwnerTypeLvo.ACCOUNT, Validators.required],
       defaultEmail: [''],
       defaultEmailType: [EmailTypeLvo.WORK],
       defaultPhone: [''],
@@ -108,14 +108,14 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
       firstName: contactFormValue.firstName,
       lastName: contactFormValue.lastName,
       birthDate: contactFormValue.birthDate,
-      holderType: HolderTypeLvo.ACCOUNT
+      ownerType: OwnerTypeLvo.ACCOUNT
     };
 
     // Defaut email
     const defaultEmail: ContactEmailDto = {
       email: contactFormValue.defaultEmail,
       type: contactFormValue.defaultEmailType,
-      holderType: HolderTypeLvo.ACCOUNT,
+      ownerType: OwnerTypeLvo.ACCOUNT,
       defaultContactPoint: true
     }
 
@@ -123,7 +123,7 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
     const defaultPhone: ContactPhoneDto = {
       phone: contactFormValue.defaultPhone,
       type: contactFormValue.defaultPhoneType,
-      holderType: HolderTypeLvo.ACCOUNT,
+      ownerType: OwnerTypeLvo.ACCOUNT,
       defaultContactPoint: true
     }
 
@@ -131,7 +131,7 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
     const defaultAddress: ContactAddressDto = {
       address: contactFormValue.defaultAddress,
       type: contactFormValue.defaultAddressType,
-      holderType: HolderTypeLvo.ACCOUNT,
+      ownerType: OwnerTypeLvo.ACCOUNT,
       defaultContactPoint: true
     }
 
