@@ -19,14 +19,9 @@
    
   <app-message [pageData]="pageData"></app-message>
 
-  @if (pageData.loading()) {
-
-  <div class="loading-section">
-    <mat-spinner></mat-spinner>
-    <p>Loading groups...</p>
-  </div>
-
-  } @else {
+  <app-loading [pageData]="pageData"></app-loading>
+   
+  @if (!pageData.loading()) {
   <mat-card class="main-table">
     <mat-card-content>
       <table mat-table [dataSource]="data" class="mat-elevation-z8 groups-table">
@@ -83,7 +78,7 @@
     </mat-card-content>
 
     <mat-card-footer>
-      <mat-paginator style="background-color: transparent;" [pageSizeOptions]="[5, 10, 20]"
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
         (page)="handlePageEvent($event)" [length]="searchResult.searchInfos.total"
         [pageIndex]="searchCriteria.pageIndex" [pageSize]="searchCriteria.pageSize" showFirstLastButtons
         aria-label="Select page of periodic elements">

@@ -93,6 +93,10 @@
   }
 }
 
+.primary-contact-header {
+  border-bottom-width: 3px;
+}
+
 @include mobile-only {
   .accounts-container {
     padding: $spacing-md;

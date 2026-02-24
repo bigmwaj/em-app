@@ -17,14 +17,9 @@
 
   <app-message [pageData]="pageData"></app-message>
 
-  @if (pageData.loading()) {
+  <app-loading [pageData]="pageData"></app-loading>
 
-  <div class="loading-section">
-    <mat-spinner></mat-spinner>
-    <p>Loading roles...</p>
-  </div>
-
-  } @else {
+  @if (!pageData.loading()) {
   <mat-card class="main-table">
     <mat-card-content>
       <table mat-table [dataSource]="data" class="mat-elevation-z8 roles-table">

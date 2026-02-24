@@ -97,6 +97,10 @@ body {
 .main-table {
   margin-top: $spacing-lg;
 
+  mat-card-content {
+    overflow-x: auto;
+  }
+
   table {
     @include table-enhanced;
   }
@@ -186,7 +190,6 @@ button[mat-flat-button] {
 
 // Form fields
 mat-form-field {
-  //width: 100%;
 }
 
 // Paginator
