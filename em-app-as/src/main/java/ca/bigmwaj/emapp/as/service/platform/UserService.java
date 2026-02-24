@@ -12,7 +12,7 @@ import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.UserEntity;
 import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import ca.bigmwaj.emapp.as.service.ServiceException;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import org.slf4j.Logger;
@@ -90,7 +90,7 @@ public class UserService extends AbstractMainService<UserDto, UserEntity, Short>
         entity.setUsername(username);
         entity.setPassword("to-be-updated");
         entity.setUsernameType(usernameType);
-        entity.setHolderType(HolderTypeLvo.ACCOUNT);
+        entity.setOwnerType(OwnerTypeLvo.ACCOUNT);
         entity.setStatus(UserStatusLvo.ACTIVE);
         entity.setStatusDate(LocalDateTime.now());
         beforeCreateHistEntity(entity);

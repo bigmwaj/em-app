@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,8 +32,8 @@ public class ContactEntity extends AbstractChangeTrackingEntity {
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
-    private HolderTypeLvo holderType;
+    @Column(name = "OWNER_TYPE", nullable = false, updatable = false)
+    private OwnerTypeLvo ownerType;
 
     @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactEmailEntity> emails = new ArrayList<>();

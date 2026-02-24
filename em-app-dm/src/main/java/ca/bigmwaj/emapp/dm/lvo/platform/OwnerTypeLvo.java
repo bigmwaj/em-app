@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.dm.lvo.platform;
 
 import lombok.Getter;
 
-public enum HolderTypeLvo {
+public enum OwnerTypeLvo {
 
     CORPORATE("Corporate"),
     ACCOUNT("Account"),;
@@ -10,7 +10,7 @@ public enum HolderTypeLvo {
     @Getter
     private final String description;
 
-    HolderTypeLvo(String description) {
+    OwnerTypeLvo(String description) {
         this.description = description;
     }
 }

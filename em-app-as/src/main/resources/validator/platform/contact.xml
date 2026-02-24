@@ -6,10 +6,10 @@
         </condition>
     </field>
 
-    <field name="holderType">
+    <field name="ownerType">
         <condition expression="createAction">
             <rule type="NonNullRule"/>
-            <rule type="HolderTypeRule"/>
+            <rule type="OwnerTypeRule"/>
         </condition>
     </field>
 
@@ -43,7 +43,7 @@
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
-            <field name="holderType">
+            <field name="ownerType">
                 <condition expression="createAction">
                     <rule type="NonNullRule"/>
                 </condition>
@@ -71,7 +71,7 @@
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
-            <field name="holderType">
+            <field name="ownerType">
                 <condition expression="createAction">
                     <rule type="NonNullRule"/>
                 </condition>
@@ -96,7 +96,7 @@
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
-            <field name="holderType">
+            <field name="ownerType">
                 <condition expression="createAction">
                     <rule type="NonNullRule"/>
                 </condition>

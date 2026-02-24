@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractStatusTrackingEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import jakarta.persistence.*;
@@ -45,8 +45,8 @@ public class UserEntity extends AbstractStatusTrackingEntity<UserStatusLvo> {
     private ContactEntity contact;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
-    private HolderTypeLvo holderType;
+    @Column(name = "OWNER_TYPE", nullable = false, updatable = false)
+    private OwnerTypeLvo ownerType;
 
     public Object getDefaultKey() {
         return id;

@@ -15,7 +15,7 @@ import { GroupHelper } from '../../helper/group.helper';
   standalone: false
 })
 export class GroupIndexComponent extends AbstractIndexComponent<GroupDto>  {
-  displayedColumns: string[] = ['name', 'description', 'holderType', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'ownerType', 'actions'];
   GroupHelper = GroupHelper;
 
   constructor(

@@ -17,7 +17,7 @@ import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -83,13 +83,13 @@ public class RoleController extends AbstractBaseAPI {
                     supportedFields = {
                             @WhereClauseSupportedField(name = "name", type = String.class),
                             @WhereClauseSupportedField(name = "description", type = String.class),
-                            @WhereClauseSupportedField(name = "holderType", type = HolderTypeLvo.class),
+                            @WhereClauseSupportedField(name = "ownerType", type = OwnerTypeLvo.class),
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>name</b></li>" +
                     "<li><b>description</b></li>" +
-                    "<li><b>holderType</b></li>" +
+                    "<li><b>ownerType</b></li>" +
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
@@ -99,7 +99,7 @@ public class RoleController extends AbstractBaseAPI {
                     supportedFields = {
                             @SortByClauseSupportedField(name = "name"),
                             @SortByClauseSupportedField(name = "description"),
-                            @SortByClauseSupportedField(name = "holderType"),
+                            @SortByClauseSupportedField(name = "ownerType"),
                     })
             @RequestParam(value = "sortBy", required = false)
             List<SortByClause> sortByClauses) {

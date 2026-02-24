@@ -6,7 +6,7 @@ import { UserService } from '../../service/user.service';
 import {
   UserDto,
   UserStatusLvo,
-  HolderTypeLvo,
+  OwnerTypeLvo,
   EmailTypeLvo,
   PhoneTypeLvo,
   AddressTypeLvo,
@@ -38,7 +38,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
   UserEditMode = SharedHelper.EditMode;
   UserStatusLvo = UserStatusLvo;
   UsernameTypeLvo = UsernameTypeLvo;
-  HolderTypeLvo = HolderTypeLvo;
+  OwnerTypeLvo = OwnerTypeLvo;
   EmailTypeLvo = EmailTypeLvo;
   PhoneTypeLvo = PhoneTypeLvo;
   AddressTypeLvo = AddressTypeLvo;
@@ -75,7 +75,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
       provider: [this.dto?.provider],
       picture: [this.dto?.picture],
       status: [this.dto?.status, Validators.required],
-      holderType: [this.dto?.holderType, Validators.required]
+      ownerType: [this.dto?.ownerType, Validators.required]
     });
 
     // Contact Form
@@ -146,7 +146,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
       provider: mainFormValue.provider,
       picture: mainFormValue.picture,
       status: mainFormValue.status,
-      holderType: mainFormValue.holderType,
+      ownerType: mainFormValue.ownerType,
 
       contact: {
         editAction: contactFormValue.editAction,
@@ -154,14 +154,14 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
         firstName: contactFormValue.firstName,
         lastName: contactFormValue.lastName,
         birthDate: contactFormValue.birthDate,
-        holderType: mainFormValue.holderType,
+        ownerType: mainFormValue.ownerType,
 
         emails: [{
           editAction: defaultEmailFormValue.editAction,
           id: defaultEmailFormValue.id,
           email: defaultEmailFormValue.email,
           type: defaultEmailFormValue.type,
-          holderType: mainFormValue.holderType,
+          ownerType: mainFormValue.ownerType,
           defaultContactPoint: true
         }],
 
@@ -170,7 +170,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
           id: defaultPhoneFormValue.id,
           phone: defaultPhoneFormValue.phone,
           type: defaultPhoneFormValue.type,
-          holderType: mainFormValue.holderType,
+          ownerType: mainFormValue.ownerType,
           defaultContactPoint: true
         }],
 
@@ -179,7 +179,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
           id: defaultAddressFormValue.id,
           address: defaultAddressFormValue.address,
           type: defaultAddressFormValue.type,
-          holderType: mainFormValue.holderType,
+          ownerType: mainFormValue.ownerType,
           defaultContactPoint: true
         }]
       }

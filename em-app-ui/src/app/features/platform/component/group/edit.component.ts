@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { GroupService } from '../../service/group.service';
-import { GroupDto, GroupRoleDto, GroupUserDto, HolderTypeLvo, RoleDto, UserDto } from '../../api.platform.model';
+import { GroupDto, GroupRoleDto, GroupUserDto, OwnerTypeLvo, RoleDto, UserDto } from '../../api.platform.model';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
 import { GroupHelper } from '../../helper/group.helper';
 import { GroupRoleAssignListComponent } from './role/assign.list.component';
@@ -23,7 +23,7 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
   GroupHelper = GroupHelper;
 
   // Enums for dropdowns
-  HolderTypeLvo = HolderTypeLvo;
+  OwnerTypeLvo = OwnerTypeLvo;
   
   searchGroupUsersEndPoint = (ownerId: number) => this.service.getGroupUsers(ownerId);
 
@@ -156,7 +156,7 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
       id: [this.dto?.id],
       name: [this.dto?.name, Validators.required],
       description: [this.dto?.description],
-      holderType: [this.dto?.holderType, Validators.required]
+      ownerType: [this.dto?.ownerType, Validators.required]
     });
     this.bindFormEvents();
     return [this.mainForm];
@@ -170,7 +170,7 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
       id: formValue.id,
       name: formValue.name,
       description: formValue.description,
-      holderType: formValue.holderType,
+      ownerType: formValue.ownerType,
       groupRoles: this.assignedRolesTable.data,
       groupUsers: this.assignedUsersTable.data
     };

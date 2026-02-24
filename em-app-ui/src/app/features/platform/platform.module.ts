@@ -1,9 +1,5 @@
 import { NgModule } from "@angular/core";
-import { Routes } from "@angular/router";
-import { AuthGuard } from "../../core/guards/auth.guard";
-import { ChangeStatusDialogComponent } from "../shared/component/change-status-dialog.component";
-import { DeleteDialogComponent } from "../shared/component/delete-dialog.component";
-import { SearchFormComponent } from "../shared/component/search-form.component";
+import { RouterModule, Routes } from "@angular/router";
 import { AccountEditComponent } from "./component/account/edit.component";
 import { EditAccountAdminUserFormComponent } from "./component/account/edit/account-admin-user.component";
 import { EditAccountDetailsComponent } from "./component/account/edit/account-details.component";
@@ -26,28 +22,20 @@ import { SharedUserAssignListComponent } from "./component/shared/user/assign.li
 import { SharedUserAssignedListComponent } from "./component/shared/user/assigned.list.component";
 import { UserEditComponent } from "./component/user/edit.component";
 import { UserIndexComponent } from "./component/user/index.component";
-import { CommonModule } from "@angular/common";
+import { SharedModule } from "../shared/shared.module";
 
 const routes: Routes = [
-
-  // Protected routes with layout
-  {
-    path: 'platform',
-    canActivate: [AuthGuard],
-    children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'users', component: UserIndexComponent },
-      { path: 'users/edit/:mode', component: UserEditComponent },
-      { path: 'accounts', component: AccountIndexComponent },
-      { path: 'accounts/edit/:mode', component: AccountEditComponent },
-      { path: 'contacts', component: ContactIndexComponent },
-      { path: 'contacts/edit/:mode', component: ContactEditComponent },
-      { path: 'groups', component: GroupIndexComponent },
-      { path: 'groups/edit/:mode', component: GroupEditComponent },
-      { path: 'roles', component: RoleIndexComponent },
-      { path: 'roles/edit/:mode', component: RoleEditComponent },
-    ]
-  },
+  { path: '', redirectTo: 'users', pathMatch: 'full' },
+  { path: 'users', component: UserIndexComponent },
+  { path: 'users/edit/:mode', component: UserEditComponent },
+  { path: 'accounts', component: AccountIndexComponent },
+  { path: 'accounts/edit/:mode', component: AccountEditComponent },
+  { path: 'contacts', component: ContactIndexComponent },
+  { path: 'contacts/edit/:mode', component: ContactEditComponent },
+  { path: 'groups', component: GroupIndexComponent },
+  { path: 'groups/edit/:mode', component: GroupEditComponent },
+  { path: 'roles', component: RoleIndexComponent },
+  { path: 'roles/edit/:mode', component: RoleEditComponent },
 ];
 
 @NgModule({
@@ -65,12 +53,9 @@ const routes: Routes = [
     GroupEditComponent,
     RoleIndexComponent,
     RoleEditComponent,
-    ChangeStatusDialogComponent,
-    DeleteDialogComponent,
     PhoneListComponent,
     EmailListComponent,
     AddressListComponent,
-    SearchFormComponent,
     RolePrivilegeAssignedListComponent,
     RolePrivilegeAssignListComponent,
     GroupRoleAssignedListComponent,
@@ -79,11 +64,8 @@ const routes: Routes = [
     SharedUserAssignListComponent,
   ],
   imports: [
-    CommonModule
+    SharedModule,
+    RouterModule.forChild(routes),
   ],
-  exports: [
-    UserIndexComponent,
-    RoleIndexComponent,
-  ]
 })
-export class PlatformModule { }
+export class PlatformModule {}

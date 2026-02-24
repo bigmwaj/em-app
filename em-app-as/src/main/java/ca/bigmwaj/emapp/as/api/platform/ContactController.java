@@ -13,7 +13,7 @@ import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.ContactService;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -69,7 +69,7 @@ public class ContactController extends AbstractBaseAPI {
             @ValidWhereClausePatterns(
                     supportedFields = {
                             @WhereClauseSupportedField(name = "id", type = Long.class),
-                            @WhereClauseSupportedField(name = "holderType", type = HolderTypeLvo.class),
+                            @WhereClauseSupportedField(name = "ownerType", type = OwnerTypeLvo.class),
                             @WhereClauseSupportedField(name = "firstName", type = String.class),
                             @WhereClauseSupportedField(name = "lastName", type = String.class),
                             @WhereClauseSupportedField(name = "birthDate", type = LocalDate.class),
@@ -80,7 +80,7 @@ public class ContactController extends AbstractBaseAPI {
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>id</b></li>" +
-                    "<li><b>holderType</b></li>" +
+                    "<li><b>ownerType</b></li>" +
                     "<li><b>firstName</b></li>" +
                     "<li><b>lastName</b></li>" +
                     "<li><b>birthDate</b></li>" +
@@ -95,7 +95,7 @@ public class ContactController extends AbstractBaseAPI {
             @ValidSortByClausePatterns(
                     supportedFields = {
                             @SortByClauseSupportedField(name = "id"),
-                            @SortByClauseSupportedField(name = "holderType"),
+                            @SortByClauseSupportedField(name = "ownerType"),
                             @SortByClauseSupportedField(name = "firstName"),
                             @SortByClauseSupportedField(name = "lastName"),
                             @SortByClauseSupportedField(name = "phone", rootEntityName = "cp"),

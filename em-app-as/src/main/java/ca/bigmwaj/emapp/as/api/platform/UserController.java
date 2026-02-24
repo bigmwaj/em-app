@@ -16,7 +16,7 @@ import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.UserService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -85,7 +85,7 @@ public class UserController extends AbstractBaseAPI {
             @ValidWhereClausePatterns(
                     supportedFields = {
                             @WhereClauseSupportedField(name = "status", type = UserStatusLvo.class),
-                            @WhereClauseSupportedField(name = "holderType", type = HolderTypeLvo.class),
+                            @WhereClauseSupportedField(name = "ownerType", type = OwnerTypeLvo.class),
                             @WhereClauseSupportedField(name = "username", type = String.class),
                             @WhereClauseSupportedField(name = "firstName", type = String.class, rootEntityName = "c"),
                             @WhereClauseSupportedField(name = "lastName", type = String.class, rootEntityName = "c"),
@@ -96,7 +96,7 @@ public class UserController extends AbstractBaseAPI {
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>status</b></li>" +
-                    "<li><b>holderType</b></li>" +
+                    "<li><b>ownerType</b></li>" +
                     "<li><b>username</b></li>" +
                     "<li><b>firstName</b></li>" +
                     "<li><b>lastName</b></li>" +
@@ -111,7 +111,7 @@ public class UserController extends AbstractBaseAPI {
             @ValidSortByClausePatterns(
                     supportedFields = {
                             @SortByClauseSupportedField(name = "status"),
-                            @SortByClauseSupportedField(name = "holderType"),
+                            @SortByClauseSupportedField(name = "ownerType"),
                             @SortByClauseSupportedField(name = "username"),
                             @SortByClauseSupportedField(name = "firstName", rootEntityName = "c"),
                             @SortByClauseSupportedField(name = "lastName", rootEntityName = "c"),
