@@ -1,0 +1,10 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.warn-message {
+  margin: $spacing-md 0;
+
+  mat-card {
+    @include error-message;
+  }
+}

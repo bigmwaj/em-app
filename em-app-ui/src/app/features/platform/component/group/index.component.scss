@@ -1,87 +1,60 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
+
 .groups-container {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  // Uses global .main-container styles
 }
 
 .main-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+  @include page-header;
 
-  .title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
+  @include mobile-only {
+    flex-direction: column;
+    align-items: flex-start;
 
-    mat-icon {
-      font-size: 32px;
-      width: 32px;
-      height: 32px;
-    }
-  }
-}
-
-.search-section {
-  margin-bottom: 20px;
-
-  .search-form {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-
-    .search-field {
-      flex: 1;
+    h1 {
+      font-size: $font-size-xxl;
     }
 
-    .search-button {
-      height: 56px;
-    }
-  }
-}
-
-.info-message {
-  margin-bottom: 20px;
-
-  mat-card {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 20px;
-    background-color: #fff3cd;
-    color: #856404;
-
-    mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
+    button {
+      width: 100%;
     }
   }
 }
 
 .loading-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  gap: 20px;
+  @include loading-state;
 }
 
 .main-table {
-  margin-top: 20px;
+  margin-top: $spacing-lg;
 
   .groups-table {
     width: 100%;
 
     th {
-      font-weight: bold;
+      font-weight: $font-weight-medium;
+      color: $color-text-primary;
+      font-size: $font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    td, th {
-      padding: 12px 8px;
+    tr {
+      &:hover {
+        background-color: rgba($color-primary-light, 0.3);
+      }
     }
+
+    td,
+    th {
+      padding: $spacing-sm $spacing-xs;
+    }
+  }
+}
+
+@include mobile-only {
+  .groups-container {
+    padding: $spacing-md;
   }
 }

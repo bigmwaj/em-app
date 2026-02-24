@@ -84,7 +84,7 @@
     </mat-card-content>
 
     <mat-card-footer>
-      <mat-paginator style="background-color: transparent;" [pageSizeOptions]="[5, 10, 20]"
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
         (page)="handlePageEvent($event)" [length]="searchResult.searchInfos.total"
         [pageIndex]="searchCriteria.pageIndex" [pageSize]="searchCriteria.pageSize" showFirstLastButtons
         aria-label="Select page of periodic elements">
