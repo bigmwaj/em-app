@@ -47,7 +47,7 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
   }
 
   protected override getBaseRoute(): string {
-    return '/accounts';
+    return '/platform/accounts';
   }
 
   override get isInvalidForm(): boolean {

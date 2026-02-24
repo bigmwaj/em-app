@@ -148,7 +148,7 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
 
 
   protected override getBaseRoute(): string {
-    return '/groups';
+    return '/platform/groups';
   }
 
   protected override initializeForms(): FormGroup[] {

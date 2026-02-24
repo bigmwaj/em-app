@@ -41,7 +41,7 @@ export class UserIndexComponent extends AbstractIndexWithStatusComponent<UserSta
   }
 
   protected override getBaseRoute(): string {
-    return '/users';
+    return '/platform/users';
   }
 
   override search(): Observable<SearchResult<UserDto>> {

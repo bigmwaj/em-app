@@ -62,7 +62,7 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
   }
 
   protected override getBaseRoute(): string {
-    return '/users';
+    return '/platform/users';
   }
 
   protected override initializeForms(): FormGroup[] {

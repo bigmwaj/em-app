@@ -50,7 +50,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
   }
 
   protected override getBaseRoute(): string {
-    return '/contacts';
+    return '/platform/contacts';
   }
 
   protected override initializeForms(): FormGroup[] {

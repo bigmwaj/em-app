@@ -44,7 +44,7 @@ export class AccountIndexComponent extends AbstractIndexWithStatusComponent<Acco
   }
 
   protected override getBaseRoute(): string {
-    return '/accounts';
+    return '/platform/accounts';
   }
 
   override search(): Observable<SearchResult<AccountDto>> {

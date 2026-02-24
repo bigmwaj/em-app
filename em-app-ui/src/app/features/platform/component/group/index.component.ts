@@ -33,7 +33,7 @@ export class GroupIndexComponent extends AbstractIndexComponent<GroupDto>  {
   }
 
   protected override getBaseRoute(): string {
-    return '/groups';
+    return '/platform/groups';
   }
 
   override search(): Observable<SearchResult<GroupDto>> {

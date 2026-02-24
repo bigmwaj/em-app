@@ -33,7 +33,7 @@ export class ContactIndexComponent extends AbstractIndexComponent<ContactDto> {
   }
 
   protected override getBaseRoute(): string {
-    return '/contacts';
+    return '/platform/contacts';
   }
 
   override search(): Observable<SearchResult<ContactDto>> {
