@@ -5,16 +5,6 @@ import { AuthGuard } from './core/guards/auth.guard';
 // Components
 import { LayoutComponent } from './core/component/layout/layout.component';
 import { DashboardComponent } from './core/component/dashboard/dashboard.component';
-import { UserIndexComponent } from './features/platform/component/user/index.component';
-import { UserEditComponent } from './features/platform/component/user/edit.component';
-import { AccountIndexComponent } from './features/platform/component/account/index.component';
-import { AccountEditComponent } from './features/platform/component/account/edit.component';
-import { ContactIndexComponent } from './features/platform/component/contact/index.component';
-import { ContactEditComponent } from './features/platform/component/contact/edit.component';
-import { GroupIndexComponent } from './features/platform/component/group/index.component';
-import { GroupEditComponent } from './features/platform/component/group/edit.component';
-import { RoleIndexComponent } from './features/platform/component/role/index.component';
-import { RoleEditComponent } from './features/platform/component/role/edit.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
 
@@ -22,7 +12,7 @@ const routes: Routes = [
   // Public routes
   { path: 'login', component: LoginComponent },
   { path: 'oauth/callback', component: OauthCallbackComponent },
-  
+
   // Protected routes with layout
   {
     path: '',
@@ -31,19 +21,13 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'users', component: UserIndexComponent },
-      { path: 'users/edit/:mode', component: UserEditComponent },
-      { path: 'accounts', component: AccountIndexComponent },
-      { path: 'accounts/edit/:mode', component: AccountEditComponent },
-      { path: 'contacts', component: ContactIndexComponent },
-      { path: 'contacts/edit/:mode', component: ContactEditComponent },
-      { path: 'groups', component: GroupIndexComponent },
-      { path: 'groups/edit/:mode', component: GroupEditComponent },
-      { path: 'roles', component: RoleIndexComponent },
-      { path: 'roles/edit/:mode', component: RoleEditComponent },
+      {
+        path: 'platform',
+        loadChildren: () => import('./features/platform/platform.module').then(m => m.PlatformModule)
+      }
     ]
   },
-  
+
   // Redirect any unknown routes to login
   { path: '**', redirectTo: 'login' }
 ];

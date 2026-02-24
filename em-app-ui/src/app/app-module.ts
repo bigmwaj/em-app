@@ -1,74 +1,52 @@
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Angular Material Modules
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
 
 // Core Components
+import { DashboardComponent } from './core/component/dashboard/dashboard.component';
 import { LayoutComponent } from './core/component/layout/layout.component';
 import { LoginComponent } from './core/component/login/login.component';
 import { OauthCallbackComponent } from './core/component/oauth-callback/oauth-callback.component';
-import { DashboardComponent } from './core/component/dashboard/dashboard.component';
 
 // Feature Components
-import { AccountIndexComponent } from './features/platform/component/account/index.component';
-import { AccountEditComponent } from './features/platform/component/account/edit.component';
-import { EditAccountDetailsComponent } from './features/platform/component/account/edit/account-details.component';
-import { EditPrincipalAccountContactComponent } from './features/platform/component/account/edit/principal-account-contact.component';
-import { EditAccountAdminUserFormComponent } from './features/platform/component/account/edit/account-admin-user.component';
-import { ContactIndexComponent } from './features/platform/component/contact/index.component';
-import { ContactEditComponent } from './features/platform/component/contact/edit.component';
-import { GroupIndexComponent } from './features/platform/component/group/index.component';
-import { GroupEditComponent } from './features/platform/component/group/edit.component';
-import { RoleIndexComponent } from './features/platform/component/role/index.component';
-import { RoleEditComponent } from './features/platform/component/role/edit.component';
-import { UserIndexComponent } from './features/platform/component/user/index.component';
-import { UserEditComponent } from './features/platform/component/user/edit.component';
+import { LoadingComponent } from './features/shared/component/loading.component';
+import { MessageComponent } from './features/shared/component/message.component';
 
 // Interceptors
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
-import { ChangeStatusDialogComponent } from './features/shared/component/change-status-dialog.component';
-import { DeleteDialogComponent } from './features/shared/component/delete-dialog.component';
-import { PhoneListComponent } from './features/platform/component/contact/phone/list.component';
-import { EmailListComponent } from './features/platform/component/contact/email/list.component';
-import { AddressListComponent } from './features/platform/component/contact/address/list.component';
-import { SearchFormComponent } from './features/shared/component/search-form.component';
-import { RolePrivilegeAssignedListComponent } from './features/platform/component/role/privilege/assigned.list.component';
-import { RolePrivilegeAssignListComponent } from './features/platform/component/role/privilege/assign.list.component';
-import { GroupRoleAssignListComponent } from './features/platform/component/group/role/assign.list.component';
-import { GroupRoleAssignedListComponent } from './features/platform/component/group/role/assigned.list.component';
-import { SharedUserAssignListComponent } from './features/platform/component/shared/user/assign.list.component';
-import { SharedUserAssignedListComponent } from './features/platform/component/shared/user/assigned.list.component';
-import { MessageComponent } from './features/shared/component/message.component';
-import { LoadingComponent } from './features/shared/component/loading.component';
+import { PlatformModule } from './features/platform/platform.module';
+
+// Feature Modules
 
 @NgModule({
   declarations: [
@@ -79,31 +57,7 @@ import { LoadingComponent } from './features/shared/component/loading.component'
     LoginComponent,
     OauthCallbackComponent,
     DashboardComponent,
-    UserIndexComponent,
-    UserEditComponent,
-    AccountIndexComponent,
-    AccountEditComponent,
-    EditAccountDetailsComponent,
-    EditPrincipalAccountContactComponent,
-    EditAccountAdminUserFormComponent,
-    ContactIndexComponent,
-    ContactEditComponent,
-    GroupIndexComponent,
-    GroupEditComponent,
-    RoleIndexComponent,
-    RoleEditComponent,
-    ChangeStatusDialogComponent,
-    DeleteDialogComponent,
-    PhoneListComponent,
-    EmailListComponent,
-    AddressListComponent,
-    SearchFormComponent,
-    RolePrivilegeAssignedListComponent,
-    RolePrivilegeAssignListComponent,
-    GroupRoleAssignedListComponent,
-    GroupRoleAssignListComponent,
-    SharedUserAssignedListComponent,
-    SharedUserAssignListComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -133,7 +87,9 @@ import { LoadingComponent } from './features/shared/component/loading.component'
     MatExpansionModule,
     MatTabsModule,
     MatCheckboxModule,
-    MatSortModule
+    MatSortModule,
+
+    PlatformModule
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

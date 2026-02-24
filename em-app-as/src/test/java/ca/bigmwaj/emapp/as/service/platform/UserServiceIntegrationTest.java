@@ -6,6 +6,7 @@ import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.validator.xml.common.AbstractDtoValidatorTest;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,20 +30,14 @@ class UserServiceIntegrationTest extends AbstractDtoValidatorTest {
     @Autowired
     private UserDao userDao;
 
-    private UserDto validDto;
-
     @BeforeEach
     void setUp() {
-        // Clean up any existing test data
-        //userDao.deleteAll();
 
-        // Create a test user DTO with required fields but without child contact points
-        // to avoid cascade issues in tests
-        validDto = TestUserDtoBuilder.builderWithAllDefaults().build();
-
-        validDto.setUsername("testuser@example.com");
-        validDto.setPassword("TestPassword123!");
     }
 
+    @Test
+    void test_CreateUser() {
+
+    }
 
 }

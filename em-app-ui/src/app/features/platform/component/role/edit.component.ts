@@ -147,7 +147,7 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   }
 
   protected override getBaseRoute(): string {
-    return '/roles';
+    return '/platform/roles';
   }
 
   protected override initializeForms(): FormGroup[] {

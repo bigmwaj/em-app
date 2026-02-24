@@ -34,7 +34,7 @@ export class RoleIndexComponent extends AbstractIndexComponent<RoleDto> {
   }
 
   protected override getBaseRoute(): string {
-    return '/roles';
+    return '/platform/roles';
   }
 
   override search(): Observable<SearchResult<RoleDto>> {
