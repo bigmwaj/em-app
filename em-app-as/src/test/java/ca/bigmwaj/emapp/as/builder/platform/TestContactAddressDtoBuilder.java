@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.dto.platform.ContactAddressDto;
 import ca.bigmwaj.emapp.dm.lvo.platform.AddressTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -16,6 +16,6 @@ public class TestContactAddressDtoBuilder extends ContactAddressDto{
                 .withEditAction(EditActionLvo.CREATE)
                 .withType(AddressTypeLvo.WORK)
                 .withAddress("Test Address")
-                .withHolderType(HolderTypeLvo.ACCOUNT);
+                .withOwnerType(OwnerTypeLvo.ACCOUNT);
     }
 }

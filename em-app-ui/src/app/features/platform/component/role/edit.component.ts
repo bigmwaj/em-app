@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { RoleService } from '../../service/role.service';
-import { RoleDto, HolderTypeLvo, RolePrivilegeDto, PrivilegeDto, RoleUserDto, UserDto } from '../../api.platform.model';
+import { RoleDto, OwnerTypeLvo, RolePrivilegeDto, PrivilegeDto, RoleUserDto, UserDto } from '../../api.platform.model';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
 import { RoleHelper } from '../../helper/role.helper';
 import { RolePrivilegeAssignListComponent } from './privilege/assign.list.component';
@@ -23,7 +23,7 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   RoleHelper = RoleHelper;
 
   // Enums for dropdowns
-  HolderTypeLvo = HolderTypeLvo;
+  OwnerTypeLvo = OwnerTypeLvo;
 
   @ViewChild(RolePrivilegeAssignedListComponent)
   private assignedPrivilegesTable!: RolePrivilegeAssignedListComponent;
@@ -155,7 +155,7 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
       id: [this.dto?.id],
       name: [this.dto?.name, [Validators.required, Validators.maxLength(32)]],
       description: [this.dto?.description, Validators.maxLength(256)],
-      holderType: [this.dto?.holderType, Validators.required]
+      ownerType: [this.dto?.ownerType, Validators.required]
     });
     this.bindFormEvents();
     return [this.mainForm];
@@ -169,7 +169,7 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
       id: formValue.id,
       name: formValue.name,
       description: formValue.description,
-      holderType: formValue.holderType,
+      ownerType: formValue.ownerType,
       rolePrivileges: this.assignedPrivilegesTable.data,
       roleUsers: this.assignedUsersTable.data
     };

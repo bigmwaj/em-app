@@ -15,7 +15,7 @@ import { RoleHelper } from '../../helper/role.helper';
   standalone: false
 })
 export class RoleIndexComponent extends AbstractIndexComponent<RoleDto> {
-  displayedColumns: string[] = ['name', 'description', 'holderType', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'ownerType', 'actions'];
 
   RoleHelper = RoleHelper;
 

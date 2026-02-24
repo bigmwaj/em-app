@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.dm.dto.AbstractBaseDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ public class AbstractContactPointDto extends AbstractBaseDto {
 
     private Long contactId;
 
-    private HolderTypeLvo holderType;
+    private OwnerTypeLvo ownerType;
 
     private Boolean defaultContactPoint;
 

@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,8 +28,8 @@ public class GroupEntity extends AbstractChangeTrackingEntity {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
-    private HolderTypeLvo holderType;
+    @Column(name = "OWNER_TYPE", nullable = false, updatable = false)
+    private OwnerTypeLvo ownerType;
 
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupRoleEntity> groupRoles = new ArrayList<>();

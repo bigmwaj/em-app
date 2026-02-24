@@ -13,7 +13,7 @@ import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.GroupService;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,13 +76,13 @@ public class GroupController extends AbstractBaseAPI {
                     supportedFields = {
                             @WhereClauseSupportedField(name = "name", type = String.class),
                             @WhereClauseSupportedField(name = "description", type = String.class),
-                            @WhereClauseSupportedField(name = "holderType", type = HolderTypeLvo.class),
+                            @WhereClauseSupportedField(name = "ownerType", type = OwnerTypeLvo.class),
                     })
             @Parameter(description = "Filter results based on the following supported filter fields." +
                     "<ul>" +
                     "<li><b>name</b></li>" +
                     "<li><b>description</b></li>" +
-                    "<li><b>holderType</b></li>" +
+                    "<li><b>ownerType</b></li>" +
                     "</ul>" +
                     Constants.FILTER_DOC)
             @RequestParam(value = "filters", required = false)
@@ -92,7 +92,7 @@ public class GroupController extends AbstractBaseAPI {
                     supportedFields = {
                             @SortByClauseSupportedField(name = "name"),
                             @SortByClauseSupportedField(name = "description"),
-                            @SortByClauseSupportedField(name = "holderType"),
+                            @SortByClauseSupportedField(name = "ownerType"),
                     })
             @RequestParam(value = "sortBy", required = false)
             List<SortByClause> sortByClauses

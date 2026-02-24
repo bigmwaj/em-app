@@ -12,29 +12,27 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * Validates that the holder type is valid for the given DTO and its children.
- * This rule checks if the holder type is valid for the given DTO.
+ * Validates that the owner type is valid for the given DTO and its children.
+ * This rule checks if the owner type is valid for the given DTO.
  * <ul>
- * <li>When the DTO is a ContactDto, it checks if the holder type is valid for the emails, phones and addresses
+ * <li>When the DTO is a ContactDto, it checks if the owner type is valid for the emails, phones and addresses
  * associated to the contact.</li>
- * <li>When the DTO is an AccountDto, it checks if the holder type is valid for the contact associated to the account.</li>
- * <li>When the DTO is a User, it checks if the holder type is valid for the contact associated to the account.</li>
- * <li>When the DTO is </li>
- * <li>When the DTO is </li>
+ * <li>When the DTO is an AccountDto, it checks if the owner type is valid for the contact associated to the account.</li>
+ * <li>When the DTO is a UserDto, it checks if the owner type is valid for the contact associated to the user.</li>
  * </ul>
  */
-@Component("HolderTypeRule")
-public class HolderTypeRule extends AbstractRule {
+@Component("OwnerTypeRule")
+public class OwnerTypeRule extends AbstractRule {
 
     @Override
-    public boolean isValid(Object holderType, Map<String, String> parameters) {
+    public boolean isValid(Object ownerType, Map<String, String> parameters) {
         return true;
     }
 
     @Override
-    public boolean isValid(Object dto, Object holderType, Map<String, String> parameters) {
+    public boolean isValid(Object dto, Object ownerType, Map<String, String> parameters) {
         Objects.requireNonNull(dto, "DTO cannot be null");
-        if (holderType == null) {
+        if (ownerType == null) {
             return true;
         }
 
@@ -46,9 +44,9 @@ public class HolderTypeRule extends AbstractRule {
             return account.getAccountContacts().stream()
                     .map(AccountContactDto::getContact)
                     .filter(Objects::nonNull)
-                    .map(ContactDto::getHolderType)
-                    .map(Objects::nonNull)
-                    .allMatch(holderType::equals);
+                    .map(ContactDto::getOwnerType)
+                    .filter(Objects::nonNull)
+                    .allMatch(ownerType::equals);
         }
 
         if (dto instanceof ContactDto contact) {
@@ -64,9 +62,9 @@ public class HolderTypeRule extends AbstractRule {
             }
 
             return contactPoints.stream()
-                    .map(AbstractContactPointDto::getHolderType)
+                    .map(AbstractContactPointDto::getOwnerType)
                     .filter(Objects::nonNull)
-                    .allMatch(holderType::equals);
+                    .allMatch(ownerType::equals);
         }
 
         if (dto instanceof UserDto user) {
@@ -75,16 +73,16 @@ public class HolderTypeRule extends AbstractRule {
             }
 
             return Stream.of(user.getContact())
-                    .map(ContactDto::getHolderType)
+                    .map(ContactDto::getOwnerType)
                     .filter(Objects::nonNull)
-                    .allMatch(holderType::equals);
+                    .allMatch(ownerType::equals);
         }
 
-        throw new ValidationConfigurationException("HolderTypeRule is only applicable to AccountDto, UserDto and ContactDto");
+        throw new ValidationConfigurationException("OwnerTypeRule is only applicable to AccountDto, UserDto and ContactDto");
     }
 
     @Override
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
-        return "The holder type is invalid.";
+        return "The owner type is invalid.";
     }
 }

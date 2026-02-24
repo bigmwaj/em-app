@@ -6,10 +6,10 @@
         </condition>
     </field>
 
-    <field name="holderType">
+    <field name="ownerType">
         <condition expression="createAction">
             <rule type="NonNullRule"/>
-            <rule type="HolderTypeRule"/>
+            <rule type="OwnerTypeRule"/>
         </condition>
     </field>
 

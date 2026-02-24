@@ -3,7 +3,7 @@ package ca.bigmwaj.emapp.as.validator.xml.platform;
 import ca.bigmwaj.emapp.as.builder.platform.TestUserDtoBuilder;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.validator.xml.common.AbstractDtoValidatorTest;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -49,10 +49,10 @@ class UserDtoValidatorTest extends AbstractDtoValidatorTest {
     }
 
     @Test
-    void testUserDto_CreateWithInconsistentHolerType() {
-        validDto.setHolderType(HolderTypeLvo.CORPORATE);
-        validDto.getContact().setHolderType(HolderTypeLvo.ACCOUNT);
-        assertViolationsOnField(validDto, "holderType");
+    void testUserDto_CreateWithInconsistentOwnerType() {
+        validDto.setOwnerType(OwnerTypeLvo.CORPORATE);
+        validDto.getContact().setOwnerType(OwnerTypeLvo.ACCOUNT);
+        assertViolationsOnField(validDto, "ownerType");
     }
 
     @Test

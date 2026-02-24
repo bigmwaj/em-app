@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.HolderTypeLvo;
+import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,8 +23,8 @@ public abstract class AbstractContactPointEntity extends AbstractBaseEntity {
     private ContactEntity contact;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "HOLDER_TYPE", nullable = false, updatable = false)
-    private HolderTypeLvo holderType;
+    @Column(name = "OWNER_TYPE", nullable = false, updatable = false)
+    private OwnerTypeLvo ownerType;
 
     @Column(name = "DEFAULT_CONTACT_POINT")
     private Boolean defaultContactPoint;
