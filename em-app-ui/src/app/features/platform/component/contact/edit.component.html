@@ -100,13 +100,13 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="form-field">
-              <mat-label>Holder Type</mat-label>
+              <mat-label>Owner Type</mat-label>
               <mat-select formControlName="ownerType">
                 <mat-option [value]="OwnerTypeLvo.ACCOUNT">Account</mat-option>
                 <mat-option [value]="OwnerTypeLvo.CORPORATE">Corporate</mat-option>
               </mat-select>
               <mat-error *ngIf="mainForm.get('ownerType')?.hasError('required')">
-                Holder type is required
+                Owner type is required
               </mat-error>
             </mat-form-field>
           </div>

@@ -12,13 +12,13 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * Validates that the holder type is valid for the given DTO and its children.
- * This rule checks if the holder type is valid for the given DTO.
+ * Validates that the owner type is valid for the given DTO and its children.
+ * This rule checks if the owner type is valid for the given DTO.
  * <ul>
- * <li>When the DTO is a ContactDto, it checks if the holder type is valid for the emails, phones and addresses
+ * <li>When the DTO is a ContactDto, it checks if the owner type is valid for the emails, phones and addresses
  * associated to the contact.</li>
- * <li>When the DTO is an AccountDto, it checks if the holder type is valid for the contact associated to the account.</li>
- * <li>When the DTO is a User, it checks if the holder type is valid for the contact associated to the account.</li>
+ * <li>When the DTO is an AccountDto, it checks if the owner type is valid for the contact associated to the account.</li>
+ * <li>When the DTO is a User, it checks if the owner type is valid for the contact associated to the account.</li>
  * <li>When the DTO is </li>
  * <li>When the DTO is </li>
  * </ul>
@@ -85,6 +85,6 @@ public class OwnerTypeRule extends AbstractRule {
 
     @Override
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
-        return "The holder type is invalid.";
+        return "The owner type is invalid.";
     }
 }

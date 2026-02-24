@@ -121,13 +121,13 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Holder Type</mat-label>
+            <mat-label>Owner Type</mat-label>
             <mat-select formControlName="ownerType">
               <mat-option [value]="OwnerTypeLvo.ACCOUNT">ACCOUNT</mat-option>
               <mat-option [value]="OwnerTypeLvo.CORPORATE">CORPORATE</mat-option>
             </mat-select>
             @if(mainForm.get('ownerType')?.hasError('required')) {
-            <mat-error>Holder type is required</mat-error>
+            <mat-error>Owner type is required</mat-error>
             }
           </mat-form-field>
         </div>

@@ -49,7 +49,7 @@ class UserDtoValidatorTest extends AbstractDtoValidatorTest {
     }
 
     @Test
-    void testUserDto_CreateWithInconsistentHolerType() {
+    void testUserDto_CreateWithInconsistentOwnerType() {
         validDto.setOwnerType(OwnerTypeLvo.CORPORATE);
         validDto.getContact().setOwnerType(OwnerTypeLvo.ACCOUNT);
         assertViolationsOnField(validDto, "ownerType");
