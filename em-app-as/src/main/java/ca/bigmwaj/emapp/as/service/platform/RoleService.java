@@ -49,12 +49,6 @@ public class RoleService extends AbstractMainService<RoleDto, RoleEntity, Short>
         return dao;
     }
 
-    public RoleDto findById(Short roleId) {
-        return dao.findById(roleId)
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
-                .orElseThrow(() -> new NoSuchElementException("Role not found with id: " + roleId));
-    }
-
     public SearchResultDto<RolePrivilegeDto> findRolePrivileges(Short roleId) {
         Objects.requireNonNull(roleId, "Role ID cannot be null for finding role privileges.");
         List<RolePrivilegeDto> result = rolePrivilegeDao.findByRoleId(roleId).stream()
@@ -71,10 +65,9 @@ public class RoleService extends AbstractMainService<RoleDto, RoleEntity, Short>
         return new SearchResultDto<>(result);
     }
 
-    public void deleteById(Short roleId) {
+    public void beforeDelete(Short roleId) {
         Objects.requireNonNull(roleId, "Role ID cannot be null for finding role privileges.");
         userRoleDao.deleteAll(userRoleDao.findByRoleId(roleId));
-        dao.deleteById(roleId);
     }
 
     public RoleDto create(RoleDto dto) {

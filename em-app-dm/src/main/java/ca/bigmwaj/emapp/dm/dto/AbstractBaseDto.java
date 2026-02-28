@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Data
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true, setterPrefix = "with")

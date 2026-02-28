@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.EmailTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.EmailTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

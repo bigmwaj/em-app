@@ -23,6 +23,8 @@ import { SharedUserAssignedListComponent } from "./component/shared/user/assigne
 import { UserEditComponent } from "./component/user/edit.component";
 import { UserIndexComponent } from "./component/user/index.component";
 import { SharedModule } from "../shared/shared.module";
+import { DeadLetterEditComponent } from "./component/dead-letter/edit.component";
+import { DeadLetterIndexComponent } from "./component/dead-letter/index.component";
 
 const routes: Routes = [
   { path: '', redirectTo: 'users', pathMatch: 'full' },
@@ -36,6 +38,8 @@ const routes: Routes = [
   { path: 'groups/edit/:mode', component: GroupEditComponent },
   { path: 'roles', component: RoleIndexComponent },
   { path: 'roles/edit/:mode', component: RoleEditComponent },
+  { path: 'dead-letters', component: DeadLetterIndexComponent },
+  { path: 'dead-letters/edit/:mode', component: DeadLetterEditComponent },
 ];
 
 @NgModule({
@@ -62,6 +66,8 @@ const routes: Routes = [
     GroupRoleAssignListComponent,
     SharedUserAssignedListComponent,
     SharedUserAssignListComponent,
+    DeadLetterEditComponent,
+    DeadLetterIndexComponent
   ],
   imports: [
     SharedModule,

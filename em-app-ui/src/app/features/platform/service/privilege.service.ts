@@ -10,7 +10,7 @@ import { PrivilegeHelper } from '../helper/privilege.helper';
   providedIn: 'root'
 })
 export class PrivilegeService {
-  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/privilege`;
+  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/privileges`;
 
   constructor(private http: HttpClient) {}
 

@@ -3,7 +3,9 @@ package ca.bigmwaj.emapp.as.service.platform;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.AbstractContactPointDto;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
+import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.entity.platform.*;
 import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import jakarta.persistence.EntityManager;
@@ -47,26 +49,22 @@ public class ContactService extends AbstractMainService<ContactDto, ContactEntit
         return dao;
     }
 
-    public ContactDto findById(Long contactId) {
-        String errorMessage = "Contact not found with id: ";
-        return dao.findById(contactId)
-                .map(this::toDtoWithChildren)
-                .orElseThrow(() -> new NoSuchElementException(errorMessage + contactId));
-    }
-
-    public void deleteById(Long contactId) {
-        dao.deleteById(contactId);
-    }
-
-    public ContactEntity createAndReturnEntity(ContactDto dto) {
+    public ContactDto create(ContactDto dto) {
         var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreate(entity, dto);
-        return dao.save(entity);
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
-    public ContactDto create(ContactDto dto) {
-        var entity = createAndReturnEntity(dto);
-        return GlobalPlatformMapper.INSTANCE.toDto(entity);
+    public ContactDto create(AccountDto owner, ContactDto dto) {
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
+        beforeCreate(entity, dto);
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+    }
+
+    public ContactDto create(UserDto owner, ContactDto dto) {
+        var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
+        beforeCreate(entity, dto);
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
     }
 
     public ContactDto update(ContactDto dto) {

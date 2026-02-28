@@ -47,6 +47,12 @@ export enum UsernameTypeLvo {
   EMAIL = 'EMAIL'
 }
 
+export enum DeadLetterStatusLvo {
+  RETRY = 'RETRY',
+  SENT = 'SENT',
+  ERROR = 'ERROR'
+}
+
 export interface AccountDto extends AbstractStatusTrackingDto<AccountStatusLvo> {
   id?: number;
   name: string;
@@ -54,6 +60,14 @@ export interface AccountDto extends AbstractStatusTrackingDto<AccountStatusLvo> 
   accountContacts?: AccountContactDto[];
   adminUsername?: string;
   adminUsernameType?: UsernameTypeLvo;
+}
+
+export interface DeadLetterDto extends AbstractStatusTrackingDto<DeadLetterStatusLvo> {
+  id: number;
+  eventName: string;
+  message: string;
+  errorMessage: string;
+  status: DeadLetterStatusLvo;
 }
 
 export interface ContactDto extends AbstractChangeTrackingDto {

@@ -2,9 +2,9 @@ package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.builder.common.TestConstant;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UsernameTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

@@ -2,7 +2,6 @@ package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.builder.common.TestConstant;
 import ca.bigmwaj.emapp.as.dto.platform.GroupUserDto;
-import ca.bigmwaj.emapp.as.dto.platform.RoleUserDto;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

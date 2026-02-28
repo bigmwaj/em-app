@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.EmailTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.EmailTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

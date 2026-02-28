@@ -10,7 +10,7 @@ import { ContactHelper } from '../helper/contact.helper';
   providedIn: 'root'
 })
 export class ContactService {
-  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/contact`;
+  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/contacts`;
 
   constructor(private http: HttpClient) {}
 

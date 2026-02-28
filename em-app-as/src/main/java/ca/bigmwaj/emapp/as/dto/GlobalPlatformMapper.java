@@ -14,6 +14,11 @@ public interface GlobalPlatformMapper {
     GlobalPlatformMapper INSTANCE = Mappers.getMapper(GlobalPlatformMapper.class);
 
     @AnyEntityToAnyDtoMapping
+    DeadLetterDto toDto(DeadLetterEntity entity);
+    @AnyDtoToAnyEntityMapping
+    DeadLetterEntity toEntity(DeadLetterDto dto);
+
+    @AnyEntityToAnyDtoMapping
     @Mapping(target = "accountContacts", ignore = true)
     @Mapping(target = "adminUsername", ignore = true)
     @Mapping(target = "adminUsernameType", ignore = true)

@@ -1,8 +1,8 @@
 package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UsernameTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

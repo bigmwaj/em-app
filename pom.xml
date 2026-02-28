@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <modelVersion>4.0.0</modelVersion>
     <groupId>ca.em-app</groupId>
     <artifactId>em-app-main</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -33,23 +34,39 @@
     </scm>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <camel.version>4.16.0</camel.version>
+        <camel.version>4.18.0</camel.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
-        <spring.boot.version>4.1.0-M1</spring.boot.version>
+        <spring.boot.version>4.1.0-M2</spring.boot.version>
         <mockito.version>5.21.0</mockito.version>
+        <tomcat.version>11.0.18</tomcat.version>
+        <logback.version>1.5.25</logback.version>
+        <assertj.version>4.0.0-M1</assertj.version>
     </properties>
 
     <modules>
         <module>em-app-dm</module>
         <module>em-app-as</module>
+        <module>em-app-ig</module>
     </modules>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot-starter</artifactId>
@@ -100,6 +117,11 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-kafka</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
             <dependency>
@@ -156,6 +178,16 @@
                 <groupId>com.openai</groupId>
                 <artifactId>openai-java</artifactId>
                 <version>4.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-activemq-starter</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-kafka-starter</artifactId>
+                <version>${camel.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

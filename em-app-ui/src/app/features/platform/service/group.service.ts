@@ -10,7 +10,7 @@ import { GroupHelper } from '../helper/group.helper';
   providedIn: 'root'
 })
 export class GroupService {
-  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/group`;
+  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/groups`;
 
   constructor(private http: HttpClient) { }
 

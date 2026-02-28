@@ -2,16 +2,16 @@ package ca.bigmwaj.emapp.dm.lvo.platform;
 
 import lombok.Getter;
 
-public enum PhoneTypeLvo {
+public enum DeadLetterStatusLvo {
 
-    MOBILE("Mobile"),
-    HOME("Home"),
-    WORK("Work");
+    RETRY("Retry"),
+    SENT("Sent"),
+    ERROR("Error");
 
     @Getter
     private final String description;
 
-    PhoneTypeLvo(String description) {
+    DeadLetterStatusLvo(String description) {
         this.description = description;
     }
 }

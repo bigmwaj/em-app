@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.api.auth;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UsernameTypeLvo;
 import lombok.Data;
 
 @Data

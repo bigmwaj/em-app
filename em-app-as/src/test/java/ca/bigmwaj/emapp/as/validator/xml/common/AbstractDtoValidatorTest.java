@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.validator.xml.common;
 
+import ca.bigmwaj.emapp.as.integration.KafkaPublisher;
 import ca.bigmwaj.emapp.as.validator.xml.ValidationConfigurationException;
 import ca.bigmwaj.emapp.dm.dto.AbstractBaseDto;
 import jakarta.validation.ValidationException;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public abstract class AbstractDtoValidatorTest {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+
+//    @MockitoBean
+    protected KafkaPublisher kafkaPublisher; // Mock KafkaPublisher to avoid actual Kafka interactions during tests
 
     @Autowired
     protected Validator validator;

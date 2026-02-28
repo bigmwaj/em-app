@@ -2,7 +2,7 @@ package ca.bigmwaj.emapp.as.validator.xml;
 
 import ca.bigmwaj.emapp.as.builder.platform.*;
 import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountStatusLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;

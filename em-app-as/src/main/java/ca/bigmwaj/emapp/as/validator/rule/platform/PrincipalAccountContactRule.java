@@ -3,7 +3,7 @@ package ca.bigmwaj.emapp.as.validator.rule.platform;
 import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
 import ca.bigmwaj.emapp.as.validator.rule.common.AbstractRule;
 import ca.bigmwaj.emapp.as.validator.xml.ValidationConfigurationException;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountContactRoleLvo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

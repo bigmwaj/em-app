@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.dto.platform.AccountContactDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountContactRoleLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

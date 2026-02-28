@@ -38,6 +38,9 @@
       <ng-container matColumnDef="username">
         <th mat-header-cell *matHeaderCellDef>Username</th>
         <td mat-cell *matCellDef="let element">
+          <button mat-button>
+            @if(element?.user?.usernameVerified) { <mat-icon class="verified-icon">check_circle</mat-icon>}
+          </button>
           {{element?.user?.username}}
         </td>
       </ng-container>

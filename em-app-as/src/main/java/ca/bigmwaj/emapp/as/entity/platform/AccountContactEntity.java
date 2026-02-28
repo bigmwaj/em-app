@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
 import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountContactRoleLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountContactRoleLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

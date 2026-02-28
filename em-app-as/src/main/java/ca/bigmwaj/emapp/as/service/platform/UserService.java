@@ -3,6 +3,7 @@ package ca.bigmwaj.emapp.as.service.platform;
 import ca.bigmwaj.emapp.as.dao.platform.ContactDao;
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
+import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser;
 import ca.bigmwaj.emapp.as.dto.security.AuthenticatedUserGrantedAuthority;
@@ -10,12 +11,12 @@ import ca.bigmwaj.emapp.as.entity.platform.AccountContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.AccountEntity;
 import ca.bigmwaj.emapp.as.entity.platform.ContactEntity;
 import ca.bigmwaj.emapp.as.entity.platform.UserEntity;
+import ca.bigmwaj.emapp.as.integration.KafkaPublisher;
 import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import ca.bigmwaj.emapp.as.service.ServiceException;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
-import org.slf4j.Logger;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UsernameTypeLvo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -37,8 +38,6 @@ import java.util.function.Function;
 @Service
 public class UserService extends AbstractMainService<UserDto, UserEntity, Short> implements AuthenticationManager {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(UserService.class);
-
     @Autowired
     private UserDao dao;
 
@@ -48,33 +47,29 @@ public class UserService extends AbstractMainService<UserDto, UserEntity, Short>
     @Autowired
     private ContactService contactService;
 
+    @Autowired
+    private KafkaPublisher kafkaPublisher;
+
     //    @Autowired
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserDto findById(Short userId) {
-        return dao.findById(userId)
-                .map(this::toDtoWithChildren)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
-    }
-
-    public void deleteById(Short userId) {
-        dao.deleteById(userId);
-    }
-
     public UserDto create(UserDto dto) {
+        ContactDto contact = contactService.create(dto, dto.getContact());
+        ContactEntity contactEntity = contactDao.getReferenceById(contact.getId());
+
         UserEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
+        beforeCreateHistEntity(entity);
         // Hash password if provided
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
-        beforeCreateHistEntity(entity);
-        ContactEntity contactEntity = contactService.createAndReturnEntity(dto.getContact());
+
         entity.setContact(contactEntity);
 
         entity = dao.save(entity);
-        dto = GlobalPlatformMapper.INSTANCE.toDto(entity);
-        dto.setContact(contactService.toDtoWithChildren(entity.getContact()));
+        dto = GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
 
+        kafkaPublisher.publish("user-created", dto);
         return dto;
     }
 

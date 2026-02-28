@@ -33,7 +33,7 @@ import java.util.List;
 
 @Tag(name = "privilege", description = "The Privilege API")
 @RestController
-@RequestMapping("/api/v1/platform/privilege")
+@RequestMapping("/api/v1/platform/privileges")
 @Validated
 public class PrivilegeController extends AbstractBaseAPI {
 

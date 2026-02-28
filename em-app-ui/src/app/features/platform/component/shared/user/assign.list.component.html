@@ -13,6 +13,9 @@
       <ng-container matColumnDef="username">
         <th mat-header-cell *matHeaderCellDef>Username</th>
         <td mat-cell *matCellDef="let element">
+          <button mat-button>
+            @if(element?.usernameVerified) { <mat-icon class="verified-icon">check_circle</mat-icon>}
+          </button>
           {{element?.username}}
         </td>
       </ng-container>
@@ -62,8 +65,8 @@
     </table>
   </mat-card-content>
   <mat-card-footer>
-    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-      (page)="handlePageEvent($event)" [length]="searchResult.searchInfos.total" [pageIndex]="searchCriteria.pageIndex"
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" (page)="handlePageEvent($event)"
+      [length]="searchResult.searchInfos.total" [pageIndex]="searchCriteria.pageIndex"
       [pageSize]="searchCriteria.pageSize" showFirstLastButtons>
     </mat-paginator>
   </mat-card-footer>

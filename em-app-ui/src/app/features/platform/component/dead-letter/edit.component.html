@@ -1,0 +1,97 @@
+<div class="main-container dead-letter-edit-container">
+  <div class="main-header">
+    <h1 class="title">
+      <mat-icon mat-card-avatar>event</mat-icon>
+      @if (isCreateMode) {
+      <span>Create Dead Letter</span>
+      }
+      @if (isEditMode) {
+      <span>Edit Dead Letter</span>
+      }
+      @if (isViewMode) {
+      <span>View Dead Letter</span>
+      }
+    </h1>
+    <div class="header-actions">
+      <button mat-raised-button (click)="onBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back
+      </button>
+
+      @if(showCancelButton){
+      <button mat-raised-button color="primary" (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+        Cancel
+      </button>
+      }
+
+      @if(showSaveButton){
+      <button mat-raised-button color="primary" (click)="onSave()" [disabled]="pageData.loading() || isInvalidForm">
+        <mat-icon>save</mat-icon>
+        Save
+      </button>
+      }
+
+      @if(showEditButton){
+      <button mat-raised-button color="primary" (click)="onEdit()" [disabled]="pageData.loading()">
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+      }
+      @if(showDeleteButton){
+      <button mat-raised-button color="warn" (click)="onDelete()" [disabled]="pageData.loading()">
+        <mat-icon>delete</mat-icon>
+        Delete
+      </button>
+      }
+    </div>
+  </div>
+
+  <app-message [pageData]="pageData"></app-message>
+
+  <app-loading [pageData]="pageData"></app-loading>
+
+  @if (!pageData.loading()) {
+  <mat-card class="form-section">
+    <mat-card-header>
+      <mat-card-title>Dead Letter Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="mainForm">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Created Date</mat-label>
+            <input matInput formControlName="createdDate" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Created By</mat-label>
+            <input matInput formControlName="createdBy" />
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Event Name</mat-label>
+            <input matInput formControlName="eventName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Status</mat-label>
+            <input matInput formControlName="status" />
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field-full">
+            <mat-label>Message</mat-label>
+            <textarea matInput formControlName="message" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field-full">
+            <mat-label>Error Message</mat-label>
+            <textarea matInput formControlName="errorMessage" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  }
+</div>

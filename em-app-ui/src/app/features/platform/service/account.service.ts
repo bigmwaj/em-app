@@ -10,7 +10,7 @@ import { AccountHelper } from '../helper/account.helper';
   providedIn: 'root'
 })
 export class AccountService {
-  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/account`;
+  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/accounts`;
 
   constructor(private http: HttpClient) {}
 

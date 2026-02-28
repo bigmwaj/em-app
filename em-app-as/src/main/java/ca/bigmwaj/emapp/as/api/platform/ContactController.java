@@ -13,7 +13,7 @@ import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.ContactService;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +31,7 @@ import java.util.List;
 
 @Tag(name = "contact", description = "The Contact API")
 @RestController
-@RequestMapping("/api/v1/platform/contact")
+@RequestMapping("/api/v1/platform/contacts")
 public class ContactController extends AbstractBaseAPI {
 
     @Autowired

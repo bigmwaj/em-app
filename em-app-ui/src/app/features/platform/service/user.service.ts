@@ -10,7 +10,7 @@ import { UserHelper } from '../helper/user.helper';
   providedIn: 'root'
 })
 export class UserService {
-  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/user`;
+  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/users`;
 
   constructor(private http: HttpClient) {}
 

@@ -1,16 +1,17 @@
-package ca.bigmwaj.emapp.dm.lvo.platform;
+package ca.bigmwaj.emapp.as.lvo.platform;
 
 import lombok.Getter;
 
-public enum AddressTypeLvo {
+public enum PhoneTypeLvo {
 
+    MOBILE("Mobile"),
     HOME("Home"),
     WORK("Work");
 
     @Getter
     private final String description;
 
-    AddressTypeLvo(String description) {
+    PhoneTypeLvo(String description) {
         this.description = description;
     }
 }

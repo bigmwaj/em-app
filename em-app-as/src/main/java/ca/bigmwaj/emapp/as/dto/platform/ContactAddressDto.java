@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.AddressTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AddressTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

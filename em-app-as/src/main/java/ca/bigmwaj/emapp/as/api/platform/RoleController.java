@@ -17,7 +17,7 @@ import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,7 +35,7 @@ import java.util.List;
 
 @Tag(name = "role", description = "The Role API")
 @RestController
-@RequestMapping("/api/v1/platform/role")
+@RequestMapping("/api/v1/platform/roles")
 @Validated
 public class RoleController extends AbstractBaseAPI {
 

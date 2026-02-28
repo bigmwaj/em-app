@@ -2,12 +2,11 @@ package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.builder.common.TestConstant;
 import ca.bigmwaj.emapp.as.dto.platform.RolePrivilegeDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-;import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true, setterPrefix = "with")

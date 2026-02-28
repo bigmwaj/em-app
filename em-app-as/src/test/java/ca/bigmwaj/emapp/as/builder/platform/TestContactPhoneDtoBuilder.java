@@ -1,8 +1,8 @@
 package ca.bigmwaj.emapp.as.builder.platform;
 
 import ca.bigmwaj.emapp.as.dto.platform.ContactPhoneDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.PhoneTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.PhoneTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

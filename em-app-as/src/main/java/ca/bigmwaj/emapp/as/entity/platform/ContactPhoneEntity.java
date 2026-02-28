@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.PhoneTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.PhoneTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

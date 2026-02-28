@@ -37,16 +37,6 @@ public class GroupService extends AbstractMainService<GroupDto, GroupEntity, Sho
     @Autowired
     private UserDao userDao;
 
-    public GroupDto findById(Short groupId) {
-        return dao.findById(groupId)
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
-                .orElseThrow(() -> new NoSuchElementException("Group not found with id: " + groupId));
-    }
-
-    public void deleteById(Short groupId) {
-        dao.deleteById(groupId);
-    }
-
     public GroupDto create(GroupDto dto) {
         try {
             GroupEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);

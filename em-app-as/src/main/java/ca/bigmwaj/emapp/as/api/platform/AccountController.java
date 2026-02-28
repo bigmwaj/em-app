@@ -16,7 +16,7 @@ import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountStatusLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,7 +33,7 @@ import java.util.List;
 
 @Tag(name = "account", description = "The Account API")
 @RestController
-@RequestMapping("/api/v1/platform/account")
+@RequestMapping("/api/v1/platform/accounts")
 public class AccountController extends AbstractBaseAPI {
 
     @Autowired

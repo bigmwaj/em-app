@@ -37,16 +37,6 @@ public class AccountService extends AbstractMainService<AccountDto, AccountEntit
         return dao;
     }
 
-    public AccountDto findById(Short accountId) {
-        return dao.findById(accountId)
-                .map(this::toDtoWithChildren)
-                .orElseThrow(() -> new NoSuchElementException("Account not found with id: " + accountId));
-    }
-
-    public void deleteById(Short accountId) {
-        dao.deleteById(accountId);
-    }
-
     public AccountDto create(AccountDto dto) {
         var entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
         beforeCreate(entity, dto);

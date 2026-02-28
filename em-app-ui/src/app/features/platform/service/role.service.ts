@@ -10,7 +10,7 @@ import { RoleHelper } from '../helper/role.helper';
   providedIn: 'root'
 })
 export class RoleService {
-  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/role`;
+  private readonly apiUrl = `${environment.apiUrl}/api/v1/platform/roles`;
 
   constructor(private http: HttpClient) {}
 

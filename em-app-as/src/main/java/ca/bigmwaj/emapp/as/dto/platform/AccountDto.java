@@ -2,8 +2,8 @@ package ca.bigmwaj.emapp.as.dto.platform;
 
 import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import ca.bigmwaj.emapp.dm.dto.AbstractStatusTrackingDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.AccountStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AccountStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UsernameTypeLvo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
-package ca.bigmwaj.emapp.dm.lvo.platform;
+package ca.bigmwaj.emapp.as.lvo.platform;
 
 import lombok.Getter;
 
-public enum UserStatusLvo {
+public enum AccountStatusLvo {
 
     ACTIVE("Active"),
     BLOCKED("Blocked");
@@ -10,7 +10,7 @@ public enum UserStatusLvo {
     @Getter
     private final String description;
 
-    UserStatusLvo(String description) {
+    AccountStatusLvo(String description) {
         this.description = description;
     }
 }

@@ -4,7 +4,7 @@ import ca.bigmwaj.emapp.as.dto.platform.ContactAddressDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactEmailDto;
 import ca.bigmwaj.emapp.as.dto.platform.ContactPhoneDto;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

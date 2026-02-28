@@ -13,7 +13,7 @@ import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.GroupService;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +31,7 @@ import java.util.List;
 
 @Tag(name = "group", description = "The Group API")
 @RestController
-@RequestMapping("/api/v1/platform/group")
+@RequestMapping("/api/v1/platform/groups")
 @Validated
 public class GroupController extends AbstractBaseAPI {
 

@@ -7,7 +7,6 @@ import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
 import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
@@ -15,8 +14,8 @@ import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.service.platform.UserService;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
-import ca.bigmwaj.emapp.dm.lvo.platform.UserStatusLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.OwnerTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.UserStatusLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,7 +26,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +33,7 @@ import java.util.List;
 
 @Tag(name = "user", description = "The User API")
 @RestController
-@RequestMapping("/api/v1/platform/user")
+@RequestMapping("/api/v1/platform/users")
 @Validated
 public class UserController extends AbstractBaseAPI {
 

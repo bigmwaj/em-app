@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: em-app-ig
+  devtools:
+    add-properties: true
+    livereload:
+      enabled: true
+      restart:
+        enabled: true
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+camel:
+  component:
+    kafka:
+      brokers: localhost:9092
+#  dataformat:
+#    jackson:
+#      module-class-names: com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+server:
+  port: 8083

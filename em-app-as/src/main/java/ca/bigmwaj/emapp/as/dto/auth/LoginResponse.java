@@ -1,7 +1,5 @@
 package ca.bigmwaj.emapp.as.dto.auth;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.EmailTypeLvo;
-import ca.bigmwaj.emapp.dm.lvo.platform.UsernameTypeLvo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

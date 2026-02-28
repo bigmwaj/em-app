@@ -1,9 +1,6 @@
 @use '../../../../../styles/variables' as *;
 @use '../../../../../styles/mixins' as *;
 
-.contacts-container {
-  // Uses global .main-container styles
-}
 
 .loading-section {
   @include loading-state;
@@ -65,7 +62,7 @@
     font-size: $font-size-base;
 
     button[mat-button] {
-      padding: 0;
+      padding: 0 3px;
       min-width: auto;
 
       mat-icon {

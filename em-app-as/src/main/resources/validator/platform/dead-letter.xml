@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <field name="id">
+        <condition expression="updateAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+    <field name="message">
+        <condition expression="createAction or updateAction">
+            <rule type="NotBlankRule"/>
+        </condition>
+    </field>
+
+    <field name="status">
+        <condition expression="createAction">
+            <rule type="NonNullRule"/>
+        </condition>
+    </field>
+
+</validation>

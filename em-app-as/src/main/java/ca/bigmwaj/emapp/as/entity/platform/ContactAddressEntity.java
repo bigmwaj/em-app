@@ -1,6 +1,6 @@
 package ca.bigmwaj.emapp.as.entity.platform;
 
-import ca.bigmwaj.emapp.dm.lvo.platform.AddressTypeLvo;
+import ca.bigmwaj.emapp.as.lvo.platform.AddressTypeLvo;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
