@@ -173,15 +173,14 @@ em-app/
 
 Comprehensive documentation available:
 
-| Document | Description | Lines |
-|----------|-------------|-------|
-| [COMPREHENSIVE_CODE_REVIEW_REPORT.md](COMPREHENSIVE_CODE_REVIEW_REPORT.md) | Full codebase quality analysis (60 issues identified) | 1,164 |
-| [AUTHENTICATION_ARCHITECTURE.md](AUTHENTICATION_ARCHITECTURE.md) | Complete authentication system documentation | 987 |
-| [IMPLEMENTATION_SUMMARY_FINAL.md](IMPLEMENTATION_SUMMARY_FINAL.md) | Implementation summary and metrics | 512 |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | System architecture overview | - |
-| [SECURITY_SUMMARY.md](SECURITY_SUMMARY.md) | Security implementations and best practices | - |
-| [OAUTH2_SETUP.md](OAUTH2_SETUP.md) | OAuth2 provider configuration guide | - |
-| [SONARQUBE_ANALYSIS_REPORT.md](SONARQUBE_ANALYSIS_REPORT.md) | Code quality analysis report | - |
+| Document | Description |
+|----------|-------------|
+| [SONARQUBE_ANALYSIS_REPORT.md](SONARQUBE_ANALYSIS_REPORT.md) | Full static analysis report: Executive Summary, Code Quality, Security, Performance, Architecture, Testing, and Recommendations |
+| [em-app-as/docs/TECHNICAL_DOCUMENTATION.md](em-app-as/docs/TECHNICAL_DOCUMENTATION.md) | app-server (Spring Boot) technical documentation: architecture, API structure, configuration, run & deploy guide |
+| [em-app-ui/TECHNICAL_DOCUMENTATION.md](em-app-ui/TECHNICAL_DOCUMENTATION.md) | app-ui (Angular) technical documentation: module architecture, state management, API integration, build & deploy guide |
+| [em-app-as/README.md](em-app-as/README.md) | app-server architecture overview |
+| [em-app-as/docs/api.md](em-app-as/docs/api.md) | API filter documentation |
+| [em-app-ui/README_UI.md](em-app-ui/README_UI.md) | Angular UI feature and component guide |
 
 ---
 
