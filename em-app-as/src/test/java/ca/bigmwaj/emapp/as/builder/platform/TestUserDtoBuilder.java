@@ -21,7 +21,7 @@ public class TestUserDtoBuilder extends UserDto {
                 .withUpdatedBy(TestConstant.TEST_USER)
                 .withCreatedDate(LocalDateTime.now())
                 .withUpdatedDate(LocalDateTime.now())
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withUsername(TestConstant.TEST_USER)
                 .withPassword(TestConstant.TEST_PASSWORD)
                 .withOwnerType(OwnerTypeLvo.CORPORATE)

@@ -8,6 +8,7 @@ import ca.bigmwaj.emapp.as.entity.platform.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,4 +47,6 @@ public interface UserDao extends AbstractDao<UserEntity, Short> {
         }
         return AbstractDao.super.getSpecialWhereClause(sc);
     }
+
+    List<UserEntity> findAllByContactIn(List<ContactEntity> contacts);
 }

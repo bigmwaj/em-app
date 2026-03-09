@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.validator.xml;
 
+import static ca.bigmwaj.emapp.as.validator.shared.ValidDto.*;
 import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
@@ -24,16 +25,23 @@ class ConditionEvaluatorTest {
     }
 
     @Test
+    void testEvaluate_ContextVariable() {
+        TestDto dto = new TestDto();
+        boolean result = evaluator.evaluate(CREATE, "#createOperation", dto);
+        assertTrue(result);
+    }
+
+    @Test
     void testEvaluate_TrueLiteral() {
         TestDto dto = new TestDto();
-        boolean result = evaluator.evaluate("true", dto);
+        boolean result = evaluator.evaluate(CREATE, "true", dto);
         assertTrue(result);
     }
 
     @Test
     void testEvaluate_FalseLiteral() {
         TestDto dto = new TestDto();
-        boolean result = evaluator.evaluate("false", dto);
+        boolean result = evaluator.evaluate(CREATE, "false", dto);
         assertFalse(result);
     }
 
@@ -42,7 +50,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setEditAction(EditActionLvo.CREATE);
 
-        boolean result = evaluator.evaluate("editAction.toString() == 'CREATE'", dto);
+        boolean result = evaluator.evaluate(CREATE, "editAction.toString() == 'CREATE'", dto);
         assertTrue(result);
     }
 
@@ -51,7 +59,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setEditAction(EditActionLvo.UPDATE);
 
-        boolean result = evaluator.evaluate("editAction == 'CREATE'", dto);
+        boolean result = evaluator.evaluate(CREATE, "editAction == 'CREATE'", dto);
         assertFalse(result);
     }
 
@@ -60,7 +68,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setEditAction(EditActionLvo.UPDATE);
 
-        boolean result = evaluator.evaluate("editAction != 'CREATE'", dto);
+        boolean result = evaluator.evaluate(CREATE, "editAction != 'CREATE'", dto);
         assertTrue(result);
     }
 
@@ -69,7 +77,7 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setEditAction(EditActionLvo.CREATE);
 
-        boolean result = evaluator.evaluate("editAction.toString() != 'CREATE'", dto);
+        boolean result = evaluator.evaluate(CREATE, "editAction.toString() != 'CREATE'", dto);
         assertFalse(result);
     }
 
@@ -78,14 +86,14 @@ class ConditionEvaluatorTest {
         TestDto dto = new TestDto();
         dto.setName(null);
 
-        boolean result = evaluator.evaluate("name == null", dto);
+        boolean result = evaluator.evaluate(CREATE, "name == null", dto);
         assertTrue(result);
     }
 
     @Test
     void testEvaluate_EmptyExpression() {
         TestDto dto = new TestDto();
-        boolean result = evaluator.evaluate("", dto);
+        boolean result = evaluator.evaluate(CREATE, "", dto);
         assertFalse(result);
     }
 
@@ -93,7 +101,7 @@ class ConditionEvaluatorTest {
     void testEvaluate_InvalidExpression() {
         TestDto dto = new TestDto();
         assertThrows(ValidationConfigurationException.class, () -> {
-            evaluator.evaluate("invalid expression", dto);
+            evaluator.evaluate(CREATE, "invalid expression", dto);
         });
     }
 }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="updateAction">
+        <condition expression="#update">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="ownerType">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="name">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
             <rule type="GroupNameUniqueRule"/>
@@ -21,7 +21,7 @@
     </field>
 
     <field name="description">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="MaxLengthRule" maxLength="128"/>
         </condition>
     </field>

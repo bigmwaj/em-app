@@ -18,7 +18,7 @@ public class ValidationNamespaceResolver {
 
     /**
      * Resolves namespace to XML file input stream.
-     * 
+     *
      * @param namespace The namespace (e.g., "platform/account")
      * @return InputStream of the XML file
      * @throws ValidationConfigurationException if file not found
@@ -34,13 +34,13 @@ public class ValidationNamespaceResolver {
             Resource resource = new ClassPathResource(resourcePath);
             if (!resource.exists()) {
                 throw new ValidationConfigurationException(
-                    "Validation configuration file not found: " + resourcePath + " for namespace: " + namespace
+                        "Validation configuration file not found: " + resourcePath + " for namespace: " + namespace
                 );
             }
             return resource.getInputStream();
         } catch (Exception e) {
             throw new ValidationConfigurationException(
-                "Failed to load validation configuration for namespace: " + namespace, e
+                    "Failed to load validation configuration for namespace: " + namespace, e
             );
         }
     }

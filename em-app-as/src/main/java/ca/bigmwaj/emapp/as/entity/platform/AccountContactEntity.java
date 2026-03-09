@@ -22,7 +22,7 @@ public class AccountContactEntity extends AbstractChangeTrackingEntity {
     @Id
     @ManyToOne
     @JoinColumn(name = "CONTACT_ID", nullable = false, updatable = false,
-    foreignKey = @ForeignKey(name = "ACCOUNT_CONTACT_FK_CONTACT"))
+            foreignKey = @ForeignKey(name = "ACCOUNT_CONTACT_FK_CONTACT"))
     private ContactEntity contact;
 
     @Enumerated(EnumType.STRING)

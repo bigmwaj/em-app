@@ -28,7 +28,7 @@ class ContactDtoValidatorTest extends AbstractDtoValidatorTest {
     ContactDto validDto;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         validDto = TestContactDtoBuilder.builderWithAllDefaults().build();
     }
 
@@ -89,7 +89,7 @@ class ContactDtoValidatorTest extends AbstractDtoValidatorTest {
     @Test
     void testContactDto_UpdateWithoutId() {
         ContactDto dto = TestContactDtoBuilder.withDefaults().build();
-        dto.setEditAction(EditActionLvo.UPDATE);
+//        dto.setEditAction(EditActionLvo.UPDATE);
         dto.setId(null); // Missing required ID for update
 
         Set<ConstraintViolation<ContactDto>> violations = validator.validate(dto);
@@ -104,7 +104,7 @@ class ContactDtoValidatorTest extends AbstractDtoValidatorTest {
     @Test
     void testContactDto_UpdateWithValidData() {
         ContactDto dto = TestContactDtoBuilder.withDefaults().build();
-        dto.setEditAction(EditActionLvo.UPDATE);
+//        dto.setEditAction(EditActionLvo.UPDATE);
         dto.setId(1L);
 
         Set<ConstraintViolation<ContactDto>> violations = validator.validate(dto);

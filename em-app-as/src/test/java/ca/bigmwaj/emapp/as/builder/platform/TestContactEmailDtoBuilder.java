@@ -13,7 +13,6 @@ public class TestContactEmailDtoBuilder extends ContactEmailDto{
 
     public static TestContactEmailDtoBuilderBuilder withDefaults(){
         return TestContactEmailDtoBuilder.builder()
-                .withEditAction(EditActionLvo.CREATE)
                 .withType(EmailTypeLvo.WORK)
                 .withEmail("test@example.com")
                 .withOwnerType(OwnerTypeLvo.ACCOUNT);

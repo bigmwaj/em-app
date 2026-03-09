@@ -24,7 +24,7 @@ public class TestGroupRoleDtoBuilder extends GroupRoleDto {
                 .withUpdatedBy(TestConstant.TEST_USER)
                 .withCreatedDate(LocalDateTime.now())
                 .withUpdatedDate(LocalDateTime.now())
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withRole(existingRole);
     }
 }

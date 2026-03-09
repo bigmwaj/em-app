@@ -13,7 +13,7 @@ public class TestContactAddressDtoBuilder extends ContactAddressDto{
 
     public static TestContactAddressDtoBuilderBuilder withDefaults(){
         return TestContactAddressDtoBuilder.builder()
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withType(AddressTypeLvo.WORK)
                 .withAddress("Test Address")
                 .withOwnerType(OwnerTypeLvo.ACCOUNT);

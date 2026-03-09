@@ -2,13 +2,13 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { AbstractStatusTrackingDto, EditActionLvo } from '../api.shared.model';
-import { PageData } from '../shared.helper';
+import { AbstractStatusTrackingDto } from '../api.shared.model';
+import { PageData } from '../base.helper';
 
 export interface ChangeStatusDialogData<S> {
   dto: AbstractStatusTrackingDto<S>;
   title?: string;
-  statuses?: S[];
+  statusOptions?: S[];
   changeStatusAction?: (dto: AbstractStatusTrackingDto<S>) => Observable<AbstractStatusTrackingDto<S>>;
 }
 
@@ -19,31 +19,34 @@ export interface ChangeStatusDialogData<S> {
   standalone: false
 })
 export class ChangeStatusDialogComponent<S> implements OnInit, OnDestroy {
+  
   title = 'Change Status';
+
   changeStatusAction?: (dto: AbstractStatusTrackingDto<S>) => Observable<AbstractStatusTrackingDto<S>>;
-  statuses?: S[];
+
+  statusOptions?: S[];
 
   pageData = new PageData();
 
   form!: FormGroup;
+
   dto!: AbstractStatusTrackingDto<S>;
+
   private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<ChangeStatusDialogComponent<S>>,
-    @Inject(MAT_DIALOG_DATA) public data: ChangeStatusDialogData<S>
-  ) {
+    @Inject(MAT_DIALOG_DATA) public data: ChangeStatusDialogData<S>) {
 
     this.dto = data.dto;
-    this.statuses = data.statuses ? data.statuses.filter(e => e !== this.dto.status) : [];
+    this.statusOptions = data.statusOptions;
     if (data.title) {
       this.title = data.title;
     }
     if (data.changeStatusAction) {
       this.changeStatusAction = data.changeStatusAction;
     }
-
   }
 
   ngOnInit(): void {
@@ -56,9 +59,8 @@ export class ChangeStatusDialogComponent<S> implements OnInit, OnDestroy {
   }
 
   private initializeForms(): void {
-    const defaultStatus = this.statuses && this.statuses.length > 0 ? this.statuses[0] : null;
     this.form = this.fb.group({
-      status: [defaultStatus, Validators.required],
+      status: [this.dto.status, Validators.required],
       statusDate: [new Date()],
       statusReason: []
     });
@@ -90,26 +92,19 @@ export class ChangeStatusDialogComponent<S> implements OnInit, OnDestroy {
         this.pageData.loading.set(false);
       }
     });
-
   }
 
   buildUserDto(): AbstractStatusTrackingDto<S> {
     const formValue = this.form.value;
-    const dto = {
-      key: this.dto.key,
-      status: formValue.status,
-      editAction: EditActionLvo.CHANGE_STATUS,
-      statusDate: formValue.statusDate,
-      statusReason: formValue.statusReason
-    } as AbstractStatusTrackingDto<S>;
+    this.dto.status = formValue.status;
 
     if (formValue.statusDate) {
-      dto.statusDate = formValue.statusDate;
+      this.dto.statusDate = formValue.statusDate;
     }
 
     if (formValue.statusReason) {
-      dto.statusReason = formValue.statusReason;
+      this.dto.statusReason = formValue.statusReason;
     }
-    return dto;
+    return this.dto;
   }
 }

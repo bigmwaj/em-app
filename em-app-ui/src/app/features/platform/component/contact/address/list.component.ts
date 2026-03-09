@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { ContactDto, ContactAddressDto } from "../../../api.platform.model";
-import { CommonDataSource } from "../../../../shared/common.datasource";
 import { Subject } from "rxjs";
+import { CommonDataSource } from "../../../../shared/common.datasource";
+import { ContactAddressDto, ContactDto } from "../../../api.platform.model";
 
 @Component({
   selector: 'app-address-list',

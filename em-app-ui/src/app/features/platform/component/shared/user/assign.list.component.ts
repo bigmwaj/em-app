@@ -1,11 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { UserDto, UserSearchCriteria } from "../../../api.platform.model";
 import { AbstractIndexComponent } from "../../../../shared/component/abstract-index.component";
-import { Observable } from "rxjs";
-import { SearchResult } from "../../../../shared/api.shared.model";
-import { Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
-import { UserService } from "../../../service/user.service";
 import { UserHelper } from "../../../helper/user.helper";
 import { ContactHelper } from "../../../helper/contact.helper";
 
@@ -21,29 +16,15 @@ export class SharedUserAssignListComponent extends AbstractIndexComponent<UserDt
 
   @Input()
   ownerId?: number;
-  
-  ContactHelper = ContactHelper;
+
+  @Input()
+  ownerType?: "group" | "role";
 
   constructor(
-    protected override router: Router,
-    protected override dialog: MatDialog,
-    protected service: UserService) {
-    super(router, dialog);
-    this.searchCriteria = UserHelper.createUserSearchCriteria() 
-  }
-
-  override search(): Observable<SearchResult<UserDto>> {
-    const sc = this.searchCriteria as UserSearchCriteria;
-    sc.assignableToRoleId = this.ownerId;
-    return this.service.getUsers(this.searchCriteria);
-  }
-
-  protected override getBaseRoute(): string {
-    throw new Error("Method not implemented.");
-  }
-
-  protected override duplicateDto(dto: UserDto): UserDto {
-    throw new Error("Method not implemented.");
+    public contactHelper: ContactHelper,
+    protected override helper: UserHelper) {
+    super(helper);
+    this.searchCriteria = this.helper.createUserSearchCriteria() 
   }
 
   override getKeyLabel(dto: UserDto): string | number {
@@ -52,5 +33,15 @@ export class SharedUserAssignListComponent extends AbstractIndexComponent<UserDt
 
   override equals(dto1: UserDto, dto2: UserDto): boolean {
     return dto1 === dto2 || (dto1.id === dto2.id);
+  }
+
+  protected override loadData(): void {
+    const sc = this.searchCriteria as UserSearchCriteria;
+    if (this.ownerType === "group") {
+      sc.assignableToGroupId = this.ownerId;
+    } else if (this.ownerType === "role") {
+      sc.assignableToRoleId = this.ownerId;
+    }
+    super.loadData();
   }
 }

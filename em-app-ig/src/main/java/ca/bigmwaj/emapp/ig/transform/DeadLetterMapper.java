@@ -40,12 +40,11 @@ public class DeadLetterMapper {
                 .withErrorMessage("Error processing message")
                 .withMessage(message)
                 .withStatus(DeadLetterStatusLvo.ERROR)
-                .withEditAction(EditActionLvo.CREATE)
                 .withEventName("user-created");
 
         Long deadLetterId = getDeadLetterId(message);
         if (deadLetterId != null) {
-            builder.withEditAction(EditActionLvo.UPDATE)
+            builder.withNew(false)
                     .withId(deadLetterId);
         }
 

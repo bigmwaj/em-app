@@ -21,4 +21,6 @@ public abstract class AbstractStatusTrackingDto<T> extends AbstractChangeTrackin
 
     private String statusReason;
 
+    private StatusChangeRequest<T> statusChangeRequest;
+
 }

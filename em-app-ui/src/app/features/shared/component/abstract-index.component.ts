@@ -1,9 +1,9 @@
 import { PageEvent } from '@angular/material/paginator';
-import { AbstractSearchCriteria, FilterOperator, SearchResult } from '../api.shared.model';
+import { AbstractBaseDto, AbstractSearchCriteria, FilterOperator, SearchResult } from '../api.shared.model';
 import { CommonDataSource } from '../common.datasource';
-import { PageData, SharedHelper } from '../shared.helper';
+import { PageData, BaseHelper } from '../base.helper';
 import { Observable, Subscription } from 'rxjs';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent, DeleteDialogData } from './delete-dialog.component';
@@ -14,13 +14,11 @@ import { DeleteDialogComponent, DeleteDialogData } from './delete-dialog.compone
   styles: [''],
   standalone: false
 })
-export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> implements OnInit, OnDestroy {
-
-  SharedHelper = SharedHelper;
+export abstract class AbstractIndexComponent<T extends AbstractBaseDto> extends CommonDataSource<T> implements OnInit, OnDestroy {
 
   searchResult: SearchResult<T> = {} as SearchResult<T>;
 
-  searchCriteria: AbstractSearchCriteria = SharedHelper.createDefaultSearchCriteria();
+  searchCriteria: AbstractSearchCriteria;
 
   searchText = '';
 
@@ -30,16 +28,18 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
 
   protected textSearchableFields: string[] = [];
 
-  abstract search(): Observable<SearchResult<T>>;
-
   protected delete?: (dto: T) => Observable<void>;
-
-  protected abstract getBaseRoute(): string;
 
   private subscriptions$: Subscription[] = [];
 
-  constructor(protected router: Router, protected dialog: MatDialog) {
+  protected dialog = inject(MatDialog);
+
+  protected router = inject(Router);
+
+  constructor(
+    protected helper: BaseHelper<T>) {
     super();
+    this.searchCriteria = this.helper.createDefaultSearchCriteria();
   }
 
   override getKeyLabel(dto: T): string | number {
@@ -66,11 +66,11 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   getFieldSortIcon(fieldName: string): string {
-    return SharedHelper.getFieldSortIcon(this.searchCriteria, this.getSortField(fieldName));
+    return this.helper.getFieldSortIcon(this.searchCriteria, this.getSortField(fieldName));
   }
 
   sortBy(fieldName: string): void {
-    SharedHelper.setSortBy(this.searchCriteria, this.getSortField(fieldName));
+    this.helper.setSortBy(this.searchCriteria, this.getSortField(fieldName));
     this.loadData();
   }
 
@@ -80,9 +80,20 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
     this.loadData();
   }
 
+  protected search?: (sc: AbstractSearchCriteria) => Observable<SearchResult<T>>;
+
   protected loadData(): void {
 
-    this.subscriptions$.push(this.search().subscribe({
+    this.pageData.loading.set(true);
+
+    let search: Observable<SearchResult<T>>;
+    if (this.search) {
+      search = this.search(this.searchCriteria);
+    } else {
+      search = this.helper.search(this.searchCriteria);
+    }
+
+    this.subscriptions$.push(search.subscribe({
       next: (searchResult) => {
         this.searchResult = searchResult;
         this.pageData.loading.set(false);
@@ -130,39 +141,43 @@ export abstract class AbstractIndexComponent<T> extends CommonDataSource<T> impl
   }
 
   createAction(): void {
-    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.CREATE], {
-      state: { mode: SharedHelper.EditMode.CREATE }
+    this.helper.getBackedDto(this.helper.EditMode.CREATE).subscribe({
+      next: (dto) => {
+        this.router.navigate([this.helper.baseRoute + '/edit', this.helper.EditMode.CREATE], {
+          state: { mode: this.helper.EditMode.CREATE, dto: dto }
+        });
+      }
     });
-  }
-
-  protected prepareEdit(dto: T): T {
-    return dto;
   }
 
   editAction(dto: T): void {
-    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.EDIT], {
-      state: { mode: SharedHelper.EditMode.EDIT, dto: this.prepareEdit(dto) }
+    this.helper.getBackedDto(this.helper.EditMode.EDIT, dto).subscribe({
+      next: (fetchedDto) => {
+        console.log('Navigating to edit page with DTO:', fetchedDto);
+        this.router.navigate([this.helper.baseRoute + '/edit', this.helper.EditMode.EDIT], {
+          state: { mode: this.helper.EditMode.EDIT, dto: fetchedDto }
+        });
+      }
     });
-  }
-
-  protected prepareView(dto: T): T {
-    return dto;
   }
 
   viewAction(dto: T): void {
-    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.VIEW], {
-      state: { mode: SharedHelper.EditMode.VIEW, dto: this.prepareView(dto) }
+    this.helper.getBackedDto(this.helper.EditMode.VIEW, dto).subscribe({
+      next: (fetchedDto) => {
+        this.router.navigate([this.helper.baseRoute + '/edit', this.helper.EditMode.VIEW], {
+          state: { mode: this.helper.EditMode.VIEW, dto: fetchedDto }
+        });
+      }
     });
   }
 
-  protected abstract duplicateDto(dto: T): T;
-
   duplicateAction(dto: T): void {
-    const duplicatedDto = this.duplicateDto(dto);
-
-    // Navigate to create mode with duplicated data
-    this.router.navigate([this.getBaseRoute() + '/edit', SharedHelper.EditMode.CREATE], {
-      state: { mode: SharedHelper.EditMode.CREATE, dto: duplicatedDto }
+    this.helper.getBackedDto(this.helper.EditMode.CREATE, dto).subscribe({
+      next: (fetchedDto) => {
+        this.router.navigate([this.helper.baseRoute + '/edit', this.helper.EditMode.CREATE], {
+          state: { mode: this.helper.EditMode.CREATE, dto: fetchedDto }
+        });
+      }
     });
   }
 

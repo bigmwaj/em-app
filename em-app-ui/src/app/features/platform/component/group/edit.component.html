@@ -148,8 +148,10 @@
                     <mat-icon>security</mat-icon>
                     Assigned Users
                   </ng-template>
-                  <app-shared-user-assigned-list [ownerId]="dto?.id" [isViewMode]="isViewMode"
-                    [searchEndPoint]="searchGroupUsersEndPoint" (onUserRemoved)="userRemoved($event)">
+                  <app-shared-user-assigned-list 
+                    [ownerId]="dto?.id" 
+                    [isViewMode]="isViewMode"
+                    [ownerType]="'group'" (onUserRemoved)="userRemoved($event)">
                   </app-shared-user-assigned-list>
                 </mat-tab>
                 <mat-tab>
@@ -157,12 +159,17 @@
                     <mat-icon>add</mat-icon>
                     Assign new Users
                   </ng-template>
-                  <app-shared-user-assign-list [ownerId]="dto?.id"></app-shared-user-assign-list>
+                  <app-shared-user-assign-list 
+                    [ownerId]="dto?.id" 
+                    [ownerType]="'group'">
+                  </app-shared-user-assign-list>
                 </mat-tab>
               </mat-tab-group>
               }@else {
-              <app-shared-user-assigned-list [ownerId]="dto?.id" [isViewMode]="isViewMode"
-                [searchEndPoint]="searchGroupUsersEndPoint">
+              <app-shared-user-assigned-list 
+                [ownerId]="dto?.id" 
+                [isViewMode]="isViewMode" 
+                [ownerType]="'group'">
               </app-shared-user-assigned-list>
               }
             </mat-tab>

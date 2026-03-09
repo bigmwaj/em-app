@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 public class TestContactPhoneDtoBuilder extends ContactPhoneDto{
     public static TestContactPhoneDtoBuilderBuilder withDefaults(){
         return TestContactPhoneDtoBuilder.builder()
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withType(PhoneTypeLvo.WORK)
                 .withPhone("4182552407")
                 .withOwnerType(OwnerTypeLvo.ACCOUNT)

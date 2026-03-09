@@ -19,7 +19,7 @@ public class TestGroupDtoBuilder extends GroupDto {
                 .withUpdatedBy(TestConstant.TEST_USER)
                 .withCreatedDate(LocalDateTime.now())
                 .withUpdatedDate(LocalDateTime.now())
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withName(TestConstant.TEST_GROUP)
                 .withOwnerType(OwnerTypeLvo.CORPORATE);
     }

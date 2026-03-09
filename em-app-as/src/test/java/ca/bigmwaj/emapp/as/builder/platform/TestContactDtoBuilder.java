@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class TestContactDtoBuilder extends ContactDto {
     public static TestContactDtoBuilderBuilder withDefaults() {
         return TestContactDtoBuilder.builder()
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withFirstName("Test First Name")
                 .withLastName("Test Last Name")
                 .withOwnerType(OwnerTypeLvo.ACCOUNT)

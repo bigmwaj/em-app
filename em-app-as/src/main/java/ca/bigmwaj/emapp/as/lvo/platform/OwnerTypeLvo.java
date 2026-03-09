@@ -5,7 +5,7 @@ import lombok.Getter;
 public enum OwnerTypeLvo {
 
     CORPORATE("Corporate"),
-    ACCOUNT("Account"),;
+    ACCOUNT("Account");
 
     @Getter
     private final String description;

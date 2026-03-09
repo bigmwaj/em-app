@@ -10,7 +10,7 @@ public class NotBlankRule extends AbstractRule {
 
     @Override
     public boolean isValid(Object value, Map<String, String> parameters) {
-        if( value == null) {
+        if (value == null) {
             return false;
         }
 

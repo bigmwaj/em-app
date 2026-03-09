@@ -1,39 +1,36 @@
 package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
-import ca.bigmwaj.emapp.as.api.shared.*;
-import ca.bigmwaj.emapp.as.dto.platform.*;
-import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
+import ca.bigmwaj.emapp.as.api.shared.Message;
+import ca.bigmwaj.emapp.as.api.shared.ResponseMessage;
 import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
+import ca.bigmwaj.emapp.as.dto.platform.GroupDto;
+import ca.bigmwaj.emapp.as.dto.platform.GroupRoleDto;
+import ca.bigmwaj.emapp.as.dto.platform.GroupSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.platform.GroupUserDto;
+import ca.bigmwaj.emapp.as.dto.shared.DataListDto;
 import ca.bigmwaj.emapp.as.service.platform.GroupService;
-import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static ca.bigmwaj.emapp.as.validator.shared.ValidDto.*;
 
-@Tag(name = "group", description = "The Group API")
+@Tag(name = "Groups API", description = "The Group API")
 @RestController
 @RequestMapping("/api/v1/platform/groups")
 @Validated
 public class GroupController extends AbstractBaseAPI {
+
+    private static final String NAMESPACE = "platform/group";
 
     private final GroupService service;
 
@@ -42,128 +39,61 @@ public class GroupController extends AbstractBaseAPI {
         this.service = service;
     }
 
-    @Operation(
-            summary = "Search Groups by criteria",
-            externalDocs = @ExternalDocumentation(
-                    description = "Full documentation",
-                    url = "https://github.com/bigmwaj/smart-cm-project/tree/main/smart-cm-project-admin/README.md"
-            ),
-            description = "Search groups with optional filters and pagination",
-            tags = {"group"}
-    )
+    @Operation(description = "Search Groups by criteria")
     @GetMapping
-    public ResponseEntity<SearchResultDto<GroupDto>> search(
-            @Positive
-            @Parameter(description = "The page size to send")
-            @RequestParam(value = "pageSize", required = false)
-            Short pageSize,
-
-            @PositiveOrZero
-            @Parameter(description = "The page index for filtering")
-            @RequestParam(value = "pageIndex", required = false)
-            Integer pageIndex,
-
-            @DefaultValue("and")
-            @Parameter(description = "Where clause join operator. Default is and")
-            @RequestParam(value = "whereClauseJoinOp", required = false)
-            WhereClauseJoinOp whereClauseJoinOp,
-
-            @Parameter(description = "Calculate the total corresponding to filters")
-            @RequestParam(value = "calculateStatTotal", required = false)
-            boolean calculateStatTotal,
-
-            @ValidWhereClausePatterns(
-                    supportedFields = {
-                            @WhereClauseSupportedField(name = "name", type = String.class),
-                            @WhereClauseSupportedField(name = "description", type = String.class),
-                            @WhereClauseSupportedField(name = "ownerType", type = OwnerTypeLvo.class),
-                    })
-            @Parameter(description = "Filter results based on the following supported filter fields." +
-                    "<ul>" +
-                    "<li><b>name</b></li>" +
-                    "<li><b>description</b></li>" +
-                    "<li><b>ownerType</b></li>" +
-                    "</ul>" +
-                    Constants.FILTER_DOC)
-            @RequestParam(value = "filters", required = false)
-            List<WhereClause> whereClauses,
-
-            @ValidSortByClausePatterns(
-                    supportedFields = {
-                            @SortByClauseSupportedField(name = "name"),
-                            @SortByClauseSupportedField(name = "description"),
-                            @SortByClauseSupportedField(name = "ownerType"),
-                    })
-            @RequestParam(value = "sortBy", required = false)
-            List<SortByClause> sortByClauses
-    ) {
-
-        var builder = DefaultSearchCriteria.builder()
-                .withCalculateStatTotal(calculateStatTotal)
-                .withPageSize(pageSize)
-                .withPageIndex(pageIndex)
-                .withWhereClauseJoinOp(whereClauseJoinOp)
-                .withWhereClauses(whereClauses)
-                .withSortByClauses(sortByClauses);
-
-        return ResponseEntity.ok(service.search(builder.build()));
+    public ResponseEntity<DataListDto<GroupDto>> search(
+            @Valid @ParameterObject GroupSearchCriteria sr) {
+        return ResponseEntity.ok(service.search(sr));
     }
 
-    @Operation(
-            summary = "Get group by ID",
-            description = "",
-            tags = {"group"}
-    )
-    @GetMapping("/id/{groupId}")
+    @Operation(description = "Get group by ID")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseMessage<GroupDto>> findById(
             @Parameter(description = "The group's ID", required = true)
-            @Positive @PathVariable Short groupId) {
-        return ResponseEntity.ok(new ResponseMessage<>(service.findById(groupId)));
+            @Positive @PathVariable Short id) {
+        return ResponseEntity.ok(new ResponseMessage<>(service.findById(id)));
     }
 
-    @Operation(
-            summary = "Get group roles by group ID",
-            description = "",
-            tags = {"group", "role"}
-    )
-    @GetMapping("/id/{groupId}/roles")
-    public ResponseEntity<SearchResultDto<GroupRoleDto>> getGroupRoles(
+    @Operation(description = "Get group roles by group ID")
+    @GetMapping("/{id}/group-roles")
+    public ResponseEntity<DataListDto<GroupRoleDto>> getGroupRoles(
             @Parameter(description = "The group's ID", required = true)
-            @Positive @PathVariable Short groupId) {
-        return ResponseEntity.ok(service.findGroupRoles(groupId));
+            @Positive @PathVariable Short id,
+            @Valid @ParameterObject DefaultSearchCriteria sc) {
+        return ResponseEntity.ok(service.findGroupRoles(id, sc));
     }
 
-    @Operation(
-            summary = "Get group users by group ID",
-            description = "",
-            tags = {"group", "user"}
-    )
-    @GetMapping("/id/{groupId}/users")
-    public ResponseEntity<SearchResultDto<GroupUserDto>> getGroupUsers(
+    @Operation(description = "Get group users by group ID")
+    @GetMapping("/{id}/group-users")
+    public ResponseEntity<DataListDto<GroupUserDto>> getGroupUsers(
             @Parameter(description = "The group's ID", required = true)
-            @Positive @PathVariable Short groupId) {
-        return ResponseEntity.ok(service.findGroupUsers(groupId));
+            @Positive @PathVariable Short id,
+            @Valid @ParameterObject DefaultSearchCriteria sc) {
+        return ResponseEntity.ok(service.findGroupUsers(id, sc));
     }
 
+    @Operation(description = "Create a new group")
     @PostMapping
     public ResponseEntity<ResponseMessage<GroupDto>> create(
             @Parameter(description = "The group's payload", required = true)
-            @RequestBody @Valid GroupDto dto) {
+            @RequestBody @ValidDto(value = NAMESPACE, operation = CREATE) GroupDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.create(dto)));
     }
 
+    @Operation(description = "Update an existing group")
     @PatchMapping
     public ResponseEntity<ResponseMessage<GroupDto>> update(
             @Parameter(description = "The group's payload", required = true)
-            @RequestBody @Valid GroupDto dto) {
+            @RequestBody @ValidDto(value = NAMESPACE, operation = UPDATE) GroupDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 
-    @DeleteMapping("/{groupId}")
+    @Operation(description = "Delete a group by ID")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Message> delete(
             @Parameter(description = "The group's ID", required = true)
-            @Positive @PathVariable Short groupId) {
-        service.deleteById(groupId);
+            @ParameterObject @ValidDto(value = NAMESPACE, operation = DELETE) GroupDto dto) {
+        service.deleteById(dto.getId());
         return ResponseEntity.ok(_success("Group successfully deleted."));
     }
 }

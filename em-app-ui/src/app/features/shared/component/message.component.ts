@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PageData } from '../shared.helper';
+import { PageData } from '../base.helper';
 
 @Component({
   selector: 'app-message',

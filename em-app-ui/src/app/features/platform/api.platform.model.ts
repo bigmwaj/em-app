@@ -172,24 +172,29 @@ export interface RoleDto extends AbstractChangeTrackingDto {
 export interface GroupRoleDto extends AbstractChangeTrackingDto {
   groupId?: number;
   role?: RoleDto;
+  checked?: boolean; // for assign list to indicate if the role is already assigned to the group
 }
 
 export interface UserAssignableDto extends AbstractChangeTrackingDto{
   user?: UserDto;
+  checked?: boolean; // for assign list to indicate if the user is already assigned to the role
 }
 
 export interface GroupUserDto extends UserAssignableDto {
   groupId?: number;
+  checked?: boolean; // for assign list to indicate if the user is already assigned to the group
 }
 
 export interface RolePrivilegeDto extends AbstractChangeTrackingDto {
   roleId?: number;
   privilege?: PrivilegeDto;
+  checked?: boolean; // for assign list to indicate if the privilege is already assigned to the role
 }
 
 export interface UserRoleDto extends AbstractChangeTrackingDto {
   userId?: number;
   role?: RoleDto;
+  checked?: boolean; // for assign list to indicate if the user is already assigned to the role
 }
 
 export interface RoleUserDto extends UserAssignableDto {

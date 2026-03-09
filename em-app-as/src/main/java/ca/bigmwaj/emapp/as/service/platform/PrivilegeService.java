@@ -18,8 +18,12 @@ import java.util.function.Predicate;
 @Service
 public class PrivilegeService extends AbstractMainService<PrivilegeDto, PrivilegeEntity, Short> {
 
+    private final PrivilegeDao dao;
+
     @Autowired
-    private PrivilegeDao dao;
+    public PrivilegeService(PrivilegeDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     protected Function<PrivilegeEntity, PrivilegeDto> getEntityToDtoMapper() {
@@ -31,7 +35,7 @@ public class PrivilegeService extends AbstractMainService<PrivilegeDto, Privileg
         return dao;
     }
 
-    public long syncPrivileges(){
+    public long syncPrivileges() {
         var existing = dao.findAll().stream().map(PrivilegeEntity::getName).toList();
         Predicate<String> isExisting = existing::contains;
         var entities = Arrays.stream(PrivilegeLvo.values())

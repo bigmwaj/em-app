@@ -47,7 +47,8 @@ class UserServiceIntegrationTest extends AbstractDtoValidatorTest {
     private RoleDto existingAccountRole;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
+        super.setUp();
 
         existingRole = TestRoleDtoBuilder.withDefaults().build();
         existingAccountRole = TestRoleDtoBuilder.withDefaults()
@@ -76,10 +77,10 @@ class UserServiceIntegrationTest extends AbstractDtoValidatorTest {
         dto.setOwnerType(OwnerTypeLvo.ACCOUNT); // Inconsistent with contact's owner type
         assertViolationsOnField(dto, "ownerType");
 
-        dto.getUserRoles().get(0).setRole(existingAccountRole);
+        dto.getUserRoles().getFirst().setRole(existingAccountRole);
         assertViolationsOnField(dto, "ownerType");
 
-        dto.getUserRoles().get(0).setRole(existingRole); // Fix role to be consistent with user owner type
+        dto.getUserRoles().getFirst().setRole(existingRole); // Fix role to be consistent with user owner type
 
         dto.getContact().setOwnerType(OwnerTypeLvo.ACCOUNT);
         assertViolationsOnField(dto, "ownerType");
@@ -93,7 +94,7 @@ class UserServiceIntegrationTest extends AbstractDtoValidatorTest {
     @Test
     void testUserDto_UpdateWithoutId() {
         UserDto dto = TestUserDtoBuilder.withDefaults().build();
-        dto.setEditAction(EditActionLvo.UPDATE);
+        dto.setNew(false);
         dto.setId(null); // Missing required ID for update
 
         Set<ConstraintViolation<UserDto>> violations = validator.validate(dto);
@@ -108,7 +109,7 @@ class UserServiceIntegrationTest extends AbstractDtoValidatorTest {
     @Test
     void testUserDto_UpdateWithValidData() {
         UserDto dto = TestUserDtoBuilder.withDefaults().build();
-        dto.setEditAction(EditActionLvo.UPDATE);
+        dto.setNew(false);
         dto.setId((short) 1);
 
         Set<ConstraintViolation<UserDto>> violations = validator.validate(dto);

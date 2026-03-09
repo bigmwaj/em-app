@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = SortByClausePatternsValidator.class)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidSortByClausePatterns {
     String message() default "Invalid request!";
@@ -18,6 +18,6 @@ public @interface ValidSortByClausePatterns {
 
     Class<? extends Payload>[] payload() default {};
 
-    SortByClauseSupportedField[] supportedFields() default {};
+    SupportedField[] supportedFields() default {};
 }
 

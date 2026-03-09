@@ -12,7 +12,7 @@ public class TestAccountContactDtoBuilder extends AccountContactDto{
 
     public static TestAccountContactDtoBuilderBuilder withDefaults() {
         return TestAccountContactDtoBuilder.builder()
-                .withEditAction(EditActionLvo.CREATE)
+//                .withEditAction(EditActionLvo.CREATE)
                 .withAccountId((short) 1)
                 .withRole(AccountContactRoleLvo.PRINCIPAL);
     }

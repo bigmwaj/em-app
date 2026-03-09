@@ -4,6 +4,7 @@ import ca.bigmwaj.emapp.as.api.auth.security.JwtTokenProvider;
 import ca.bigmwaj.emapp.as.dto.auth.ErrorResponse;
 import ca.bigmwaj.emapp.as.dto.auth.LoginRequest;
 import ca.bigmwaj.emapp.as.dto.auth.LoginResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import java.util.Map;
  * REST controller for authentication operations.
  * Handles both OAuth2 and username/password authentication.
  */
+@Tag(name = "Auth API", description = "The Account API")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {

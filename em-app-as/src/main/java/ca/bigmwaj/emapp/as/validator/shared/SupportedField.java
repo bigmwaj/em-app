@@ -10,10 +10,12 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = SortByClausePatternsValidator.class)
 @Target({ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SortByClauseSupportedField {
+public @interface SupportedField {
     String name();
 
     String rootEntityName() default "";
 
     String entityFieldName() default "";
+
+    Class<?> type() default String.class;
 }

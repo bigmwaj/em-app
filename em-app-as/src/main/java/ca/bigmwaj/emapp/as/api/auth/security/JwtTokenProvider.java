@@ -33,38 +33,35 @@ public class JwtTokenProvider {
     /**
      * Generates a JWT token from an Authentication object.
      * Supports both OAuth2 and username/password authentication.
-     * 
+     *
      * @param authentication the authentication object
      * @return JWT token string
      */
     public String generateToken(Authentication authentication) {
         var now = new Date();
         var expiryDate = new Date(now.getTime() + jwtExpirationMs);
-        
+
         String subject;
         String name = null;
         String email = null;
         String provider = "local";
-        
+
         // Handle OAuth2 authentication
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            var auth = (OAuth2AuthenticationToken) authentication;
+        if (authentication instanceof OAuth2AuthenticationToken auth) {
             var userPrincipal = (OAuth2User) authentication.getPrincipal();
-            
+
             email = userPrincipal.getAttribute("email");
             name = userPrincipal.getAttribute("name");
             provider = auth.getAuthorizedClientRegistrationId();
             subject = email != null ? email : userPrincipal.getName();
-        } 
+        }
         // Handle username/password authentication
         else {
             var principal = authentication.getPrincipal();
-            if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
+            if (principal instanceof UserDetails userDetails) {
                 subject = userDetails.getUsername();
                 // Try to extract additional info if available
-                if (userDetails instanceof ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser) {
-                    var authUser = (ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser) userDetails;
+                if (userDetails instanceof ca.bigmwaj.emapp.as.dto.security.AuthenticatedUser authUser) {
                     var userDto = authUser.getUserInfo();
                     if (userDto != null) {
                         email = userDto.getUsername(); // Username is typically email
@@ -89,13 +86,13 @@ public class JwtTokenProvider {
                 .signWith(getSigningKey())
                 .compact();
     }
-    
+
     /**
      * Generates a JWT token for a specific username (for username/password login).
-     * 
+     *
      * @param username the username
-     * @param email the user's email
-     * @param name the user's full name
+     * @param email    the user's email
+     * @param name     the user's full name
      * @return JWT token string
      */
     public String generateTokenForUser(String username, String email, String name) {
@@ -127,19 +124,19 @@ public class JwtTokenProvider {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        
+
         // Try to get provider claim (new format)
         Object provider = claims.get("provider");
         if (provider != null) {
             return provider.toString();
         }
-        
+
         // Fallback to old format for backward compatibility
         Object registrationId = claims.get("authorizedClientRegistrationId");
         if (registrationId != null) {
             return registrationId.toString();
         }
-        
+
         return "local"; // Default for username/password auth
     }
 
@@ -155,10 +152,10 @@ public class JwtTokenProvider {
         }
         return false;
     }
-    
+
     /**
      * Gets the JWT expiration time in milliseconds.
-     * 
+     *
      * @return expiration time in milliseconds
      */
     public long getExpirationMs() {

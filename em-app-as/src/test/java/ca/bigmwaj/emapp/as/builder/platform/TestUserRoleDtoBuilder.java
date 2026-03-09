@@ -24,7 +24,6 @@ public class TestUserRoleDtoBuilder extends UserRoleDto {
                 .withUpdatedBy(TestConstant.TEST_USER)
                 .withCreatedDate(LocalDateTime.now())
                 .withUpdatedDate(LocalDateTime.now())
-                .withEditAction(EditActionLvo.CREATE)
                 .withRole(existingRole);
     }
 }

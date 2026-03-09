@@ -3,13 +3,14 @@ export enum WhereClauseJoinOp {
   OR = 'OR'
 }
 
+/*
 export enum EditActionLvo {
   NONE = 'NONE',
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
   CHANGE_STATUS = 'CHANGE_STATUS'
-}
+}*/
 
 export enum FilterOperator {
   EQ = 'eq',
@@ -32,7 +33,8 @@ export enum SortType {
 // Base DTOs
 export interface AbstractBaseDto {
   key?: any;
-  editAction?: EditActionLvo;
+  retired?: boolean;
+  New?: boolean;
 }
 
 export interface AbstractChangeTrackingDto extends AbstractBaseDto {
@@ -68,6 +70,7 @@ export interface AbstractSearchCriteria {
   pageSize?: number;
   pageIndex?: number;
   calculateStatTotal?: boolean;
+  variables?: { [key: string]: any };
 }
 
 export interface DefaultSearchCriteria extends AbstractSearchCriteria {

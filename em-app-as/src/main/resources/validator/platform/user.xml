@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="updateAction">
+        <condition expression="#update">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="ownerType">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
             <rule type="OwnerTypeRule"/>
         </condition>
     </field>
 
     <field name="username">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
             <rule type="UniqueUsernameRule"/>
@@ -22,26 +22,26 @@
     </field>
 
     <field name="password">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
     <field name="usernameType">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="status">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="contact" type="dto">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
         </condition>
         <validationConfig ref="platform/contact"/>

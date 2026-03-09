@@ -11,7 +11,6 @@ public class TestPrivilegeDtoBuilder extends PrivilegeDto {
 
     public static TestPrivilegeDtoBuilder.TestPrivilegeDtoBuilderBuilder withDefaults() {
         return TestPrivilegeDtoBuilder.builder()
-                .withEditAction(EditActionLvo.CREATE)
                 .withName("DEFAULT_TEST_PRIVILEGE")
                 .withDescription("Default test privilege");
     }
@@ -21,7 +20,7 @@ public class TestPrivilegeDtoBuilder extends PrivilegeDto {
      */
     public static TestPrivilegeDtoBuilder.TestPrivilegeDtoBuilderBuilder PERMANENT_PRIVILEGE() {
         return TestPrivilegeDtoBuilder.builder()
-                .withEditAction(EditActionLvo.NONE)
+//                .withEditAction(EditActionLvo.NONE)
                 .withName("TEST_PERMANENT_PRIVILEGE")
                 .withId((short)1)
                 .withDescription("Default test privilege");

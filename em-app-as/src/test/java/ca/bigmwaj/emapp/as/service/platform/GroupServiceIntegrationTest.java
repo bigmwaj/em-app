@@ -46,7 +46,8 @@ class GroupServiceIntegrationTest extends AbstractDtoValidatorTest {
     UserDto existingUser;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
+        super.setUp();
         existingRole = TestRoleDtoBuilder.withDefaults().build();
         existingUser = TestUserDtoBuilder.builderWithAllDefaults().build();
 
@@ -73,10 +74,10 @@ class GroupServiceIntegrationTest extends AbstractDtoValidatorTest {
         assertNoViolations(groupDto);
 
         // When the user is missing from any GroupUserDto, validation should fail with a violation on the "user" field
-        groupDto.getGroupUsers().get(0).setUser(null);
+        groupDto.getGroupUsers().getFirst().setUser(null);
         assertViolationsOnField(groupDto, "user", "The field 'user' cannot be null.");
 
-        groupDto.getGroupUsers().get(0).setUser(existingUser); // reset to valid state for next test
+        groupDto.getGroupUsers().getFirst().setUser(existingUser); // reset to valid state for next test
 
         // When the user ID in any GroupUserDto is null,
         // validation should fail with a violation on the "id"
@@ -93,10 +94,10 @@ class GroupServiceIntegrationTest extends AbstractDtoValidatorTest {
         existingUser.setId(existingUserId); // reset to valid state for next test
 
         // When the role is missing from any GroupRoleDto, validation should fail with a violation
-        groupDto.getGroupRoles().get(0).setRole(null);
+        groupDto.getGroupRoles().getFirst().setRole(null);
         assertViolationsOnField(groupDto, "role", "The field 'role' cannot be null.");
 
-        groupDto.getGroupRoles().get(0).setRole(existingRole); // reset to valid state for next test
+        groupDto.getGroupRoles().getFirst().setRole(existingRole); // reset to valid state for next test
 
         // When the role ID in GroupRoleDto is null,
         // validation should fail with a violation on the "id"
@@ -157,7 +158,7 @@ class GroupServiceIntegrationTest extends AbstractDtoValidatorTest {
         GroupDto existingGroup = buildGroupDto(existingRole, existingUser);
         existingGroup = service.create(existingGroup);
 
-        existingGroup.setEditAction(EditActionLvo.UPDATE);
+        existingGroup.setNew(false);
         assertNoViolations(existingGroup);
 
         existingGroup.setDescription(existingGroup.getDescription() + "Updated");

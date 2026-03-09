@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../../service/user.service';
 import { UserDto, UserStatusLvo } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
-import { Observable } from 'rxjs';
 import { AbstractIndexWithStatusComponent } from '../../../shared/component/abstract-index-with-status.component';
 import { UserHelper } from '../../helper/user.helper';
 import { ContactHelper } from '../../helper/contact.helper';
@@ -23,28 +19,13 @@ export class UserIndexComponent extends AbstractIndexWithStatusComponent<UserSta
       ['status', 'status']
     ]);
 
-  UserHelper = UserHelper;
-  ContactHelper = ContactHelper;
-
   constructor(
-    protected override router: Router,
-    private service: UserService,
-    protected override dialog: MatDialog
-  ) {
-    super(router, dialog);
+    public contactHelper: ContactHelper,
+    protected override helper: UserHelper,
+    private service: UserService ) {
+
+    super(helper);
     this.delete = (dto) => this.service.deleteUser(dto);
-    this.changeStatus = (dto) => this.service.updateUser(dto as UserDto);
-  }
-
-  protected override duplicateDto(dto: UserDto): UserDto {
-    return UserHelper.buildFormData(dto);
-  }
-
-  protected override getBaseRoute(): string {
-    return '/platform/users';
-  }
-
-  override search(): Observable<SearchResult<UserDto>> {
-    return this.service.getUsers(this.searchCriteria);
+    this.changeStatus = (dto) => this.service.changeUserStatus(dto as UserDto);
   }
 }

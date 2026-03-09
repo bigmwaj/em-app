@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../service/user.service';
 import {
   UserDto,
@@ -13,11 +11,9 @@ import {
   UsernameTypeLvo,
   ContactDto,
 } from '../../api.platform.model';
-import { SharedHelper } from '../../../shared/shared.helper';
 import { AbstractEditWithStatusComponent } from '../../../shared/component/abstract-edit-with-status.component';
 import { UserHelper } from '../../helper/user.helper';
 import { ContactHelper } from '../../helper/contact.helper';
-import { takeUntil } from 'rxjs';
 import { COUNTRIES } from '../../constants/country.constants';
 
 @Component({
@@ -28,14 +24,12 @@ import { COUNTRIES } from '../../constants/country.constants';
 })
 export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, UserStatusLvo> {
 
-  UserHelper = UserHelper;
   contactForm!: FormGroup;
   defaultEmailForm!: FormGroup;
   defaultPhoneForm!: FormGroup;
   defaultAddressForm!: FormGroup;
 
   // Enums for dropdowns
-  UserEditMode = SharedHelper.EditMode;
   UserStatusLvo = UserStatusLvo;
   UsernameTypeLvo = UsernameTypeLvo;
   OwnerTypeLvo = OwnerTypeLvo;
@@ -47,22 +41,14 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
   readonly countries = COUNTRIES;
 
   constructor(
-    protected override fb: FormBuilder,
-    protected override router: Router,
-    protected override route: ActivatedRoute,
-    protected override dialog: MatDialog,
-    private service: UserService
-  ) {
-    super(fb, router, route, dialog);
+    public contactHelper: ContactHelper,
+    protected override helper: UserHelper,
+    private service: UserService  ) {
+    super(helper);
     this.delete = (dto) => this.service.deleteUser(dto);
     this.changeStatus = (dto) => this.service.updateUser(dto as UserDto);
     this.create = (dto) => this.service.createUser(dto);
     this.update = (dto) => this.service.updateUser(dto);
-    this.buildFormData = (dto) => UserHelper.buildFormData(dto);
-  }
-
-  protected override getBaseRoute(): string {
-    return '/platform/users';
   }
 
   protected override initializeForms(): FormGroup[] {
@@ -88,21 +74,21 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
       birthDate: [contact?.birthDate],
     });
 
-    const defaultEmail = ContactHelper.getDefaultContactEmail(contact);
+    const defaultEmail = this.contactHelper.getDefaultContactEmail(contact);
     this.defaultEmailForm = this.fb.group({
       id: [defaultEmail?.id],
       email: [defaultEmail?.email],
       type: [defaultEmail?.type || EmailTypeLvo.WORK]
     });
 
-    const defaultPhone = ContactHelper.getDefaultContactPhone(contact);
+    const defaultPhone = this.contactHelper.getDefaultContactPhone(contact);
     this.defaultPhoneForm = this.fb.group({
       id: [defaultPhone?.id],
       phone: [defaultPhone?.phone],
       type: [defaultPhone?.type || PhoneTypeLvo.WORK],
     });
 
-    const defaultAddress = ContactHelper.getDefaultContactAddress(contact);
+    const defaultAddress = this.contactHelper.getDefaultContactAddress(contact);
     this.defaultAddressForm = this.fb.group({
       id: [defaultAddress?.id],
       address: [defaultAddress?.address],
@@ -138,7 +124,6 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
     const defaultAddressFormValue = this.defaultAddressForm.value;
 
     const userDto: UserDto = {
-      editAction: mainFormValue.editAction,
       id: mainFormValue.id,
       username: mainFormValue.username,
       usernameType: mainFormValue.usernameType,
@@ -149,7 +134,6 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
       ownerType: mainFormValue.ownerType,
 
       contact: {
-        editAction: contactFormValue.editAction,
         id: contactFormValue.id,
         firstName: contactFormValue.firstName,
         lastName: contactFormValue.lastName,
@@ -157,7 +141,6 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
         ownerType: mainFormValue.ownerType,
 
         emails: [{
-          editAction: defaultEmailFormValue.editAction,
           id: defaultEmailFormValue.id,
           email: defaultEmailFormValue.email,
           type: defaultEmailFormValue.type,
@@ -166,7 +149,6 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
         }],
 
         phones: [{
-          editAction: defaultPhoneFormValue.editAction,
           id: defaultPhoneFormValue.id,
           phone: defaultPhoneFormValue.phone,
           type: defaultPhoneFormValue.type,
@@ -175,7 +157,6 @@ export class UserEditComponent extends AbstractEditWithStatusComponent<UserDto, 
         }],
 
         addresses: [{
-          editAction: defaultAddressFormValue.editAction,
           id: defaultAddressFormValue.id,
           address: defaultAddressFormValue.address,
           type: defaultAddressFormValue.type,

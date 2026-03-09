@@ -16,7 +16,7 @@ public class RoleExistsRule extends AbstractRule {
 
     @Override
     public boolean isValid(Object value, Map<String, String> parameters) {
-        if( value == null ){
+        if (value == null) {
             return true; // Let @NotNull handle this
         }
         try {

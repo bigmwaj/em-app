@@ -2,9 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { AccountDto, AccountSearchCriteria } from '../api.platform.model';
+import { AccountDto } from '../api.platform.model';
 import { SearchResult } from '../../shared/api.shared.model';
-import { AccountHelper } from '../helper/account.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +13,7 @@ export class AccountService {
 
   constructor(private http: HttpClient) {}
 
-  getAccounts(searchCriteria?: AccountSearchCriteria): Observable<SearchResult<AccountDto>> {
-    let params = new HttpParams();
-
-    if (searchCriteria) {
-      params = AccountHelper.mapAccountSearchCriteriaToHttpParams(searchCriteria);
-    }
-
+  getAccounts(params?: HttpParams): Observable<SearchResult<AccountDto>> {
     return this.http.get<SearchResult<AccountDto>>(this.apiUrl, { params });
   }
 
@@ -38,6 +31,10 @@ export class AccountService {
 
   deleteAccount(account: AccountDto): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${account.id}`);
+  }
+
+  changeAccountStatus(account: AccountDto): Observable<AccountDto> {
+    return this.http.post<AccountDto>(`${this.apiUrl}/${account.id}/change-status/${account.status}`, account);
   }
 
 }

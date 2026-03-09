@@ -1,9 +1,9 @@
 package ca.bigmwaj.emapp.as.api.shared.search;
 
 import ca.bigmwaj.emapp.as.converter.shared.ClausePatternsConversionException;
-import ca.bigmwaj.emapp.as.shared.MessageConstants;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
+import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
+import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

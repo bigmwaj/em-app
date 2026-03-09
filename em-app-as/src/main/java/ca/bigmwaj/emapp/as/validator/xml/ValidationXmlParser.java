@@ -28,10 +28,10 @@ public class ValidationXmlParser {
     @Autowired
     private ValidationNamespaceResolver namespaceResolver;
 
-    public ValidationConfig getValidationConfig(String namespace) {
+    public ValidationConfig getValidationConfig(String currentPath, String namespace) {
         try {
             var xmlStream = namespaceResolver.resolveNamespace(namespace);
-            return parse(xmlStream);
+            return parse(currentPath, xmlStream);
         } catch (Exception e) {
             logger.error("Error loading validation configuration for namespace: {}", namespace, e);
             throw new ValidationConfigurationException("Failed to load validation configuration", e);
@@ -45,7 +45,7 @@ public class ValidationXmlParser {
      * @return ValidationConfig object
      * @throws ValidationConfigurationException if parsing fails
      */
-    public ValidationConfig parse(InputStream inputStream) {
+    public ValidationConfig parse(String currentPath, InputStream inputStream) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -64,30 +64,37 @@ public class ValidationXmlParser {
                 throw new ValidationConfigurationException("Root element must be 'validation'");
             }
 
-            return parseValidator(root);
+            return parseValidator(currentPath, root);
         } catch (Exception e) {
             throw new ValidationConfigurationException("Failed to parse validation XML", e);
         }
     }
 
-    private ValidationConfig parseValidator(Element configElement) {
+    private ValidationConfig parseValidator(String currentPath, Element configElement) {
         var config = new ValidationConfig();
 
         var fieldNodes = configElement.getElementsByTagName("field");
         for (int i = 0; i < fieldNodes.getLength(); i++) {
             var fieldNode = fieldNodes.item(i);
             if (fieldNode.getNodeType() == Node.ELEMENT_NODE && fieldNode.getParentNode().equals(configElement)) {
-                var field = parseField((Element) fieldNode);
+                var field = parseField(currentPath, (Element) fieldNode);
                 config.getFields().add(field);
             }
         }
         return config;
     }
 
-    private FieldValidation parseField(Element fieldElement) {
+    private FieldValidation parseField(String currentPath, Element fieldElement) {
         var field = new FieldValidation();
         field.setName(fieldElement.getAttribute("name"));
         var typeAttr = fieldElement.getAttribute("type");
+
+        if (currentPath != null && !currentPath.isEmpty()) {
+            currentPath += "." + field.getName();
+        } else {
+            currentPath = field.getName();
+        }
+        field.setPath(currentPath);
 
         if (!typeAttr.isEmpty()) {
             try {
@@ -107,10 +114,10 @@ public class ValidationXmlParser {
                 if (validationNode.getNodeType() == Node.ELEMENT_NODE && validationNode.getParentNode().equals(fieldElement)) {
                     var ref = ((Element) validationNode).getAttribute("ref");
                     if (!ref.isEmpty()) {
-                        var refConfig = getValidationConfig(ref);
+                        var refConfig = getValidationConfig(currentPath, ref);
                         field.setValidationConfig(refConfig);
                     } else {
-                        var config = parseValidator((Element) validationNode);
+                        var config = parseValidator(currentPath, (Element) validationNode);
                         field.setValidationConfig(config);
                     }
                 }

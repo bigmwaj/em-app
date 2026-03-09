@@ -1,11 +1,9 @@
-import { FormBuilder } from '@angular/forms';
 import { AbstractEditComponent } from './abstract-edit.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { ChangeStatusDialogComponent, ChangeStatusDialogData } from './change-status-dialog.component';
 import { Observable } from 'rxjs';
 import { AbstractStatusTrackingDto } from '../api.shared.model';
 import { Component } from '@angular/core';
+import { BaseHelper } from '../base.helper';
 
 @Component({
   selector: 'app-abstract-edit-with-status',
@@ -13,17 +11,13 @@ import { Component } from '@angular/core';
   styles: [''],
   standalone: false
 })
-export abstract class AbstractEditWithStatusComponent<T, S> extends AbstractEditComponent<T> {
+export abstract class AbstractEditWithStatusComponent<T extends AbstractStatusTrackingDto<S>, S> extends AbstractEditComponent<T> {
   statusOptions: S[] = [];
+  
   protected changeStatus?: (dto: AbstractStatusTrackingDto<S>) => Observable<AbstractStatusTrackingDto<S>>;
 
-  constructor(
-    protected override fb: FormBuilder,
-    protected override router: Router,
-    protected override route: ActivatedRoute,
-    protected override dialog: MatDialog
-  ) {
-    super(fb, router, route, dialog);
+  constructor( protected override helper: BaseHelper<T> ) {
+    super(helper);
   }
 
   get showChangeStatusButton(): boolean {
@@ -39,7 +33,8 @@ export abstract class AbstractEditWithStatusComponent<T, S> extends AbstractEdit
       width: '400px',
       data: {
         dto: this.dto,
-        changeStatusAction: this.changeStatus
+        changeStatusAction: this.changeStatus,
+        statusOptions: this.statusOptions
       } as ChangeStatusDialogData<S>
     });
 

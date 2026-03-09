@@ -10,6 +10,7 @@ import java.util.List;
  */
 @Data
 public class ValidationConfig {
+
     private String ref;
 
     private List<FieldValidation> fields = new ArrayList<>();

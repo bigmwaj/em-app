@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.validator.shared;
 
+import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import jakarta.validation.ConstraintValidator;
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class WhereClausePatternsValidator implements ConstraintValidator<ValidWhereClausePatterns, List<WhereClause>> {
+public class WhereClausePatternsValidator implements ConstraintValidator<ValidWhereClausePatterns, AbstractSearchCriteria> {
 
     private ValidWhereClausePatterns patterns;
 
@@ -20,7 +21,8 @@ public class WhereClausePatternsValidator implements ConstraintValidator<ValidWh
     }
 
     @Override
-    public boolean isValid(List<WhereClause> whereClauses, ConstraintValidatorContext context) {
+    public boolean isValid(AbstractSearchCriteria searchCriteria, ConstraintValidatorContext context) {
+        List<WhereClause> whereClauses = searchCriteria.getWhereClauses();
         if (whereClauses == null || whereClauses.isEmpty()) {
             return true;
         }
@@ -97,6 +99,6 @@ public class WhereClausePatternsValidator implements ConstraintValidator<ValidWh
     }
 
     public List<String> getSupportedFieldNames() {
-        return Arrays.stream(patterns.supportedFields()).map(WhereClauseSupportedField::name).toList();
+        return Arrays.stream(patterns.supportedFields()).map(SupportedField::name).toList();
     }
 }

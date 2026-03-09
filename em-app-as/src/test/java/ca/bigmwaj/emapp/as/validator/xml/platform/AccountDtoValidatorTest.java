@@ -35,7 +35,7 @@ class AccountDtoValidatorTest extends AbstractDtoValidatorTest {
     private AccountDao accountDao;
 
     @BeforeEach
-    void setUp(){
+    protected void setUp(){
         accountDao.deleteAll();
     }
 
@@ -126,31 +126,31 @@ class AccountDtoValidatorTest extends AbstractDtoValidatorTest {
     void testAccountDto_ChangeStatusFieldsValidation() {
         // Full data
         assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults()
-                .withId((short) 1)
-                .withEditAction(EditActionLvo.CHANGE_STATUS).build());
+                .withId((short) 1).build());
+//                .withEditAction(EditActionLvo.CHANGE_STATUS).build());
 
         // Only required data
         assertNoViolations(TestAccountDtoBuilder.builder()
                 .withId((short) 1)
-                .withEditAction(EditActionLvo.CHANGE_STATUS)
+//                .withEditAction(EditActionLvo.CHANGE_STATUS)
                 .withStatus(AccountStatusLvo.ACTIVE)
                 .withStatusDate(LocalDateTime.now()).build());
 
         // Missing status
         assertViolationsOnField(TestAccountDtoBuilder.builder()
                 .withId((short) 1)
-                .withEditAction(EditActionLvo.CHANGE_STATUS)
+//                .withEditAction(EditActionLvo.CHANGE_STATUS)
                 .withStatus(null).build(), "status");
 
         // Missing ID
         assertViolationsOnField(TestAccountDtoBuilder.builder()
-                .withId(null).withEditAction(EditActionLvo.CHANGE_STATUS)
+//                .withId(null).withEditAction(EditActionLvo.CHANGE_STATUS)
                 .withStatus(AccountStatusLvo.ACTIVE).build(), "id");
 
         // Missing status date
         assertViolationsOnField(TestAccountDtoBuilder.builder()
                 .withId((short) 1)
-                .withEditAction(EditActionLvo.CHANGE_STATUS)
+//                .withEditAction(EditActionLvo.CHANGE_STATUS)
                 .withStatusDate(null).build(), "statusDate");
     }
 
@@ -160,12 +160,14 @@ class AccountDtoValidatorTest extends AbstractDtoValidatorTest {
         // Full data
         assertNoViolations(TestAccountDtoBuilder.builderWithAllDefaults()
                 .withId((short) 1)
-                .withEditAction(EditActionLvo.UPDATE).build());
+//                .withEditAction(EditActionLvo.UPDATE)
+                .build());
 
         // Only account data
         assertNoViolations(TestAccountDtoBuilder.withDefaults()
                 .withId((short) 1)
-                .withEditAction(EditActionLvo.UPDATE).build());
+//                .withEditAction(EditActionLvo.UPDATE)
+                .build());
 
         // Let create an account for testing update
         var initialDto = TestAccountDtoBuilder.builderWithAllDefaults()
@@ -179,7 +181,7 @@ class AccountDtoValidatorTest extends AbstractDtoValidatorTest {
 
         createdDto.setName("newName");
         createdDto.setDescription("newDescription");
-        createdDto.setEditAction(EditActionLvo.UPDATE);
+//        createdDto.setEditAction(EditActionLvo.UPDATE);
         assertNoViolations(createdDto);
 
         var updatedDto = accountService.update(createdDto);

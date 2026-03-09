@@ -2,9 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { RoleDto, RolePrivilegeDto, RoleUserDto, UserRoleDto } from '../api.platform.model';
-import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { RoleHelper } from '../helper/role.helper';
+import { RoleDto, RolePrivilegeDto, RoleUserDto } from '../api.platform.model';
+import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,26 +13,20 @@ export class RoleService {
 
   constructor(private http: HttpClient) {}
 
-  getRoles(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<RoleDto>> {
-    let params = new HttpParams();
-
-    if (searchCriteria) {
-      params = RoleHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
-    }
-
+  getRoles(params?: HttpParams): Observable<SearchResult<RoleDto>> {
     return this.http.get<SearchResult<RoleDto>>(this.apiUrl, { params });
   }
 
   getRole(id: number): Observable<RoleDto> {
-    return this.http.get<RoleDto>(`${this.apiUrl}/id/${id}`);
+    return this.http.get<RoleDto>(`${this.apiUrl}/${id}`);
   }
   
-  getRolePrivileges(id: number): Observable<SearchResult<RolePrivilegeDto>> {
-    return this.http.get<SearchResult<RolePrivilegeDto>>(`${this.apiUrl}/id/${id}/privileges`);
+  getRolePrivileges(id: number, params?: HttpParams): Observable<SearchResult<RolePrivilegeDto>> {
+    return this.http.get<SearchResult<RolePrivilegeDto>>(`${this.apiUrl}/${id}/role-privileges`, { params });
   }
   
-  getRoleUsers(id: number): Observable<SearchResult<RoleUserDto>> {
-    return this.http.get<SearchResult<RoleUserDto>>(`${this.apiUrl}/id/${id}/users`);
+  getRoleUsers(id: number, params?: HttpParams): Observable<SearchResult<RoleUserDto>> {
+    return this.http.get<SearchResult<RoleUserDto>>(`${this.apiUrl}/${id}/role-users`, { params });
   }
 
   createRole(role: RoleDto): Observable<RoleDto> {

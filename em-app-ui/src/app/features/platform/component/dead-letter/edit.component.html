@@ -44,6 +44,11 @@
         Delete
       </button>
       }
+      @if(showChangeStatusButton){
+      <button mat-raised-button (click)="onChangeStatus()" type="button">
+        <mat-icon>swap_horiz</mat-icon>Change Status
+      </button>
+      }
     </div>
   </div>
 

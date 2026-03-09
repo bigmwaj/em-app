@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="updateAction">
+        <condition expression="#update">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="message">
-        <condition expression="createAction or updateAction">
+        <condition expression="#createOrUpdate">
             <rule type="NotBlankRule"/>
         </condition>
     </field>
 
     <field name="status">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
         </condition>
     </field>

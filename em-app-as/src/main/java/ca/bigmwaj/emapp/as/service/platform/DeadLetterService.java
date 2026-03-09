@@ -5,6 +5,7 @@ import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
 import ca.bigmwaj.emapp.as.dto.platform.DeadLetterDto;
 import ca.bigmwaj.emapp.as.entity.platform.DeadLetterEntity;
 import ca.bigmwaj.emapp.as.integration.KafkaPublisher;
+import ca.bigmwaj.emapp.as.mapper.DeadLetterMapper;
 import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import ca.bigmwaj.emapp.as.service.ServiceException;
 import ca.bigmwaj.emapp.dm.lvo.platform.DeadLetterStatusLvo;
@@ -21,11 +22,18 @@ import java.util.function.Function;
 @Service
 public class DeadLetterService extends AbstractMainService<DeadLetterDto, DeadLetterEntity, Long> {
 
-    @Autowired
-    private DeadLetterDao dao;
+    private final DeadLetterDao dao;
+
+    private final KafkaPublisher kafkaPublisher;
+
+    private final DeadLetterMapper mapper;
 
     @Autowired
-    private KafkaPublisher kafkaPublisher;
+    public DeadLetterService(DeadLetterDao dao, KafkaPublisher kafkaPublisher, DeadLetterMapper mapper) {
+        this.dao = dao;
+        this.kafkaPublisher = kafkaPublisher;
+        this.mapper = mapper;
+    }
 
     private ObjectNode insertDeadLetterId(String message, Long id) {
         Objects.requireNonNull(message, "message must not be null");
@@ -40,22 +48,27 @@ public class DeadLetterService extends AbstractMainService<DeadLetterDto, DeadLe
         }
     }
 
+    private void retry(DeadLetterDto dto) {
+        String jsonMessage = dto.getMessage();
+        ObjectNode jsonNode = insertDeadLetterId(jsonMessage, dto.getId());
+        kafkaPublisher.publish(dto.getEventName(), jsonNode);
+    }
+
     public DeadLetterDto update(DeadLetterDto dto) {
-        if (DeadLetterStatusLvo.RETRY.equals(dto.getStatus())) {
-            String jsonMessage = dto.getMessage();
-            ObjectNode jsonNode = insertDeadLetterId(jsonMessage, dto.getId());
-            dto.setMessage(jsonMessage);
-            kafkaPublisher.publish(dto.getEventName(), jsonNode);
-        }
-        DeadLetterEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeUpdateHistEntity(entity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(mapper.mappingForUpdate(dto)));
     }
 
     public DeadLetterDto create(DeadLetterDto dto) {
-        DeadLetterEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        beforeCreateHistEntity(entity);
-        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+        return GlobalPlatformMapper.INSTANCE.toDto(dao.save(mapper.mappingForCreate(dto)));
+    }
+
+    public DeadLetterDto changeStatus(DeadLetterDto dto) {
+        var entity = mapper.mappingForStatusChange(dto);
+        dto = GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
+        if (DeadLetterStatusLvo.RETRY.equals(dto.getStatus())) {
+            retry(dto);
+        }
+        return dto;
     }
 
     protected DeadLetterDao getDao() {

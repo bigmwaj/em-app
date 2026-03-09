@@ -1,10 +1,9 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
-import ca.bigmwaj.emapp.dm.dto.AbstractStatusTrackingDto;
 import ca.bigmwaj.emapp.as.lvo.platform.OwnerTypeLvo;
 import ca.bigmwaj.emapp.as.lvo.platform.UserStatusLvo;
 import ca.bigmwaj.emapp.as.lvo.platform.UsernameTypeLvo;
+import ca.bigmwaj.emapp.dm.dto.AbstractStatusTrackingDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@ValidDto("platform/user")
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true, setterPrefix = "with")
 public class UserDto extends AbstractStatusTrackingDto<UserStatusLvo> {

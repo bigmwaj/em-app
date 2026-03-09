@@ -5,7 +5,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -13,35 +12,21 @@ import java.util.function.Function;
 @Data
 @ToString(callSuper = true)
 @NoArgsConstructor
-public class WhereClause extends AbstractClause{
-
-    public enum oper {
-        eq,
-        ne,
-        in,
-        ni,
-        btw,
-        lt,
-        lte,
-        gt,
-        gte,
-        like
-    }
+public class WhereClause extends AbstractClause {
 
     private oper oper;
-
     private List<?> values;
 
-    public WhereClause(String name){
+    public WhereClause(String name) {
         super(name);
     }
 
-    public WhereClause(String name, oper oper){
+    public WhereClause(String name, oper oper) {
         this(name);
         this.oper = oper;
     }
 
-    public WhereClause(String name, oper oper, List<?> values){
+    public WhereClause(String name, oper oper, List<?> values) {
         this(name, oper);
         this.values = values;
     }
@@ -55,5 +40,18 @@ public class WhereClause extends AbstractClause{
                     .map(operator)
                     .toList();
         }
+    }
+
+    public enum oper {
+        eq,
+        ne,
+        in,
+        ni,
+        btw,
+        lt,
+        lte,
+        gt,
+        gte,
+        like
     }
 }

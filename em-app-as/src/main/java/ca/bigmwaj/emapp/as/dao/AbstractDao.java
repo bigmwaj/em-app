@@ -4,7 +4,6 @@ import ca.bigmwaj.emapp.as.dao.shared.QueryConfig;
 import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
-import ca.bigmwaj.emapp.as.entity.common.AbstractChangeTrackingEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,17 +17,17 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
     Class<E> getEntityClass();
 
     default QueryConfig prepareQueryConfig(QueryConfig.QueryConfigBuilder builder, AbstractSearchCriteria searchCriteria) {
-        if( searchCriteria.getWhereClauses() != null && !searchCriteria.getWhereClauses().isEmpty() ){
+        if (searchCriteria.getWhereClauses() != null && !searchCriteria.getWhereClauses().isEmpty()) {
             searchCriteria.getWhereClauses().forEach(e -> QueryConfig.appendWhereClause(builder, e));
         }
 
-        if( searchCriteria.getSortByClauses() != null && !searchCriteria.getSortByClauses().isEmpty() ){
+        if (searchCriteria.getSortByClauses() != null && !searchCriteria.getSortByClauses().isEmpty()) {
             searchCriteria.getSortByClauses().forEach(e -> QueryConfig.appendSortByClause(builder, e));
         }
         return builder.build();
     }
 
-    default String getSpecialWhereClause(AbstractSearchCriteria sc){
+    default String getSpecialWhereClause(AbstractSearchCriteria sc) {
         return null;
     }
 
@@ -46,17 +45,17 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
         return query;
     }
 
-    default String getQuery(String queryPart){
+    default String getQuery(String queryPart) {
         return String.format("select %s from %s %s", queryPart, getEntityClass().getSimpleName(), QueryConfig.Q_ROOT);
     }
 
-    default String getFindAllQuery(){
+    default String getFindAllQuery() {
         return getQuery(QueryConfig.Q_ROOT);
     }
 
     default List<E> findAllByCriteria(EntityManager em, AbstractSearchCriteria sc) {
         var whereClauseJoinOp = WhereClauseJoinOp.AND;
-        if( sc.getWhereClauseJoinOp() != null ){
+        if (sc.getWhereClauseJoinOp() != null) {
             whereClauseJoinOp = sc.getWhereClauseJoinOp();
         }
         var builder = QueryConfig.builder().withBaseQuery(getFindAllQuery())
@@ -68,13 +67,13 @@ public interface AbstractDao<E extends AbstractBaseEntity, ID> extends JpaReposi
                 .getResultList();
     }
 
-    default String getCountAllQuery(){
+    default String getCountAllQuery() {
         return getQuery(String.format("count(%s)", QueryConfig.Q_ROOT));
     }
 
     default Long countAllByCriteria(EntityManager em, AbstractSearchCriteria sc) {
         var whereClauseJoinOp = WhereClauseJoinOp.AND;
-        if( sc.getWhereClauseJoinOp() != null ){
+        if (sc.getWhereClauseJoinOp() != null) {
             whereClauseJoinOp = sc.getWhereClauseJoinOp();
         }
         var builder = QueryConfig.builder().withBaseQuery(getCountAllQuery())

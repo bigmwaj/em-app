@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { FormGroup, Validators } from '@angular/forms';
 import { GroupService } from '../../service/group.service';
 import { GroupDto, GroupRoleDto, GroupUserDto, OwnerTypeLvo, RoleDto, UserDto } from '../../api.platform.model';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
@@ -9,7 +7,6 @@ import { GroupHelper } from '../../helper/group.helper';
 import { GroupRoleAssignListComponent } from './role/assign.list.component';
 import { GroupRoleAssignedListComponent } from './role/assigned.list.component';
 import { SelectionChange } from '@angular/cdk/collections';
-import { EditActionLvo } from '../../../shared/api.shared.model';
 import { SharedUserAssignedListComponent } from '../shared/user/assigned.list.component';
 import { SharedUserAssignListComponent } from '../shared/user/assign.list.component';
 
@@ -40,18 +37,13 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
   private assignUsersTable?: SharedUserAssignListComponent;
 
   constructor(
-    protected override fb: FormBuilder,
-    protected override router: Router,
-    protected override route: ActivatedRoute,
-    protected override dialog: MatDialog,
-    private service: GroupService,
-  ) {
-    super(fb, router, route, dialog);
+    protected override helper: GroupHelper,
+    private service: GroupService ) {
+    super(helper);
 
     this.delete = (dto) => this.service.deleteGroup(dto);
     this.create = (dto) => this.service.createGroup(dto);
     this.update = (dto) => this.service.updateGroup(dto);
-    this.buildFormData = (dto) => GroupHelper.buildFormData(dto);
   }
 
   ngAfterViewInit(): void {
@@ -80,7 +72,7 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
     return {
       role: role,
       groupId: this.dto?.id,
-      editAction: EditActionLvo.CREATE
+      New: true,
     } as GroupRoleDto;
   }
 
@@ -88,26 +80,26 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
     return {
       user: user,
       groupId: this.dto?.id,
-      editAction: EditActionLvo.CREATE
     } as GroupUserDto;
   }
 
   public roleChecked(gr: GroupRoleDto) {
     const refRp = this.assignedRolesTable.getItemReference(gr);
     if (!refRp) {
+      gr.New = true;
       this.assignedRolesTable.appendItem(gr);
     } else {
-      refRp.editAction = EditActionLvo.NONE;
+      refRp.checked = false;
     }
   }
 
   public roleUnchecked(gr: GroupRoleDto) {
     const refRp = this.assignedRolesTable.getItemReference(gr);
     if (refRp) {
-      if (refRp.editAction === EditActionLvo.CREATE) {
+      if (refRp.checked === true) {
         this.assignedRolesTable.removeItem(refRp);
       } else {
-        refRp.editAction = EditActionLvo.DELETE;
+        refRp.checked = false;
       }
     } else {
       this.assignedRolesTable.removeItem(gr);
@@ -122,19 +114,20 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
   public userChecked(gu: GroupUserDto) {
     const refGu = this.assignedUsersTable.getItemReference(gu);
     if (!refGu) {
+      gu.New = true;
       this.assignedUsersTable.appendItem(gu);
     } else {
-      refGu.editAction = EditActionLvo.NONE;
+      refGu.checked = false;
     }
   }
 
   public userUnchecked(gu: GroupUserDto) {
     const refGu = this.assignedUsersTable.getItemReference(gu);
     if (refGu) {
-      if (refGu.editAction === EditActionLvo.CREATE) {
+      if (refGu.checked === true) {
         this.assignedUsersTable.removeItem(refGu);
       } else {
-        refGu.editAction = EditActionLvo.DELETE;
+        refGu.checked = false;
       }
     } else {
       this.assignedUsersTable.removeItem(gu);
@@ -144,11 +137,6 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
   public userRemoved(gu: GroupUserDto) {
     if (!this.assignUsersTable?.selection || !gu.user) return;
     this.assignUsersTable.selection.deselect(gu.user);
-  }
-
-
-  protected override getBaseRoute(): string {
-    return '/platform/groups';
   }
 
   protected override initializeForms(): FormGroup[] {
@@ -166,7 +154,6 @@ export class GroupEditComponent extends AbstractEditComponent<GroupDto> implemen
     const formValue = this.mainForm.value;
 
     const dto: GroupDto = {
-      editAction: this.editAction,
       id: formValue.id,
       name: formValue.name,
       description: formValue.description,

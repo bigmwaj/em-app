@@ -1,16 +1,17 @@
 package ca.bigmwaj.emapp.as.dto.security;
 
-import java.util.Collection;
-
 import ca.bigmwaj.emapp.as.dto.platform.UserDto;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import lombok.Getter;
+import java.util.Collection;
 
-public class AuthenticatedUser extends User{
+public class AuthenticatedUser extends User {
 
     private static final long serialVersionUID = 2427906991409676359L;
+    @Getter
+    private final UserDto userInfo;
 
     public AuthenticatedUser(UserDto userInfo, boolean enabled, boolean accountNonExpired,
                              boolean credentialsNonExpired, boolean accountNonLocked,
@@ -24,8 +25,5 @@ public class AuthenticatedUser extends User{
         super(username, password, authorities);
         this.userInfo = null;
     }
-
-    @Getter
-    private final UserDto userInfo;
 
 }

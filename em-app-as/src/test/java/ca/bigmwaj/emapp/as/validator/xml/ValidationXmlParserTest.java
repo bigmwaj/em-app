@@ -24,7 +24,7 @@ class ValidationXmlParserTest {
     @Test
     void testParsePlatformAccountXml() throws Exception {
         var stream = new ClassPathResource(ACCOUNT_XML_PATH).getInputStream();
-        var config = parser.parse(stream);
+        var config = parser.parse(null, stream);
 
         assertNotNull(config);
         assertFalse(config.getFields().isEmpty());
@@ -41,7 +41,7 @@ class ValidationXmlParserTest {
     @Test
     void testParseXmlWithConditionsAndRules() throws Exception {
         InputStream stream = new ClassPathResource(TEST_XML_PATH).getInputStream();
-        ValidationConfig config = parser.parse(stream);
+        ValidationConfig config = parser.parse(null, stream);
 
         assertNotNull(config);
 

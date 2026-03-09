@@ -20,6 +20,12 @@ public class SearchInfos {
 
     private boolean calculateStatTotal;
 
+    public SearchInfos(AbstractSearchCriteria searchCriteria) {
+        setCalculateStatTotal(searchCriteria.isCalculateStatTotal());
+        setPageSize(searchCriteria.getPageSize());
+        setPageIndex(searchCriteria.getPageIndex());
+    }
+
     @JsonIgnore
     public Integer getOffset() {
         if (pageSize != null) {
@@ -34,11 +40,5 @@ public class SearchInfos {
             return DEFAULT_QUERY_LIMIT;
         }
         return pageSize;
-    }
-
-    public SearchInfos(AbstractSearchCriteria searchCriteria) {
-        setCalculateStatTotal(searchCriteria.isCalculateStatTotal());
-        setPageSize(searchCriteria.getPageSize());
-        setPageIndex(searchCriteria.getPageIndex());
     }
 }

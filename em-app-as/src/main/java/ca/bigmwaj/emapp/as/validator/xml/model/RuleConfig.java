@@ -12,6 +12,8 @@ import java.util.Map;
  */
 @Data
 public class RuleConfig {
+
     private String type;
+
     private Map<String, String> parameters = new HashMap<>();
 }

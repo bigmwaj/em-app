@@ -1,8 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { PrivilegeDto, PrivilegeSearchCriteria, RoleDto } from "../../../api.platform.model";
 import { AbstractIndexComponent } from "../../../../shared/component/abstract-index.component";
-import { Observable } from "rxjs";
-import { SearchResult } from "../../../../shared/api.shared.model";
 import { PrivilegeService } from "../../../service/privilege.service";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
@@ -22,27 +20,11 @@ export class RolePrivilegeAssignListComponent extends AbstractIndexComponent<Pri
   dto?: RoleDto;
 
   constructor(
-    protected override router: Router,
-    protected override dialog: MatDialog,
-    protected service: PrivilegeService) {
-    super(router, dialog);
+    protected override helper: PrivilegeHelper) {
+    super(helper);
 
-    this.searchCriteria = PrivilegeHelper.createPrivilegeSearchCriteria();
-    
-  }
+    this.searchCriteria = this.helper.createPrivilegeSearchCriteria();
 
-  override search(): Observable<SearchResult<PrivilegeDto>> {
-    const sc = this.searchCriteria as PrivilegeSearchCriteria;
-    sc.assignableToRoleId = this.dto?.id;
-    return this.service.getPrivileges(this.searchCriteria);
-  }
-
-  protected override getBaseRoute(): string {
-    throw new Error("Method not implemented.");
-  }
-
-  protected override duplicateDto(dto: PrivilegeDto): PrivilegeDto {
-    throw new Error("Method not implemented.");
   }
 
   override getKeyLabel(dto: PrivilegeDto): string | number {
@@ -60,5 +42,11 @@ export class RolePrivilegeAssignListComponent extends AbstractIndexComponent<Pri
         .filter(p => p !== undefined)
         .forEach(p => this.selection.setSelection(p));
     }
+  }
+
+  override loadData(): void {  
+    const sc = this.searchCriteria as PrivilegeSearchCriteria;
+    sc.assignableToRoleId = this.dto?.id;
+    super.loadData();
   }
 }

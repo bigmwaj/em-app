@@ -2,9 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { DefaultSearchCriteria, SearchResult } from '../../shared/api.shared.model';
+import { SearchResult } from '../../shared/api.shared.model';
 import { UserDto } from '../api.platform.model';
-import { UserHelper } from '../helper/user.helper';
 
 @Injectable({
   providedIn: 'root'
@@ -14,16 +13,10 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getUsers(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<UserDto>> {
-    let params = new HttpParams();
-
-    if (searchCriteria) {
-      params = UserHelper.mapUserSearchCriteriaToHttpParams(searchCriteria);
-    }
-
+  getUsers(params?: HttpParams): Observable<SearchResult<UserDto>> {
     return this.http.get<SearchResult<UserDto>>(this.apiUrl, { params });
   }
-
+  
   getUser(id: number): Observable<UserDto> {
     return this.http.get<UserDto>(`${this.apiUrl}/${id}`);
   }
@@ -38,5 +31,13 @@ export class UserService {
 
   deleteUser(user: UserDto): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${user.id}`);
+  }
+
+  changeUserStatus(user: UserDto): Observable<UserDto> {
+    return this.http.post<UserDto>(`${this.apiUrl}/${user.id}/change-status/${user.status}`, user);
+  }
+
+  changeUserPassword(user: UserDto): Observable<UserDto> {
+    return this.http.post<UserDto>(`${this.apiUrl}/${user.id}/change-password`, user);
   }
 }

@@ -2,10 +2,10 @@ package ca.bigmwaj.emapp.as.converter.shared;
 
 import ca.bigmwaj.emapp.as.api.shared.search.ClauseInputMapper;
 import ca.bigmwaj.emapp.as.api.shared.search.WhereClauseInput;
-import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
 import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
+import ca.bigmwaj.emapp.as.validator.shared.SupportedField;
+import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,25 +26,35 @@ public class WhereClausePatternsConverter {
     private String patterns;
 
     private static <T> Map<String, T> fetchSupportedMetadata(TypeDescriptor targetType,
-                                                        Function<WhereClauseSupportedField, T> extractor) {
+                                                             Function<SupportedField, T> extractor) {
         return Arrays.stream(targetType.getAnnotations())
                 .filter(e -> e.annotationType().equals(ValidWhereClausePatterns.class))
                 .map(ValidWhereClausePatterns.class::cast)
                 .map(ValidWhereClausePatterns::supportedFields)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toMap(WhereClauseSupportedField::name, extractor));
+                .collect(Collectors.toMap(SupportedField::name, extractor));
+    }
+
+    // Type safety: The cast is safe because we verify Enum.class.isAssignableFrom(type) before calling
+    @SuppressWarnings("unchecked")
+    private static <E extends Enum<E>> E toEnum(Class<?> enumType, String value) {
+        // Runtime check to ensure type safety before casting
+        if (!Enum.class.isAssignableFrom(enumType)) {
+            throw new IllegalArgumentException("Type must be an Enum type: " + enumType.getName());
+        }
+        return Enum.valueOf((Class<E>) enumType, value);
     }
 
     private Map<String, Class<?>> fetchSupportedFieldType(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, WhereClauseSupportedField::type);
+        return fetchSupportedMetadata(targetType, SupportedField::type);
     }
 
     private Map<String, String> fetchSupportedRootEntityName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, WhereClauseSupportedField::rootEntityName);
+        return fetchSupportedMetadata(targetType, SupportedField::rootEntityName);
     }
 
     private Map<String, String> fetchSupportedEntityFieldName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, WhereClauseSupportedField::entityFieldName);
+        return fetchSupportedMetadata(targetType, SupportedField::entityFieldName);
     }
 
     public List<WhereClause> convert() {
@@ -79,8 +89,8 @@ public class WhereClausePatternsConverter {
     }
 
     private WhereClauseInput mapToFilterItemInput(Map<String, String> supportedEntityFieldNameMap,
-                                               Map<String, String> supportedRootEntityNameMap,
-                                               String filterPattern) {
+                                                  Map<String, String> supportedRootEntityNameMap,
+                                                  String filterPattern) {
 
         var args = new ArrayDeque<>(Arrays.asList(filterPattern.split(":")));
 
@@ -135,15 +145,5 @@ public class WhereClausePatternsConverter {
             }
         }
         return filterBy;
-    }
-
-    // Type safety: The cast is safe because we verify Enum.class.isAssignableFrom(type) before calling
-    @SuppressWarnings("unchecked")
-    private static <E extends Enum<E>> E toEnum(Class<?> enumType, String value) {
-        // Runtime check to ensure type safety before casting
-        if (!Enum.class.isAssignableFrom(enumType)) {
-            throw new IllegalArgumentException("Type must be an Enum type: " + enumType.getName());
-        }
-        return Enum.valueOf((Class<E>) enumType, value);
     }
 }

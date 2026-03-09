@@ -1,7 +1,5 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { FormGroup, Validators } from '@angular/forms';
 import { RoleService } from '../../service/role.service';
 import { RoleDto, OwnerTypeLvo, RolePrivilegeDto, PrivilegeDto, RoleUserDto, UserDto } from '../../api.platform.model';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
@@ -9,7 +7,6 @@ import { RoleHelper } from '../../helper/role.helper';
 import { RolePrivilegeAssignListComponent } from './privilege/assign.list.component';
 import { RolePrivilegeAssignedListComponent } from './privilege/assigned.list.component';
 import { SelectionChange } from '@angular/cdk/collections';
-import { EditActionLvo, SearchResult } from '../../../shared/api.shared.model';
 import { SharedUserAssignedListComponent } from '../shared/user/assigned.list.component';
 import { SharedUserAssignListComponent } from '../shared/user/assign.list.component';
 
@@ -40,18 +37,14 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   searchRoleUsersEndPoint = (ownerId: number) => this.service.getRoleUsers(ownerId);
 
   constructor(
-    protected override fb: FormBuilder,
-    protected override router: Router,
-    protected override route: ActivatedRoute,
-    protected override dialog: MatDialog,
+    protected override helper: RoleHelper,
     private service: RoleService) {
 
-    super(fb, router, route, dialog);
+    super(helper);
 
     this.delete = (dto) => this.service.deleteRole(dto);
     this.create = (dto) => this.service.createRole(dto);
     this.update = (dto) => this.service.updateRole(dto);
-    this.buildFormData = (dto) => RoleHelper.buildFormData(dto);
   }
 
   ngAfterViewInit(): void {
@@ -80,7 +73,6 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
     return {
       privilege: privilege,
       roleId: this.dto?.id,
-      editAction: EditActionLvo.CREATE
     } as RolePrivilegeDto;
   }
 
@@ -88,26 +80,26 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
     return {
       user: user,
       roleId: this.dto?.id,
-      editAction: EditActionLvo.CREATE
     } as RoleUserDto;
   }
 
   public privilegeChecked(rp: RolePrivilegeDto) {
     const refRp = this.assignedPrivilegesTable.getItemReference(rp);
     if (!refRp) {
+      rp.New = true;
       this.assignedPrivilegesTable.appendItem(rp);
     } else {
-      refRp.editAction = EditActionLvo.NONE;
+      refRp.checked = false;
     }
   }
 
   public privilegeUnchecked(rp: RolePrivilegeDto) {
     const refRp = this.assignedPrivilegesTable.getItemReference(rp);
     if (refRp) {
-      if (refRp.editAction === EditActionLvo.CREATE) {
+      if (refRp.checked === true) {
         this.assignedPrivilegesTable.removeItem(refRp);
       } else {
-        refRp.editAction = EditActionLvo.DELETE;
+        refRp.checked = false;
       }
     } else {
       this.assignedPrivilegesTable.removeItem(rp);
@@ -122,19 +114,20 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   public userChecked(ru: RoleUserDto) {
     const refRu = this.assignedUsersTable.getItemReference(ru);
     if (!refRu) {
+      ru.New = true;
       this.assignedUsersTable.appendItem(ru);
     } else {
-      refRu.editAction = EditActionLvo.NONE;
+      refRu.checked = false;
     }
   }
 
   public userUnchecked(ru: RoleUserDto) {
     const refRu = this.assignedUsersTable.getItemReference(ru);
     if (refRu) {
-      if (refRu.editAction === EditActionLvo.CREATE) {
+      if (refRu.checked === true) {
         this.assignedUsersTable.removeItem(refRu);
       } else {
-        refRu.editAction = EditActionLvo.DELETE;
+        refRu.checked = false;
       }
     } else {
       this.assignedUsersTable.removeItem(ru);
@@ -144,10 +137,6 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
   public userRemoved(rp: RoleUserDto) {
     if (!this.assignUsersTable?.selection || !rp.user) return;
     this.assignUsersTable.selection.deselect(rp.user);
-  }
-
-  protected override getBaseRoute(): string {
-    return '/platform/roles';
   }
 
   protected override initializeForms(): FormGroup[] {
@@ -165,7 +154,6 @@ export class RoleEditComponent extends AbstractEditComponent<RoleDto> implements
     const formValue = this.mainForm.value;
 
     const dto: RoleDto = {
-      editAction: this.editAction,
       id: formValue.id,
       name: formValue.name,
       description: formValue.description,

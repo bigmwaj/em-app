@@ -5,14 +5,15 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Transient;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @MappedSuperclass
 @Data
 public abstract class AbstractBaseEntity {
 
     @Transient
     private Object key;
+
+    @Column(name = "RETIRED")
+    private Boolean retired;
 
     public abstract Object getDefaultKey();
 

@@ -2,10 +2,10 @@ package ca.bigmwaj.emapp.as.converter.shared;
 
 import ca.bigmwaj.emapp.as.api.shared.search.ClauseInputMapper;
 import ca.bigmwaj.emapp.as.api.shared.search.SortByClauseInput;
-import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
+import ca.bigmwaj.emapp.as.validator.shared.SupportedField;
+import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,21 +26,21 @@ public class SortByClausePatternsConverter {
     private String patterns;
 
     private static <T> Map<String, T> fetchSupportedMetadata(TypeDescriptor targetType,
-                                                            Function<SortByClauseSupportedField, T> extractor) {
+                                                             Function<SupportedField, T> extractor) {
         return Arrays.stream(targetType.getAnnotations())
                 .filter(e -> e.annotationType().equals(ValidSortByClausePatterns.class))
                 .map(ValidSortByClausePatterns.class::cast)
                 .map(ValidSortByClausePatterns::supportedFields)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toMap(SortByClauseSupportedField::name, extractor));
+                .collect(Collectors.toMap(SupportedField::name, extractor));
     }
 
-     Map<String, String> fetchSupportedRootEntityName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, SortByClauseSupportedField::rootEntityName);
+    Map<String, String> fetchSupportedRootEntityName(TypeDescriptor targetType) {
+        return fetchSupportedMetadata(targetType, SupportedField::rootEntityName);
     }
 
-     Map<String, String> fetchSupportedEntityFieldName(TypeDescriptor targetType) {
-        return fetchSupportedMetadata(targetType, SortByClauseSupportedField::entityFieldName);
+    Map<String, String> fetchSupportedEntityFieldName(TypeDescriptor targetType) {
+        return fetchSupportedMetadata(targetType, SupportedField::entityFieldName);
     }
 
     public List<SortByClause> convert() {
@@ -73,8 +73,8 @@ public class SortByClausePatternsConverter {
     }
 
     private SortByClauseInput mapToSortByItemInput(Map<String, String> supportedEntityFieldNameMap,
-                                             Map<String, String> supportedRootEntityNameMap,
-                                             String sortByPattern) {
+                                                   Map<String, String> supportedRootEntityNameMap,
+                                                   String sortByPattern) {
 
         var args = new ArrayDeque<>(Arrays.asList(sortByPattern.split(":")));
 

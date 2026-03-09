@@ -1,7 +1,7 @@
 package ca.bigmwaj.emapp.as.dto.platform;
 
-import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
 import ca.bigmwaj.emapp.as.lvo.platform.AccountContactRoleLvo;
+import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

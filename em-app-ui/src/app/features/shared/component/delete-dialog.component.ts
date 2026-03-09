@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { PageData } from '../shared.helper';
+import { PageData } from '../base.helper';
 
 export interface DeleteDialogData<T> {
   title?: string;
@@ -17,12 +17,17 @@ export interface DeleteDialogData<T> {
   standalone: false
 })
 export class DeleteDialogComponent<T> implements OnDestroy {
+
   title = 'Confirm Deletion';
+
   warningMessage = 'Are you sure you want to delete this element? This action cannot be undone.';
+
   deleteAction?: (dto: T) => Observable<void>;
 
   pageData = new PageData();
+
   dto!: T; // Keep dto for backward compatibility, can be used in custom deleteAction
+  
   private destroy$ = new Subject<void>();
 
   constructor(

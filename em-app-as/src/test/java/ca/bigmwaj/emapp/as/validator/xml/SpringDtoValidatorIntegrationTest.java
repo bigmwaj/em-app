@@ -38,7 +38,7 @@ class SpringDtoValidatorIntegrationTest {
     @Test
     void testAccountDto_CreateWithMissingName() {
         var dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.CREATE);
+//        dto.setEditAction(EditActionLvo.CREATE);
         dto.setName(null); // Missing required field
         dto.setStatus(AccountStatusLvo.ACTIVE);
 
@@ -54,7 +54,7 @@ class SpringDtoValidatorIntegrationTest {
     @Test
     void testAccountDto_CreateWithNameTooLong() {
         AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.CREATE);
+//        dto.setEditAction(EditActionLvo.CREATE);
         dto.setName("A".repeat(50)); // Exceeds max length of 32
         dto.setStatus(AccountStatusLvo.ACTIVE);
 
@@ -70,7 +70,7 @@ class SpringDtoValidatorIntegrationTest {
     @Test
     void testAccountDto_UpdateWithoutId() {
         AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.UPDATE);
+//        dto.setEditAction(EditActionLvo.UPDATE);
         dto.setId(null); // Missing required ID for update
         dto.setName("Updated Account");
         dto.setStatus(AccountStatusLvo.ACTIVE);
@@ -87,7 +87,7 @@ class SpringDtoValidatorIntegrationTest {
     @Test
     void testAccountDto_UpdateWithValidData() {
         AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.UPDATE);
+//        dto.setEditAction(EditActionLvo.UPDATE);
         dto.setId((short)1);
         dto.setName("Updated Account");
         dto.setStatus(AccountStatusLvo.ACTIVE);
@@ -101,7 +101,7 @@ class SpringDtoValidatorIntegrationTest {
     @Test
     void testAccountDto_MissingStatus() {
         AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.CREATE);
+//        dto.setEditAction(EditActionLvo.CREATE);
         dto.setName("Test Account");
         dto.setStatus(null); // Missing required status
 
@@ -117,7 +117,7 @@ class SpringDtoValidatorIntegrationTest {
     @Test
     void testAccountDto_DescriptionTooLong() {
         AccountDto dto = new AccountDto();
-        dto.setEditAction(EditActionLvo.CREATE);
+//        dto.setEditAction(EditActionLvo.CREATE);
         dto.setName("Test Account");
         dto.setDescription("A".repeat(150)); // Exceeds max length of 100
         dto.setStatus(AccountStatusLvo.ACTIVE);

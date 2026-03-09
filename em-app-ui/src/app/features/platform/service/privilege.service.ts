@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PrivilegeDto } from '../api.platform.model';
-import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { PrivilegeHelper } from '../helper/privilege.helper';
+import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +13,11 @@ export class PrivilegeService {
 
   constructor(private http: HttpClient) {}
 
-  getPrivileges(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<PrivilegeDto>> {
-    let params = new HttpParams();
-
-    if (searchCriteria) {
-      params = PrivilegeHelper.mapPrivilegeSearchCriteriaToHttpParams(searchCriteria);
-    }
-
+  getPrivileges(params?: HttpParams): Observable<SearchResult<PrivilegeDto>> {
     return this.http.get<SearchResult<PrivilegeDto>>(this.apiUrl, { params });
   }
 
+  getPrivilege(id: number): Observable<PrivilegeDto> {
+    return this.http.get<PrivilegeDto>(`${this.apiUrl}/${id}`);
+  }
 }

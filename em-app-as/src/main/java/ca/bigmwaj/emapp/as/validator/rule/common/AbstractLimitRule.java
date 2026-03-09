@@ -46,20 +46,20 @@ public abstract class AbstractLimitRule extends AbstractRule {
             boolean isValid;
             if (strict) {
                 isValid = getStrictLimitPredicate().test(BigDecimal.valueOf(val.doubleValue()), limit);
-                if(!isValid){
+                if (!isValid) {
                     parameters.put("message", errorStrictLimitMsg().formatted(limit));
                 }
-            }else {
+            } else {
                 isValid = getLimitPredicate().test(BigDecimal.valueOf(val.doubleValue()), limit);
-                if(!isValid){
+                if (!isValid) {
                     parameters.put("message", errorLimitMsg().formatted(limit));
                 }
             }
 
             return isValid;
-        }catch (ValidationConfigurationException e){
+        } catch (ValidationConfigurationException e) {
             throw e;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ValidationConfigurationException("Unable to validation the field", e);
         }
     }
@@ -68,7 +68,7 @@ public abstract class AbstractLimitRule extends AbstractRule {
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
         if (parameters != null && parameters.containsKey("message")) {
             return parameters.get("message");
-        }else{
+        } else {
             return ERROR_MSG_LIMIT_VALIDATION.formatted(fieldName);
         }
     }

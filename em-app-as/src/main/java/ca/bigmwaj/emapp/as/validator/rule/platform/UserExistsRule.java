@@ -1,7 +1,6 @@
 package ca.bigmwaj.emapp.as.validator.rule.platform;
 
 import ca.bigmwaj.emapp.as.dao.platform.UserDao;
-import ca.bigmwaj.emapp.as.service.platform.UserService;
 import ca.bigmwaj.emapp.as.validator.rule.common.AbstractRule;
 import ca.bigmwaj.emapp.as.validator.xml.ValidationConfigurationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class UserExistsRule extends AbstractRule {
 
     @Override
     public boolean isValid(Object value, Map<String, String> parameters) {
-        if( value == null ){
+        if (value == null) {
             return true; // Let @NotNull handle this
         }
         try {

@@ -11,7 +11,7 @@
     <mat-form-field appearance="outline" class="form-field full-width">
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
-        @for (status of statuses; track $index) {
+        @for (status of statusOptions; track $index) {
         <mat-option [value]="status">{{ status }}</mat-option>
         }
       </mat-select>

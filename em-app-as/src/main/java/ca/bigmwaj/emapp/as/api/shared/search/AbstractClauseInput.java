@@ -12,13 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public abstract class AbstractClauseInput {
 
-    private String name;
-
-    private String entityFieldName;
-
-    private String rootEntityName;
-
     private final List<String> validationErrorMessages = new ArrayList<>();
+    private String name;
+    private String entityFieldName;
+    private String rootEntityName;
 
     public void addMessage(String message) {
         validationErrorMessages.add(message);

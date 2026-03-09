@@ -8,6 +8,14 @@ import java.util.Map;
 @Component("EqualsRule")
 public class EqualsRule extends AbstractRule {
 
+    private static <E extends Enum<E>> E toEnum(Class<?> enumType, String value) {
+        // Runtime check to ensure type safety before casting
+        if (!Enum.class.isAssignableFrom(enumType)) {
+            throw new IllegalArgumentException("Type must be an Enum type: " + enumType.getName());
+        }
+        return Enum.valueOf((Class<E>) enumType, value);
+    }
+
     @Override
     public boolean isValid(Object value, Map<String, String> parameters) {
         if (value == null) {
@@ -29,15 +37,15 @@ public class EqualsRule extends AbstractRule {
                 }
             }
 
-            if( value instanceof Boolean bool){
-                if( val.equalsIgnoreCase("true") || val.equalsIgnoreCase("false")){
+            if (value instanceof Boolean bool) {
+                if (val.equalsIgnoreCase("true") || val.equalsIgnoreCase("false")) {
                     return bool == Boolean.parseBoolean(val);
-                }else{
+                } else {
                     throw new ValidationConfigurationException("EqualsRule value parameter must be a valid boolean for Boolean types");
                 }
             }
 
-            if( value instanceof Enum<?> enumValue){
+            if (value instanceof Enum<?> enumValue) {
                 try {
                     @SuppressWarnings("unchecked")
                     Class<? extends Enum<?>> enumClass = (Class<? extends Enum<?>>) enumValue.getClass();
@@ -58,13 +66,5 @@ public class EqualsRule extends AbstractRule {
     @Override
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
         return String.format("The field '%s' must be equal %s.", fieldName, parameters.get("value"));
-    }
-
-    private static <E extends Enum<E>> E toEnum(Class<?> enumType, String value) {
-        // Runtime check to ensure type safety before casting
-        if (!Enum.class.isAssignableFrom(enumType)) {
-            throw new IllegalArgumentException("Type must be an Enum type: " + enumType.getName());
-        }
-        return Enum.valueOf((Class<E>) enumType, value);
     }
 }

@@ -1,13 +1,13 @@
 package ca.bigmwaj.emapp.as.api.shared;
 
-import ca.bigmwaj.emapp.dm.dto.AbstractChangeTrackingDto;
+import ca.bigmwaj.emapp.dm.dto.AbstractBaseDto;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class ResponseMessage<T extends AbstractChangeTrackingDto> {
+public class ResponseMessage<T extends AbstractBaseDto> {
 
     private final T data;
 

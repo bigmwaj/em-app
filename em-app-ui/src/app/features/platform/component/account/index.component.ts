@@ -1,10 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { AccountService } from '../../service/account.service';
 import { AccountDto, AccountStatusLvo } from '../../api.platform.model';
-import { SearchResult } from '../../../shared/api.shared.model';
-import { Observable } from 'rxjs';
 import { AbstractIndexWithStatusComponent } from '../../../shared/component/abstract-index-with-status.component';
 import { AccountHelper } from '../../helper/account.helper';
 
@@ -24,30 +20,14 @@ export class AccountIndexComponent extends AbstractIndexWithStatusComponent<Acco
 
   override textSearchableFields = ['name', 'firstName', 'lastName', 'phone', 'email', 'address'];
   
-  AccountHelper = AccountHelper;
-
   constructor(
-    protected override router: Router,
-    private service: AccountService,
-    protected override dialog: MatDialog
-  ) {
-    super(router, dialog);
+    override helper: AccountHelper,
+    private service: AccountService ) {
+    super(helper);
 
-    this.searchCriteria = AccountHelper.createAccountSearchCriteria();
+    this.searchCriteria = this.helper.createAccountSearchCriteria();
 
     this.delete = (dto) => this.service.deleteAccount(dto);
     this.changeStatus = (dto) => this.service.updateAccount(dto as AccountDto);
-  }
-
-  protected override duplicateDto(dto: AccountDto): AccountDto {
-    return AccountHelper.buildFormData(dto);
-  }
-
-  protected override getBaseRoute(): string {
-    return '/platform/accounts';
-  }
-
-  override search(): Observable<SearchResult<AccountDto>> {
-    return this.service.getAccounts(this.searchCriteria);
   }
 }

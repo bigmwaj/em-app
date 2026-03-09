@@ -1,76 +1,106 @@
 package ca.bigmwaj.emapp.as.service.platform;
 
-import ca.bigmwaj.emapp.as.dao.platform.*;
+import ca.bigmwaj.emapp.as.dao.platform.GroupDao;
+import ca.bigmwaj.emapp.as.dao.platform.GroupRoleDao;
+import ca.bigmwaj.emapp.as.dao.platform.GroupUserDao;
 import ca.bigmwaj.emapp.as.dto.GlobalPlatformMapper;
+import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.*;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
+import ca.bigmwaj.emapp.as.dto.shared.DataListDto;
+import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.platform.*;
+import ca.bigmwaj.emapp.as.mapper.GroupMapper;
 import ca.bigmwaj.emapp.as.service.AbstractMainService;
 import ca.bigmwaj.emapp.as.service.ServiceException;
-import ca.bigmwaj.emapp.dm.dto.AbstractBaseDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
 @Service
 public class GroupService extends AbstractMainService<GroupDto, GroupEntity, Short> {
 
-    @Autowired
-    private GroupDao dao;
+    private final GroupDao dao;
+
+    private final GroupRoleDao groupRoleDao;
+
+    private final GroupUserDao groupUserDao;
+
+    private final GroupMapper mapper;
 
     @Autowired
-    private RoleDao roleDao;
+    public GroupService(GroupDao dao, GroupRoleDao groupRoleDao, GroupUserDao groupUserDao, GroupMapper mapper) {
+        this.dao = dao;
+        this.groupRoleDao = groupRoleDao;
+        this.groupUserDao = groupUserDao;
+        this.mapper = mapper;
+    }
 
-    @Autowired
-    private GroupRoleDao groupRoleDao;
+    public DataListDto<GroupUserDto> findGroupUsers(Short groupId, DefaultSearchCriteria sc) {
+        Objects.requireNonNull(groupId, "Role ID cannot be null for finding group users.");
 
-    @Autowired
-    private GroupUserDao groupUserDao;
+        Example<GroupUserEntity> example = Example.of(new GroupUserEntity());
+        example.getProbe().setGroup(new GroupEntity());
+        example.getProbe().getGroup().setId(groupId);
 
-    @Autowired
-    private UserDao userDao;
+        Pageable pageable = PageRequest.of(sc.getPageIndex(), sc.getLimit());
+
+        Long total = groupUserDao.count(example);
+        SearchInfos searchInfos = new SearchInfos(sc);
+        searchInfos.setTotal(total);
+
+        List<GroupUserDto> result = groupUserDao.findAll(example, pageable)
+                .stream()
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
+                .toList();
+        return new DataListDto<>(searchInfos, result);
+    }
+
+    public DataListDto<GroupRoleDto> findGroupRoles(Short groupId, DefaultSearchCriteria sc) {
+
+        Example<GroupRoleEntity> example = Example.of(new GroupRoleEntity());
+        example.getProbe().setGroup(new GroupEntity());
+        example.getProbe().getGroup().setId(groupId);
+
+        Pageable pageable = PageRequest.of(sc.getPageIndex(), sc.getLimit());
+
+        Long total = groupRoleDao.count(example);
+        SearchInfos searchInfos = new SearchInfos(sc);
+        searchInfos.setTotal(total);
+
+        List<GroupRoleDto> result = groupRoleDao.findAll(example, pageable)
+                .stream()
+                .map(GlobalPlatformMapper.INSTANCE::toDto)
+                .toList();
+        return new DataListDto<>(searchInfos, result);
+    }
 
     public GroupDto create(GroupDto dto) {
         try {
-            GroupEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-            beforeCreateHistEntity(entity);
+            final var entity = mapper.mappingForCreate(dto);
 
-            // Add roles to the group
-            List<GroupRoleEntity> groupRoles = entity.getGroupRoles();
-            if (groupRoles != null && !groupRoles.isEmpty()) {
-                for (GroupRoleEntity groupRoleEntity : groupRoles) {
-                    groupRoleEntity.setGroup(entity);
-                    Short roleId = groupRoleEntity.getRole().getId();
-                    RoleEntity roleEntity = roleDao.findById(roleId)
-                            .orElseThrow(() -> new NoSuchElementException("Role not found with id: " + roleId));
-                    groupRoleEntity.setRole(roleEntity);
-                    beforeCreateHistEntity(groupRoleEntity);
-                }
+            if (dto.getGroupRoles() != null && !dto.getGroupRoles().isEmpty()) {
+                var roles = dto.getGroupRoles().stream()
+                        .map(child -> mapper.mappingForCreate(entity, child)).toList();
+                entity.setGroupRoles(roles);
             }
 
-            // Add users to the group
-            List<GroupUserEntity> groupUsers = entity.getGroupUsers();
-            if (groupUsers != null && !groupUsers.isEmpty()) {
-                for (GroupUserEntity groupUserEntity : groupUsers) {
-                    groupUserEntity.setGroup(entity);
-                    Short userId = groupUserEntity.getUser().getId();
-                    UserEntity userEntity = userDao.findById(userId)
-                            .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
-                    groupUserEntity.setUser(userEntity);
-                    beforeCreateHistEntity(groupUserEntity);
-                }
+            if (dto.getGroupUsers() != null && !dto.getGroupUsers().isEmpty()) {
+                var users = dto.getGroupUsers().stream()
+                        .map(child -> mapper.mappingForCreate(entity, child)).toList();
+                entity.setGroupUsers(users);
             }
 
-            var createdRole = dao.save(entity);
-
-            return GlobalPlatformMapper.INSTANCE.toDto(createdRole);
+            return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -78,120 +108,69 @@ public class GroupService extends AbstractMainService<GroupDto, GroupEntity, Sho
         }
     }
 
-    private GroupRoleEntity init(GroupRoleDto dto) {
-        GroupRoleEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        Objects.requireNonNull(entity.getRole(), "Role cannot be null in GroupRoleEntity after mapping from GroupRoleDto.");
+    private void removeDeletedRoles(GroupEntity entity, GroupDto dto) {
+        Predicate<Short> deletable = id -> dto.getGroupRoles().stream()
+                .filter(GroupRoleDto::isDeleteAction)
+                .map(GroupRoleDto::getRole)
+                .map(RoleDto::getId)
+                .anyMatch(id::equals);
 
-        Short roleId = entity.getRole().getId();
-        Objects.requireNonNull(roleId, "RoleId cannot be null after mapping from GroupRoleDto.");
-
-        RoleEntity role = roleDao.findById(roleId)
-                .orElseThrow(() -> new NoSuchElementException("Role not found with id: " + roleId));
-        entity.setRole(role);
-        beforeCreateHistEntity(entity);
-        return entity;
-    }
-
-    private GroupUserEntity init(GroupUserDto dto) {
-        GroupUserEntity entity = GlobalPlatformMapper.INSTANCE.toEntity(dto);
-        Objects.requireNonNull(entity.getUser(), "User cannot be null in GroupUserEntity after mapping from GroupUserDto.");
-
-        Short userId = entity.getUser().getId();
-        Objects.requireNonNull(userId, "UserId cannot be null after mapping from GroupUserDto.");
-
-        UserEntity user = userDao.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + userId));
-        entity.setUser(user);
-        beforeCreateHistEntity(entity);
-        return entity;
-    }
-
-    public SearchResultDto<GroupUserDto> findGroupUsers(Short groupId) {
-        Objects.requireNonNull(groupId, "Role ID cannot be null for finding group users.");
-        List<GroupUserDto> result = groupUserDao.findByGroupId(groupId).stream()
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
+        var finalList = entity.getGroupRoles().stream()
+                .filter(Predicate.not(e -> deletable.test(e.getRole().getId())))
                 .toList();
-        return new SearchResultDto<>(result);
+
+        entity.setGroupRoles(new ArrayList<>(finalList));
     }
 
-    public SearchResultDto<GroupRoleDto> findGroupRoles(Short groupId) {
-        List<GroupRoleDto> result = groupRoleDao.findByGroupId(groupId).stream()
-                .map(GlobalPlatformMapper.INSTANCE::toDto)
+    private void addNewRoles(GroupEntity entity, GroupDto dto) {
+        dto.getGroupRoles().stream()
+                .filter(GroupRoleDto::isCreateAction)
+                .map(e -> mapper.mappingForCreate(entity, e))
+                .forEach(entity.getGroupRoles()::add);
+    }
+
+    private void removeDeletedUsers(GroupEntity entity, GroupDto dto) {
+        Predicate<Short> deletable = id -> dto.getGroupUsers().stream()
+                .filter(GroupUserDto::isDeleteAction)
+                .map(GroupUserDto::getUser)
+                .map(UserDto::getId)
+                .anyMatch(id::equals);
+
+        var finalList = entity.getGroupUsers().stream()
+                .filter(Predicate.not(e -> deletable.test(e.getUser().getId())))
                 .toList();
-        return new SearchResultDto<>(result);
+
+        entity.setGroupUsers(new ArrayList<>(finalList));
+    }
+
+    private void addNewUsers(GroupEntity entity, GroupDto dto) {
+        dto.getGroupUsers().stream()
+                .filter(GroupUserDto::isCreateAction)
+                .map(e -> mapper.mappingForCreate(entity, e))
+                .forEach(entity.getGroupUsers()::add);
     }
 
     public GroupDto update(GroupDto dto) {
         try {
-            Objects.requireNonNull(dto, "GroupDto cannot be null in GroupDto.");
-
-            Short groupId = dto.getId();
-            Objects.requireNonNull(groupId, "Group ID cannot be null for update operation.");
-
-            GroupEntity entity = dao.findById(groupId)
-                    .orElseThrow(() -> new NoSuchElementException("Group not found with id: " + groupId));
-
-            entity.setDescription(dto.getDescription());
-            beforeUpdateHistEntity(entity);
-
-            List<GroupRoleEntity> rolesToAdd = new ArrayList<>();
-            List<GroupRolePK> rolesToDelete = new ArrayList<>();
+            var entity = mapper.mappingForUpdate(dto);
 
             if (dto.getGroupRoles() != null && !dto.getGroupRoles().isEmpty()) {
-                rolesToAdd = dto.getGroupRoles().stream()
-                        .filter(AbstractBaseDto::isCreateAction)
-                        .map(this::init)
-                        .toList();
-
-                rolesToDelete = dto.getGroupRoles().stream()
-                        .filter(AbstractBaseDto::isDeleteAction)
-                        .map(GlobalPlatformMapper.INSTANCE::toEntity)
-                        .map(GroupRolePK::new)
-                        .toList();
-
+                if (entity.getGroupRoles() == null) {
+                    entity.setGroupRoles(new ArrayList<>(dto.getGroupRoles().size()));
+                }
+                removeDeletedRoles(entity, dto);
+                addNewRoles(entity, dto);
             }
-
-            List<GroupUserEntity> usersToAdd = new ArrayList<>();
-            List<GroupUserPK> usersToDelete = new ArrayList<>();
 
             if (dto.getGroupUsers() != null && !dto.getGroupUsers().isEmpty()) {
-                usersToAdd = dto.getGroupUsers().stream()
-                        .filter(AbstractBaseDto::isCreateAction)
-                        .map(this::init)
-                        .toList();
-
-                usersToDelete = dto.getGroupUsers().stream()
-                        .filter(AbstractBaseDto::isDeleteAction)
-                        .map(GlobalPlatformMapper.INSTANCE::toEntity)
-                        .map(GroupUserPK::new)
-                        .toList();
-            }
-
-            if (!rolesToAdd.isEmpty()) {
-                if (entity.getGroupRoles() == null) {
-                    entity.setGroupRoles(new ArrayList<>(rolesToAdd.size()));
-                }
-                entity.getGroupRoles().addAll(rolesToAdd);
-            }
-
-            if (!usersToAdd.isEmpty()) {
                 if (entity.getGroupUsers() == null) {
-                    entity.setGroupUsers(new ArrayList<>(usersToAdd.size()));
+                    entity.setGroupUsers(new ArrayList<>(dto.getGroupUsers().size()));
                 }
-                entity.getGroupUsers().addAll(usersToAdd);
+                removeDeletedUsers(entity, dto);
+                addNewUsers(entity, dto);
             }
 
-            entity = dao.save(entity);
-
-            if (!rolesToDelete.isEmpty()) {
-                groupRoleDao.deleteAllById(rolesToDelete);
-            }
-
-            if (!usersToDelete.isEmpty()) {
-                groupUserDao.deleteAllById(usersToDelete);
-            }
-
-            return GlobalPlatformMapper.INSTANCE.toDto(entity);
+            return GlobalPlatformMapper.INSTANCE.toDto(dao.save(entity));
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

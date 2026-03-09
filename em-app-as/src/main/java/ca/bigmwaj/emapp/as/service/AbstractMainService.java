@@ -1,9 +1,8 @@
 package ca.bigmwaj.emapp.as.service;
 
 import ca.bigmwaj.emapp.as.dao.AbstractDao;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.platform.UserDto;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
+import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.shared.DataListDto;
 import ca.bigmwaj.emapp.as.dto.shared.search.SearchInfos;
 import ca.bigmwaj.emapp.as.entity.common.AbstractBaseEntity;
 import ca.bigmwaj.emapp.dm.dto.AbstractBaseDto;
@@ -16,12 +15,11 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Function;
 
-public abstract class AbstractMainService<D extends AbstractBaseDto, E extends AbstractBaseEntity, ID> extends AbstractBaseService<D, E> {
-
-    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+public abstract class AbstractMainService<D extends AbstractBaseDto, E extends AbstractBaseEntity, ID>
+        extends AbstractBaseService {
 
     protected static final String SYSTEM_USER = "IA";
-
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -29,14 +27,7 @@ public abstract class AbstractMainService<D extends AbstractBaseDto, E extends A
 
     protected abstract AbstractDao<E, ID> getDao();
 
-    public SearchResultDto<D> searchAll() {
-        var r = getDao().findAll().stream()
-                .map(this.getEntityToDtoMapper())
-                .toList();
-        return new SearchResultDto<>(r);
-    }
-
-    public SearchResultDto<D> search(DefaultSearchCriteria sc) {
+    public DataListDto<D> search(AbstractSearchCriteria sc) {
         Objects.requireNonNull(sc);
 
         var searchStats = new SearchInfos(sc);
@@ -50,7 +41,7 @@ public abstract class AbstractMainService<D extends AbstractBaseDto, E extends A
                 .map(this.getEntityToDtoMapper())
                 .toList();
 
-        return new SearchResultDto<>(searchStats, r);
+        return new DataListDto<>(searchStats, r);
     }
 
     public D findById(ID id) {
@@ -60,11 +51,12 @@ public abstract class AbstractMainService<D extends AbstractBaseDto, E extends A
                 .orElseThrow(() -> new NoSuchElementException("Entity not found with id: " + id));
     }
 
-    protected void beforeDelete(ID id){
+    protected void beforeDelete(ID id) {
 
     }
 
-    protected void afterDelete(ID id){}
+    protected void afterDelete(ID id) {
+    }
 
     public void deleteById(ID id) {
         Objects.requireNonNull(id, "ID cannot be null for deleteById.");

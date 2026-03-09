@@ -1,12 +1,14 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { RoleDto, RolePrivilegeDto, RoleUserDto } from "../../../api.platform.model";
-import { Observable, of } from "rxjs";
+import { RoleDto, RolePrivilegeDto } from "../../../api.platform.model";
 import { AbstractIndexComponent } from "../../../../shared/component/abstract-index.component";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { EditActionLvo, SearchInfos, SearchResult } from "../../../../shared/api.shared.model";
 import { RoleService } from "../../../service/role.service";
 import { PageEvent } from "@angular/material/paginator";
+import { PrivilegeHelper } from "../../../helper/privilege.helper";
+import { AbstractSearchCriteria, SearchResult } from "../../../../shared/api.shared.model";
+import { Observable, of } from "rxjs";
+import { RolePrivilegeHelper } from "../../../helper/role-privilege.helper";
 
 @Component({
   selector: 'app-role-privilege-assigned-list',
@@ -15,6 +17,7 @@ import { PageEvent } from "@angular/material/paginator";
   standalone: false
 })
 export class RolePrivilegeAssignedListComponent extends AbstractIndexComponent<RolePrivilegeDto> {
+  
   displayedColumns: string[] = ['select', 'name', 'description', 'actions'];
 
   @Output() onPrivilegeRemoved = new EventEmitter<RolePrivilegeDto>();
@@ -25,11 +28,8 @@ export class RolePrivilegeAssignedListComponent extends AbstractIndexComponent<R
   @Input()
   isViewMode = false;
 
-  constructor(
-    protected override router: Router,
-    protected override dialog: MatDialog,
-    protected service: RoleService) {
-    super(router, dialog);
+  constructor( protected override helper: RolePrivilegeHelper) {
+    super(helper);
   }
 
   override ngOnInit(): void {
@@ -39,19 +39,9 @@ export class RolePrivilegeAssignedListComponent extends AbstractIndexComponent<R
     }
   }
 
-  override search(): Observable<SearchResult<RolePrivilegeDto>> {
-    if (this.dto?.id) {
-      return this.service.getRolePrivileges(this.dto.id)
-    }
-    return of({ data: [], searchInfos: {} as SearchInfos } as SearchResult<RoleUserDto>);
-  }
-
-  protected override getBaseRoute(): string {
-    throw new Error("Method not implemented.");
-  }
-
-  protected override duplicateDto(dto: RolePrivilegeDto): RolePrivilegeDto {
-    throw new Error("Method not implemented.");
+  override loadData(): void {    
+    this.searchCriteria.variables = { roleId: this.dto?.id };
+    super.loadData();
   }
 
   override getKeyLabel(dto: RolePrivilegeDto): string | number {
@@ -63,11 +53,11 @@ export class RolePrivilegeAssignedListComponent extends AbstractIndexComponent<R
   }
 
   isDeleted(rp: RolePrivilegeDto): boolean {
-    return rp.editAction === EditActionLvo.DELETE;
+    return rp.retired === true;
   }
 
   isCreated(rp: RolePrivilegeDto): boolean {
-    return rp.editAction === EditActionLvo.CREATE;
+    return rp.New === true;
   }
 
   /**
@@ -75,10 +65,10 @@ export class RolePrivilegeAssignedListComponent extends AbstractIndexComponent<R
    * @param privilege to remove from the role's rolePrivileges list and deselect from assignPrivilegesTable
    */
   removePrivilege(rp: RolePrivilegeDto) {
-    if (rp.editAction === EditActionLvo.CREATE) {
+    if (rp.New === true) {
       this.onPrivilegeRemoved.emit(rp);
     } else {
-      rp.editAction = rp.editAction === EditActionLvo.DELETE ? EditActionLvo.NONE : EditActionLvo.DELETE;
+      rp.retired = !rp.retired;
     }
   }
 

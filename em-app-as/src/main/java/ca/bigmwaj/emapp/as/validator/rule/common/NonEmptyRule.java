@@ -15,9 +15,9 @@ public class NonEmptyRule extends AbstractRule {
             return false;
         }
 
-        if( value instanceof Collection<?> collection) {
+        if (value instanceof Collection<?> collection) {
             return !collection.isEmpty();
-        }else{
+        } else {
             throw new ValidationConfigurationException("NonEmptyRule only supports Collection types");
         }
     }

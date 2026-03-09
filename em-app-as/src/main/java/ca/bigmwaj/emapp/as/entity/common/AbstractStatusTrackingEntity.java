@@ -12,14 +12,13 @@ import java.time.LocalDateTime;
 @Data
 public abstract class AbstractStatusTrackingEntity<T> extends AbstractChangeTrackingEntity {
 
+    @Column(name = "STATUS_REASON")
+    private String statusReason;
+    @Column(name = "STATUS_DATE")
+    private LocalDateTime statusDate;
+
     public abstract T getStatus();
 
     public abstract void setStatus(T status);
-
-    @Column(name = "STATUS_REASON")
-    private String statusReason;
-
-    @Column(name = "STATUS_DATE")
-    private LocalDateTime statusDate;
 
 }

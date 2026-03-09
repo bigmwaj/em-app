@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -24,12 +23,10 @@ import java.util.Map;
 @Component
 public class AuthenticationFilter extends OncePerRequestFilter {
 
+    private static final String BASIC_PREFIX = "Basic ";
+    private static final String BEARER_PREFIX = "Bearer ";
     @Autowired
     private JwtTokenProvider tokenProvider;
-
-    private static final String BASIC_PREFIX = "Basic ";
-
-    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {

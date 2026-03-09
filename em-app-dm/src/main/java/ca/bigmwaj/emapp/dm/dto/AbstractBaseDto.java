@@ -1,8 +1,8 @@
 package ca.bigmwaj.emapp.dm.dto;
 
-import ca.bigmwaj.emapp.dm.lvo.shared.EditActionLvo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
@@ -10,61 +10,33 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true, setterPrefix = "with")
 public abstract class AbstractBaseDto {
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    private boolean _new;
+    private boolean New;
+
+    private boolean retired;
 
     private Object key;
 
-    private EditActionLvo editAction;
-
-    @JsonIgnore
-    public boolean isCreateOrUpdateAction() {
-        return isCreateAction() || isUpdateAction();
-    }
-
-    @JsonIgnore
-    public boolean isCreateAction() {
-        return EditActionLvo.CREATE.equals(getEditAction());
-    }
-
-    @JsonIgnore
-    public boolean isUpdateAction() {
-        return EditActionLvo.UPDATE.equals(getEditAction());
-    }
-
-    @JsonIgnore
-    public boolean isDeleteAction() {
-        return EditActionLvo.DELETE.equals(getEditAction());
-    }
-
-    @JsonIgnore
-    public boolean isUpdateOrChangeStatusAction() {
-        return isUpdateAction() || isChangeStatusAction();
-    }
-
-    @JsonIgnore
-    public boolean isChangeStatusAction() {
-        return EditActionLvo.CHANGE_STATUS.equals(getEditAction());
-    }
-
-    @JsonIgnore
-    public boolean isNew() {
-        return _new;
-    }
-
-    @JsonIgnore
-    public void setNew(boolean _new) {
-        this._new = _new;
-    }
-
+    @Deprecated
     @JsonIgnore
     public boolean isNotToDelete() {
-        return !EditActionLvo.DELETE.equals(getEditAction());
+        return !retired;
     }
 
+    @Deprecated
     @JsonIgnore
     public boolean isToDelete() {
-        return EditActionLvo.DELETE.equals(getEditAction());
+        return retired;
+    }
+
+    public boolean isCreateAction() {
+        return New;
+    }
+
+    public boolean isDeleteAction() {
+        return retired;
+    }
+
+    public boolean isUpdateAction() {
+        return !New && !retired;
     }
 }

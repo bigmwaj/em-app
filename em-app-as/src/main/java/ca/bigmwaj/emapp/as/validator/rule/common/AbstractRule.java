@@ -14,7 +14,7 @@ public abstract class AbstractRule {
 
     public abstract boolean isValid(Object value, Map<String, String> parameters);
 
-    public boolean isValid(Object dto, Object value, Map<String, String> parameters){
+    public boolean isValid(Object dto, Object value, Map<String, String> parameters) {
         return isValid(value, parameters);
     }
 

@@ -12,22 +12,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponse {
-    
+
     /**
      * JWT access token for authenticated requests
      */
     private String token;
-    
+
     /**
      * Token type (always "Bearer" for JWT)
      */
     private String tokenType = "Bearer";
-    
+
     /**
      * Token expiration time in milliseconds
      */
     private Long expiresIn;
-    
+
     public LoginResponse(String token, Long expiresIn) {
         this.token = token;
         this.tokenType = "Bearer";

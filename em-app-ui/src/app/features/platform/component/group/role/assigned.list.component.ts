@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { GroupDto, GroupRoleDto } from "../../../api.platform.model";
-import { Observable, of } from "rxjs";
 import { AbstractIndexComponent } from "../../../../shared/component/abstract-index.component";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { EditActionLvo, SearchInfos, SearchResult } from "../../../../shared/api.shared.model";
 import { GroupService } from "../../../service/group.service";
+import { GroupRoleHelper } from "../../../helper/group-role.helper";
 
 @Component({
   selector: 'app-group-role-assigned-list',
@@ -25,32 +24,21 @@ export class GroupRoleAssignedListComponent extends AbstractIndexComponent<Group
   isViewMode = false;
 
   constructor(
-    protected override router: Router,
-    protected override dialog: MatDialog,
-    protected service: GroupService) {
-    super(router, dialog);
+    protected override helper: GroupRoleHelper) {
+
+    super(helper);
   }
 
-  override ngOnInit(): void {
+  override ngOnInit(): void {  
     super.ngOnInit();
     if (this.isViewMode) {
       this.displayedColumns = this.displayedColumns.filter(col => col !== 'select' && col !== 'actions');
     }
   }
 
-  override search(): Observable<SearchResult<GroupRoleDto>> {
-    if (this.dto?.id) {
-      return this.service.getGroupRoles(this.dto.id)
-    }
-    return of({ data: [], searchInfos: {} as SearchInfos } as SearchResult<GroupRoleDto>);
-  }
-
-  protected override getBaseRoute(): string {
-    throw new Error("Method not implemented.");
-  }
-
-  protected override duplicateDto(dto: GroupRoleDto): GroupRoleDto {
-    throw new Error("Method not implemented.");
+  override loadData(): void {    
+    this.searchCriteria.variables = { groupId: this.dto?.id };
+    super.loadData();
   }
 
   override getKeyLabel(dto: GroupRoleDto): string | number {
@@ -62,11 +50,11 @@ export class GroupRoleAssignedListComponent extends AbstractIndexComponent<Group
   }
 
   isDeleted(gr: GroupRoleDto): boolean {
-    return gr.editAction === EditActionLvo.DELETE;
+    return gr.checked === false;
   }
 
   isCreated(gr: GroupRoleDto): boolean {
-    return gr.editAction === EditActionLvo.CREATE;
+    return gr.checked === true;
   }
 
   /**
@@ -74,10 +62,10 @@ export class GroupRoleAssignedListComponent extends AbstractIndexComponent<Group
    * @param role to remove from the group's groupRoles list and deselect from assignRolesTable
    */
   removeRole(gr: GroupRoleDto) {
-    if (gr.editAction === EditActionLvo.CREATE) {
+    if (gr.checked === true) {
       this.onRoleRemoved.emit(gr);
     } else {
-      gr.editAction = gr.editAction === EditActionLvo.DELETE ? EditActionLvo.NONE : EditActionLvo.DELETE;
+      gr.checked = false;
     }
   }
 }

@@ -12,5 +12,6 @@ import java.util.List;
 @Data
 public class ConditionConfig {
     private String expression;
+
     private List<RuleConfig> rules = new ArrayList<>();
 }

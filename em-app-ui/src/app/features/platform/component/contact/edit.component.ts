@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { FormGroup, Validators } from '@angular/forms';
 import { ContactService } from '../../service/contact.service';
 import {
   ContactDto,
@@ -10,7 +8,6 @@ import {
   PhoneTypeLvo,
   AddressTypeLvo,
 } from '../../api.platform.model';
-import { SharedHelper } from '../../../shared/shared.helper';
 import { COUNTRIES } from '../../constants/country.constants';
 import { AbstractEditComponent } from '../../../shared/component/abstract-edit.component';
 import { ContactHelper } from '../../helper/contact.helper';
@@ -23,8 +20,6 @@ import { ContactHelper } from '../../helper/contact.helper';
 })
 export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
-  ContactHelper = ContactHelper;
-
   // Enums for dropdowns
   OwnerTypeLvo = OwnerTypeLvo;
   EmailTypeLvo = EmailTypeLvo;
@@ -35,22 +30,14 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
   readonly countries = COUNTRIES;
 
   constructor(
-    protected override fb: FormBuilder,
-    protected override router: Router,
-    protected override route: ActivatedRoute,
-    protected override dialog: MatDialog,
-    private service: ContactService,
-  ) {
-    super(fb, router, route, dialog);
+    protected override helper: ContactHelper,
+    private service: ContactService){
+      
+    super(helper);
 
     this.delete = (dto) => this.service.deleteContact(dto);
     this.create = (dto) => this.service.createContact(dto);
     this.update = (dto) => this.service.updateContact(dto);
-    this.buildFormData = (dto) => ContactHelper.buildFormData(dto);
-  }
-
-  protected override getBaseRoute(): string {
-    return '/platform/contacts';
   }
 
   protected override initializeForms(): FormGroup[] {
@@ -88,9 +75,9 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
   }
 
   protected populateForms(): void {
-    const defaultEmail = ContactHelper.getDefaultContactEmail(this.dto!);
-    const defaultPhone = ContactHelper.getDefaultContactPhone(this.dto!);
-    const defaultAddress = ContactHelper.getDefaultContactAddress(this.dto!);
+    const defaultEmail = this.helper.getDefaultContactEmail(this.dto!);
+    const defaultPhone = this.helper.getDefaultContactPhone(this.dto!);
+    const defaultAddress = this.helper.getDefaultContactAddress(this.dto!);
 
     this.mainForm.patchValue({
       firstName: this.dto!.firstName,
@@ -137,7 +124,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
       // Preserve ID if editing
       if (this.isEditMode) {
-        const existingEmail = ContactHelper.getDefaultContactEmail(this.dto!);
+        const existingEmail = this.helper.getDefaultContactEmail(this.dto!);
         if (existingEmail?.id) {
           contactDto.emails[0].id = existingEmail.id;
           contactDto.emails[0].contactId = this.dto!.id;
@@ -158,7 +145,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
       // Preserve ID if editing
       if (this.isEditMode) {
-        const existingPhone = ContactHelper.getDefaultContactPhone(this.dto!);
+        const existingPhone = this.helper.getDefaultContactPhone(this.dto!);
         if (existingPhone?.id) {
           contactDto.phones[0].id = existingPhone.id;
           contactDto.phones[0].contactId = this.dto!.id;
@@ -182,7 +169,7 @@ export class ContactEditComponent extends AbstractEditComponent<ContactDto> {
 
       // Preserve ID if editing
       if (this.isEditMode) {
-        const existingAddress = ContactHelper.getDefaultContactAddress(this.dto!);
+        const existingAddress = this.helper.getDefaultContactAddress(this.dto!);
         if (existingAddress?.id) {
           contactDto.addresses[0].id = existingAddress.id;
           contactDto.addresses[0].contactId = this.dto!.id;

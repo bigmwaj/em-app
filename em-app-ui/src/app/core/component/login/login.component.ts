@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
-import { PageData } from '../../../features/shared/shared.helper';
+import { PageData } from '../../../features/shared/base.helper';
 
 @Component({
   selector: 'app-login',

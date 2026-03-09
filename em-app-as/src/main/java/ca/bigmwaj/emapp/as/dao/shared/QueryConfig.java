@@ -51,22 +51,17 @@ import java.util.Map;
 @Builder(setterPrefix = "with")
 public class QueryConfig {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(QueryConfig.class);
-
-    private WhereClauseJoinOp whereClauseJoinOp;
-
-    private String specialWhereClause;
-
-    /**
-     * Base JPQL query string (e.g., "SELECT qRoot FROM User qRoot").
-     */
-    private String baseQuery;
-
     /**
      * Default root entity alias used in JPQL queries.
      */
     public final static String Q_ROOT = "qRoot";
-
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(QueryConfig.class);
+    private WhereClauseJoinOp whereClauseJoinOp;
+    private String specialWhereClause;
+    /**
+     * Base JPQL query string (e.g., "SELECT qRoot FROM User qRoot").
+     */
+    private String baseQuery;
     /**
      * Map of named parameters and their values for the query.
      * These parameters are referenced in the WHERE clause (e.g., :firstName).
@@ -124,7 +119,7 @@ public class QueryConfig {
 
         var q = switch (whereClause.getOper()) {
             case like -> {
-                var param = v.get(0).toString().toLowerCase();
+                var param = v.getFirst().toString().toLowerCase();
                 qb.withParam(dbFieldName, "%" + param + "%");
                 yield String.format("lower(%s.%s) like :%s", rootEntity, dbFieldName, dbFieldName);
             }
@@ -133,19 +128,19 @@ public class QueryConfig {
                 yield String.format("%s.%s in (:%s)", rootEntity, dbFieldName, dbFieldName);
             }
             case lt -> {
-                qb.withParam(dbFieldName, v.get(0));
+                qb.withParam(dbFieldName, v.getFirst());
                 yield String.format("%s.%s < :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case lte -> {
-                qb.withParam(dbFieldName, v.get(0));
+                qb.withParam(dbFieldName, v.getFirst());
                 yield String.format("%s.%s <= :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case gt -> {
-                qb.withParam(dbFieldName, v.get(0));
+                qb.withParam(dbFieldName, v.getFirst());
                 yield String.format("%s.%s > :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case gte -> {
-                qb.withParam(dbFieldName, v.get(0));
+                qb.withParam(dbFieldName, v.getFirst());
                 yield String.format("%s.%s >= :%s", rootEntity, dbFieldName, dbFieldName);
             }
             case ne, ni -> {
@@ -153,8 +148,8 @@ public class QueryConfig {
                 yield String.format("%s.%s not in (:%s)", rootEntity, dbFieldName, dbFieldName);
             }
             case btw -> {
-                qb.withParam(dbFieldName + "Min", v.get(0))
-                        .withParam(dbFieldName + "Max", v.get(v.size() - 1));
+                qb.withParam(dbFieldName + "Min", v.getFirst())
+                        .withParam(dbFieldName + "Max", v.getLast());
                 yield String.format("%s.%s between :%sMin and :%sMax", rootEntity, dbFieldName, dbFieldName, dbFieldName);
             }
         };

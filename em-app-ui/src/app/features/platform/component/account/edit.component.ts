@@ -1,25 +1,23 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { AccountService } from '../../service/account.service';
+import { FormGroup, Validators } from '@angular/forms';
+import { AbstractEditWithStatusComponent } from '../../../shared/component/abstract-edit-with-status.component';
 import {
+  AccountContactDto,
+  AccountContactRoleLvo,
   AccountDto,
   AccountStatusLvo,
-  OwnerTypeLvo,
-  EmailTypeLvo,
-  PhoneTypeLvo,
   AddressTypeLvo,
-  UsernameTypeLvo,
+  ContactAddressDto,
   ContactDto,
   ContactEmailDto,
   ContactPhoneDto,
-  ContactAddressDto,
-  AccountContactDto,
-  AccountContactRoleLvo,
+  EmailTypeLvo,
+  OwnerTypeLvo,
+  PhoneTypeLvo,
+  UsernameTypeLvo,
 } from '../../api.platform.model';
-import { AbstractEditWithStatusComponent } from '../../../shared/component/abstract-edit-with-status.component';
 import { AccountHelper } from '../../helper/account.helper';
+import { AccountService } from '../../service/account.service';
 
 @Component({
   selector: 'app-account-edit',
@@ -32,22 +30,13 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
   adminUserForm!: FormGroup;
 
   constructor(
-    protected override fb: FormBuilder,
-    protected override router: Router,
-    protected override route: ActivatedRoute,
-    protected override dialog: MatDialog,
-    private service: AccountService
-  ) {
-    super(fb, router, route, dialog);
+    protected override helper: AccountHelper,
+    private service: AccountService) {
+    super(helper);
     this.delete = (dto) => this.service.deleteAccount(dto);
     this.create = (dto) => this.service.createAccount(dto);
     this.update = (dto) => this.service.updateAccount(dto);
     this.changeStatus = (dto) => this.service.updateAccount(dto as AccountDto);
-    this.buildFormData = (dto) => AccountHelper.buildFormData(dto);
-  }
-
-  protected override getBaseRoute(): string {
-    return '/platform/accounts';
   }
 
   override get isInvalidForm(): boolean {
@@ -59,7 +48,6 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
   protected override initializeForms(): FormGroup[] {
     // Account Details Form
     this.mainForm = this.fb.group({
-      editAction: [this.editAction],
       id: [],
       name: ['', Validators.required],
       description: [''],
@@ -94,7 +82,6 @@ export class AccountEditComponent extends AbstractEditWithStatusComponent<Accoun
     const contactFormValue = this.primaryAccountContactForm.value;
 
     const accountDto: AccountDto = {
-      editAction: this.editAction, // required for validation in service layer
       id: mainFormValue.id,
       name: mainFormValue.name,
       description: mainFormValue.description,

@@ -11,20 +11,17 @@ import java.util.List;
 @Data
 public abstract class AbstractClause {
 
-    public AbstractClause(String name){
-        this.name = name;
-    }
-
-    private String name;
-
     @JsonIgnore
     private final List<String> validationErrorMessages = new ArrayList<>();
-
+    private String name;
     @JsonIgnore
     private String entityFieldName;
-
     @JsonIgnore
     private String rootEntityName;
+
+    public AbstractClause(String name) {
+        this.name = name;
+    }
 
     public void addMessage(String message) {
         validationErrorMessages.add(message);

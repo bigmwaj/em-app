@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="updateAction">
+        <condition expression="#update">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="ownerType">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
             <rule type="OwnerTypeRule"/>
         </condition>
     </field>
 
     <field name="firstName">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
     <field name="lastName">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
     <field name="birthDate">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="BirthDateRule" minAge="18"/>
         </condition>
     </field>
 
     <field name="emails" type="dtoList">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonEmptyRule"/>
         </condition>
         <validationConfig>
             <field name="id">
-                <condition expression="updateAction">
+                <condition expression="#update">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="ownerType">
-                <condition expression="createAction">
+                <condition expression="#create">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="type">
-                <condition expression="createOrUpdateAction">
+                <condition expression="#createOrUpdate">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="email">
-                <condition expression="createOrUpdateAction">
+                <condition expression="#createOrUpdate">
                     <rule type="NotBlankRule"/>
                 </condition>
             </field>
@@ -62,27 +62,27 @@
     </field>
 
     <field name="phones" type="dtoList">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonEmptyRule"/>
         </condition>
         <validationConfig>
             <field name="id">
-                <condition expression="updateAction">
+                <condition expression="#update">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="ownerType">
-                <condition expression="createAction">
+                <condition expression="#create">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="type">
-                <condition expression="createOrUpdateAction">
+                <condition expression="#createOrUpdate">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="phone">
-                <condition expression="createOrUpdateAction">
+                <condition expression="#createOrUpdate">
                     <rule type="NotBlankRule"/>
                 </condition>
             </field>
@@ -92,22 +92,22 @@
     <field name="addresses" type="dtoList">
         <validationConfig>
             <field name="id">
-                <condition expression="updateAction">
+                <condition expression="#update">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="ownerType">
-                <condition expression="createAction">
+                <condition expression="#create">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="type">
-                <condition expression="createOrUpdateAction">
+                <condition expression="#createOrUpdate">
                     <rule type="NonNullRule"/>
                 </condition>
             </field>
             <field name="address">
-                <condition expression="createOrUpdateAction">
+                <condition expression="#createOrUpdate">
                     <rule type="NotBlankRule"/>
                 </condition>
             </field>

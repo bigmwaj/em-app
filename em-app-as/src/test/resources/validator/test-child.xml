@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation>
+    <operation name="common-validation1">
+        <field name="field1">
+            <condition expression="true">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+    </operation>
+    <operation name="common-validation2">
+        <field name="field2">
+            <condition expression="true">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+    </operation>
+    <operation name="op1" extends="common-validation1">
+        <field name="field3">
+            <condition expression="true">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+    </operation>
+    <operation name="op2" extends="common-validation1, common-validation2">
+        <field name="field2">
+            <condition expression="true">
+                <rule type="NotBlankRule"/>
+            </condition>
+        </field>
+        <field name="field3">
+            <condition expression="true">
+                <rule type="NonNullRule"/>
+            </condition>
+        </field>
+    </operation>
+</validation>

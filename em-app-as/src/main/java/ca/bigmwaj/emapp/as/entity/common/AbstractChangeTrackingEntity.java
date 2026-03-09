@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 @Data
-public abstract class AbstractChangeTrackingEntity extends AbstractBaseEntity{
+public abstract class AbstractChangeTrackingEntity extends AbstractBaseEntity {
 
     @Column(name = "CREATED_BY", updatable = false, nullable = false)
     private String createdBy;
@@ -18,10 +18,10 @@ public abstract class AbstractChangeTrackingEntity extends AbstractBaseEntity{
     @Column(name = "CREATED_DATE", updatable = false, nullable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "UPDATED_BY", updatable = false)
+    @Column(name = "UPDATED_BY", nullable = false)
     private String updatedBy;
 
-    @Column(name = "UPDATED_DATE", updatable = false)
+    @Column(name = "UPDATED_DATE", nullable = false)
     private LocalDateTime updatedDate;
 
 }

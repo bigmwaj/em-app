@@ -23,6 +23,6 @@ public class GroupNameUniqueRule extends AbstractRule {
 
     @Override
     public String getErrorMessage(String fieldName, Object value, Map<String, String> parameters) {
-        return "The group '%s' already exists." .formatted(value.toString());
+        return "The group '%s' already exists.".formatted(value.toString());
     }
 }

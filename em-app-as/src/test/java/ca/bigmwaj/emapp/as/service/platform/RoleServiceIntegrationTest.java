@@ -48,7 +48,7 @@ class RoleServiceIntegrationTest extends AbstractDtoValidatorTest {
     UserDto existingUser;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         existingPrivilege = TestPrivilegeDtoBuilder.withDefaults().build();
         existingUser = TestUserDtoBuilder.builderWithAllDefaults().build();
         var createPrivilege = privilegeDao.save(GlobalPlatformMapper.INSTANCE.toEntity(existingPrivilege));
@@ -160,7 +160,7 @@ class RoleServiceIntegrationTest extends AbstractDtoValidatorTest {
         RoleDto existingRole = buildRoleDto(existingPrivilege, existingUser);
         existingRole = service.create(existingRole);
 
-        existingRole.setEditAction(EditActionLvo.UPDATE);
+        existingRole.setNew(false);
         assertNoViolations(existingRole);
 
         existingRole.setDescription( existingRole.getDescription() + "Updated");

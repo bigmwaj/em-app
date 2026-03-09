@@ -18,7 +18,7 @@ public interface ContactDao extends AbstractDao<ContactEntity, Long> {
     }
 
     @Override
-    default String getQuery(String queryPart){
+    default String getQuery(String queryPart) {
         var root = ContactEntity.class.getSimpleName();
         var cp = ContactPhoneEntity.class.getSimpleName();
         var ce = ContactEmailEntity.class.getSimpleName();

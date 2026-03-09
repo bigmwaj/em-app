@@ -43,7 +43,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     @Override
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response,
-                                       Authentication authentication) {
+                                        Authentication authentication) {
         var token = tokenProvider.generateToken(authentication);
 
         return UriComponentsBuilder.fromUriString(redirectUri)

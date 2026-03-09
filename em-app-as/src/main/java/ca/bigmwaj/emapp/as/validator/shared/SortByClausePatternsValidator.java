@@ -1,5 +1,6 @@
 package ca.bigmwaj.emapp.as.validator.shared;
 
+import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
 import ca.bigmwaj.emapp.as.shared.MessageConstants;
 import jakarta.validation.ConstraintValidator;
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SortByClausePatternsValidator implements ConstraintValidator<ValidSortByClausePatterns, List<SortByClause>> {
+public class SortByClausePatternsValidator implements ConstraintValidator<ValidSortByClausePatterns, AbstractSearchCriteria> {
 
     private ValidSortByClausePatterns patterns;
 
@@ -20,7 +21,8 @@ public class SortByClausePatternsValidator implements ConstraintValidator<ValidS
     }
 
     @Override
-    public boolean isValid(List<SortByClause> sortByClauses, ConstraintValidatorContext context) {
+    public boolean isValid(AbstractSearchCriteria searchCriteria, ConstraintValidatorContext context) {
+        List<SortByClause> sortByClauses = searchCriteria.getSortByClauses();
         if (sortByClauses == null || sortByClauses.isEmpty()) {
             return true;
         }
@@ -68,6 +70,6 @@ public class SortByClausePatternsValidator implements ConstraintValidator<ValidS
     }
 
     public List<String> getSupportedFieldNames() {
-        return Arrays.stream(patterns.supportedFields()).map(SortByClauseSupportedField::name).toList();
+        return Arrays.stream(patterns.supportedFields()).map(SupportedField::name).toList();
     }
 }

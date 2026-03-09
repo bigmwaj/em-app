@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = WhereClausePatternsValidator.class)
-@Target({ElementType.PARAMETER})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidWhereClausePatterns {
     String message() default "Invalid request filter!";
@@ -18,6 +18,6 @@ public @interface ValidWhereClausePatterns {
 
     Class<? extends Payload>[] payload() default {};
 
-    WhereClauseSupportedField[] supportedFields() default {};
+    SupportedField[] supportedFields() default {};
 }
 

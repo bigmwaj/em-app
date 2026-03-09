@@ -1,40 +1,34 @@
 package ca.bigmwaj.emapp.as.api.platform;
 
 import ca.bigmwaj.emapp.as.api.AbstractBaseAPI;
-import ca.bigmwaj.emapp.as.api.shared.Constants;
 import ca.bigmwaj.emapp.as.api.shared.Message;
 import ca.bigmwaj.emapp.as.api.shared.ResponseMessage;
-import ca.bigmwaj.emapp.as.dto.common.DefaultSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.platform.AccountDto;
 import ca.bigmwaj.emapp.as.dto.platform.DeadLetterDto;
-import ca.bigmwaj.emapp.as.dto.shared.SearchResultDto;
-import ca.bigmwaj.emapp.as.dto.shared.search.SortByClause;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClause;
-import ca.bigmwaj.emapp.as.dto.shared.search.WhereClauseJoinOp;
+import ca.bigmwaj.emapp.as.dto.platform.DeadLetterSearchCriteria;
+import ca.bigmwaj.emapp.as.dto.shared.DataListDto;
 import ca.bigmwaj.emapp.as.service.platform.DeadLetterService;
-import ca.bigmwaj.emapp.as.validator.shared.SortByClauseSupportedField;
-import ca.bigmwaj.emapp.as.validator.shared.ValidSortByClausePatterns;
-import ca.bigmwaj.emapp.as.validator.shared.ValidWhereClausePatterns;
-import ca.bigmwaj.emapp.as.validator.shared.WhereClauseSupportedField;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import ca.bigmwaj.emapp.as.validator.shared.ValidDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import static ca.bigmwaj.emapp.as.validator.shared.ValidDto.*;
 
-@Tag(name = "dead-letter", description = "The Dead Letters API")
+@Tag(name = "Dead Letters API", description = "The Dead Letters API")
 @RestController
 @RequestMapping("/api/v1/platform/dead-letters")
 @Validated
 public class DeadLetterController extends AbstractBaseAPI {
+
+    private static final String NAMESPACE = "platform/dead-letter";
 
     private final DeadLetterService service;
 
@@ -43,89 +37,50 @@ public class DeadLetterController extends AbstractBaseAPI {
         this.service = service;
     }
 
-    @Operation(
-            summary = "Search Dead Letters by criteria",
-            externalDocs = @ExternalDocumentation(
-                    description = "Full documentation",
-                    url = "https://github.com/bigmwaj/smart-cm-project/tree/main/smart-cm-project-admin/README.md"
-            ),
-            description = "Search dead letter with optional filters and pagination",
-            tags = {"dead-letter", "dead", "letter", "search"}
-    )
+    @Operation(description = "Search Dead Letters by criteria")
     @GetMapping
-    public ResponseEntity<SearchResultDto<DeadLetterDto>> search(
-            @Positive
-            @Parameter(description = "The page size to send")
-            @RequestParam(value = "pageSize", required = false)
-            Short pageSize,
-
-            @PositiveOrZero
-            @Parameter(description = "The page index for filtering")
-            @RequestParam(value = "pageIndex", required = false)
-            Integer pageIndex,
-
-            @DefaultValue("and")
-            @Parameter(description = "Where clause join operator. Default is and")
-            @RequestParam(value = "whereClauseJoinOp", required = false)
-            WhereClauseJoinOp whereClauseJoinOp,
-
-            @Parameter(description = "Calculate the total corresponding to filters")
-            @RequestParam(value = "calculateStatTotal", required = false)
-            boolean calculateStatTotal,
-
-            @ValidWhereClausePatterns(
-                    supportedFields = {
-                            @WhereClauseSupportedField(name = "name", type = String.class),
-                            @WhereClauseSupportedField(name = "description", type = String.class),
-                    })
-            @Parameter(description = "Filter results based on the following supported filter fields." +
-                    "<ul>" +
-                    "<li><b>name</b></li>" +
-                    "<li><b>description</b></li>" +
-                    "</ul>" +
-                    Constants.FILTER_DOC)
-            @RequestParam(value = "filters", required = false)
-            List<WhereClause> whereClauses,
-
-            @ValidSortByClausePatterns(
-                    supportedFields = {
-                            @SortByClauseSupportedField(name = "name"),
-                            @SortByClauseSupportedField(name = "description"),
-                    })
-            @RequestParam(value = "sortBy", required = false)
-            List<SortByClause> sortByClauses
-    ) {
-
-        var builder = DefaultSearchCriteria.builder()
-                .withCalculateStatTotal(calculateStatTotal)
-                .withPageSize(pageSize)
-                .withPageIndex(pageIndex)
-                .withWhereClauseJoinOp(whereClauseJoinOp)
-                .withWhereClauses(whereClauses)
-                .withSortByClauses(sortByClauses);
-
-        return ResponseEntity.ok(service.search(builder.build()));
+    public ResponseEntity<DataListDto<DeadLetterDto>> search(
+            @Valid @ParameterObject DeadLetterSearchCriteria sr) {
+        return ResponseEntity.ok(service.search(sr));
     }
 
+    @Operation(description = "Get dead letter by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseMessage<DeadLetterDto>> findById(
+            @Parameter(description = "The dead letter's ID", required = true)
+            @Positive @PathVariable Long id) {
+        return ResponseEntity.ok(new ResponseMessage<>(service.findById(id)));
+    }
+
+    @Operation(description = "Create new dead letter")
     @PostMapping
     public ResponseEntity<ResponseMessage<DeadLetterDto>> create(
             @Parameter(description = "The deadLetter's payload", required = true)
-            @RequestBody @Valid DeadLetterDto dto) {
+            @RequestBody @ValidDto(value = NAMESPACE, operation = CREATE) DeadLetterDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.create(dto)));
     }
 
+    @Operation(description = "Update an existing dead letter")
     @PatchMapping
     public ResponseEntity<ResponseMessage<DeadLetterDto>> update(
             @Parameter(description = "The DeadLetter's payload", required = true)
-            @RequestBody @Valid DeadLetterDto dto) {
+            @RequestBody @ValidDto(value = NAMESPACE, operation = UPDATE) DeadLetterDto dto) {
         return ResponseEntity.ok(new ResponseMessage<>(service.update(dto)));
     }
 
-    @DeleteMapping("/{deadLetterId}")
+    @Operation(description = "Delete a dead letter by ID")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Message> delete(
             @Parameter(description = "The deadLetter's ID", required = true)
-            @Positive @PathVariable Long deadLetterId) {
-        service.deleteById(deadLetterId);
+            @ParameterObject @ValidDto(value = NAMESPACE, operation = DELETE) DeadLetterDto dto) {
+        service.deleteById(dto.getId());
         return ResponseEntity.ok(_success("DeadLetter successfully deleted."));
+    }
+
+    @Operation(description = "Change the status of a dead letter")
+    @PostMapping("/{id}/change-status/{status}")
+    public ResponseEntity<ResponseMessage<DeadLetterDto>> changeStatus(
+            @ParameterObject @ValidDto(value = NAMESPACE, operation = CHANGE_STATUS) DeadLetterDto dto) {
+        return ResponseEntity.ok(new ResponseMessage<>(service.changeStatus(dto)));
     }
 }

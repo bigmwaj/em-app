@@ -3,7 +3,6 @@ package ca.bigmwaj.emapp.as.dao.platform;
 import ca.bigmwaj.emapp.as.dao.AbstractDao;
 import ca.bigmwaj.emapp.as.dto.common.AbstractSearchCriteria;
 import ca.bigmwaj.emapp.as.dto.platform.PrivilegeSearchCriteria;
-import ca.bigmwaj.emapp.as.dto.platform.UserSearchCriteria;
 import ca.bigmwaj.emapp.as.entity.platform.PrivilegeEntity;
 import org.springframework.stereotype.Repository;
 

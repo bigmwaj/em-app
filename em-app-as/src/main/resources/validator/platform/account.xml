@@ -1,76 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <validation>
     <field name="id">
-        <condition expression="updateOrChangeStatusAction">
+        <condition expression="#update or #changeStatus or #delete">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="name">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="32"/>
         </condition>
     </field>
 
     <field name="description">
-        <condition expression="createOrUpdateAction">
+        <condition expression="#createOrUpdate">
             <rule type="MaxLengthRule" maxLength="100"/>
         </condition>
     </field>
 
     <field name="status">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
             <rule type="EqualsRule" value="ACTIVE"/>
         </condition>
-        <condition expression="changeStatusAction">
+        <condition expression="#changeStatus">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="statusDate">
-        <condition expression="changeStatusAction">
+        <condition expression="#changeStatus">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="statusReason">
-        <condition expression="createAction or updateAction or changeStatusAction">
+        <condition expression="#create or #update or #changeStatus">
             <rule type="MaxLengthRule" maxLength="100"/>
         </condition>
     </field>
 
     <field name="adminUsernameType">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonNullRule"/>
         </condition>
     </field>
 
     <field name="adminUsernameTypePhoneIndicative">
-        <condition expression="createAction and adminUsernameTypePhone">
+        <condition expression="#create and adminUsernameTypePhone">
             <rule type="NotBlankRule"/>
         </condition>
     </field>
 
     <field name="adminUsername">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NotBlankRule"/>
             <rule type="MaxLengthRule" maxLength="16"/>
             <rule type="UniqueUsernameRule"/>
         </condition>
-        <condition expression="createAction and adminUsernameTypePhone">
+        <condition expression="#create and adminUsernameTypePhone">
             <rule type="NotBlankRule"/>
             <rule type="PhoneRule"/>
         </condition>
-        <condition expression="createAction and adminUsernameTypeEmail">
+        <condition expression="#create and adminUsernameTypeEmail">
             <rule type="NotBlankRule"/>
             <rule type="EmailRule"/>
         </condition>
     </field>
 
     <field name="accountContacts" type="dtoList">
-        <condition expression="createAction">
+        <condition expression="#create">
             <rule type="NonEmptyRule"/>
             <rule type="PrincipalAccountContactRule"/>
         </condition>

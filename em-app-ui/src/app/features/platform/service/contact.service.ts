@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ContactDto } from '../api.platform.model';
-import { SearchResult, DefaultSearchCriteria } from '../../shared/api.shared.model';
-import { ContactHelper } from '../helper/contact.helper';
+import { SearchResult } from '../../shared/api.shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +13,7 @@ export class ContactService {
 
   constructor(private http: HttpClient) {}
 
-  getContacts(searchCriteria?: DefaultSearchCriteria): Observable<SearchResult<ContactDto>> {
-    let params = new HttpParams();
-
-    if (searchCriteria) {
-      params = ContactHelper.mapDefaultSearchCriteriaToHttpParams(searchCriteria);
-    }
-
+  getContacts(params?: HttpParams): Observable<SearchResult<ContactDto>> {
     return this.http.get<SearchResult<ContactDto>>(this.apiUrl, { params });
   }
 
